@@ -1,0 +1,1015 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A5EE9FFC-35F4-4CAB-9AB0-C9C98E97C8B5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Anycmd</RootNamespace>
+    <AssemblyName>Anycmd</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ASYNC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE;ASYNC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="ServiceStack.Text, Version=4.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\ServiceStack.Text.4.0.23\lib\net40\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AC\ACSubjectType.cs" />
+    <Compile Include="AnyMessage.cs" />
+    <Compile Include="AppHostExtension.cs" />
+    <Compile Include="DefaultNodeHost.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AddDeveloperCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\DeveloperUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\RemoveDeveloperCommand.cs" />
+    <Compile Include="Model\AddEntityCommand`1.cs" />
+    <Compile Include="Model\EntityAddedEvent`1.cs" />
+    <Compile Include="Model\RemoveEntityCommand.cs" />
+    <Compile Include="Model\UpdateEntityCommand`1.cs" />
+    <Compile Include="Properties\ACEntities.Designer.cs">
+      <DependentUpon>ACEntities.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\EDIEntities.Designer.cs">
+      <DependentUpon>EDIEntities.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="EDI\ActionBase.cs" />
+    <Compile Include="EDI\ArchiveBase.cs" />
+    <Compile Include="EDI\BatchType.cs" />
+    <Compile Include="EDI\ConstraintType.cs" />
+    <Compile Include="EDI\ElementAction.cs" />
+    <Compile Include="EDI\ElementBase.cs" />
+    <Compile Include="EDI\ElementInfoRule.cs" />
+    <Compile Include="EDI\ElementTrigger.cs" />
+    <Compile Include="EDI\IAction.cs" />
+    <Compile Include="EDI\IActionTrigger.cs" />
+    <Compile Include="EDI\IArchive.cs" />
+    <Compile Include="EDI\IBatch.cs" />
+    <Compile Include="EDI\IElement.cs" />
+    <Compile Include="EDI\IElementAction.cs" />
+    <Compile Include="EDI\IElementActionTrigger.cs" />
+    <Compile Include="EDI\IElementInfoRule.cs" />
+    <Compile Include="EDI\IInfoDic.cs" />
+    <Compile Include="EDI\IInfoDicItem.cs" />
+    <Compile Include="EDI\IInfoGroup.cs" />
+    <Compile Include="EDI\InfoCheck.cs" />
+    <Compile Include="EDI\InfoDicBase.cs" />
+    <Compile Include="EDI\InfoDicItemBase.cs" />
+    <Compile Include="EDI\InfoGroupBase.cs" />
+    <Compile Include="EDI\INode.cs" />
+    <Compile Include="EDI\INodeAction.cs" />
+    <Compile Include="EDI\INodeElementAction.cs" />
+    <Compile Include="EDI\INodeElementCare.cs" />
+    <Compile Include="EDI\INodeOntologyCare.cs" />
+    <Compile Include="EDI\INodeOntologyOrganization.cs" />
+    <Compile Include="EDI\INodeOrganizationAction.cs" />
+    <Compile Include="EDI\INodeTopic.cs" />
+    <Compile Include="EDI\IOntology.cs" />
+    <Compile Include="EDI\IOntologyOrganization.cs" />
+    <Compile Include="EDI\IOrganizationAction.cs" />
+    <Compile Include="EDI\IProcess.cs" />
+    <Compile Include="EDI\ITopic.cs" />
+    <Compile Include="EDI\NodeAction.cs" />
+    <Compile Include="EDI\NodeBase.cs" />
+    <Compile Include="EDI\NodeElementActionBase.cs" />
+    <Compile Include="EDI\NodeElementCareBase.cs" />
+    <Compile Include="EDI\NodeOntologyCareBase.cs" />
+    <Compile Include="EDI\NodeOntologyOrganizationBase.cs" />
+    <Compile Include="EDI\NodeOrganizationAction.cs" />
+    <Compile Include="EDI\NoneNode.cs" />
+    <Compile Include="EDI\OntologyBase.cs" />
+    <Compile Include="EDI\OntologyOrganizationBase.cs" />
+    <Compile Include="EDI\OntologyTrigger.cs" />
+    <Compile Include="EDI\OrganizationAction.cs" />
+    <Compile Include="EDI\Parameter.cs" />
+    <Compile Include="EDI\PluginType.cs" />
+    <Compile Include="EDI\ProcessBase.cs" />
+    <Compile Include="EDI\ProcessType.cs" />
+    <Compile Include="EDI\TopicBase.cs" />
+    <Compile Include="Host\EDI\ActionState.cs" />
+    <Compile Include="Host\EDI\ArchiveState.cs" />
+    <Compile Include="Host\EDI\BatchDescriptor.cs" />
+    <Compile Include="Host\EDI\BuiltInResourceKind.cs" />
+    <Compile Include="Host\EDI\DbField.cs" />
+    <Compile Include="Host\EDI\DefaultAuthenticator.cs" />
+    <Compile Include="Host\EDI\DefaultNodeHostBootstrap.cs" />
+    <Compile Include="Host\EDI\ElementActionState.cs" />
+    <Compile Include="Host\EDI\ElementDescriptor.cs" />
+    <Compile Include="Host\EDI\ElementInfoRuleState.cs" />
+    <Compile Include="Host\EDI\ElementState.cs" />
+    <Compile Include="Host\EDI\FastNodeHostBootstrap.cs" />
+    <Compile Include="Host\EDI\Handlers\DbActionType.cs" />
+    <Compile Include="Host\EDI\Handlers\DbCommand.cs" />
+    <Compile Include="Host\EDI\Handlers\DefaultAuditDiscriminator.cs" />
+    <Compile Include="Host\EDI\Handlers\DefaultInputValidator.cs" />
+    <Compile Include="Host\EDI\Handlers\DefaultMessageProducer.cs" />
+    <Compile Include="Host\EDI\Handlers\DefaultPermissionValidator.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\BeatContext.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\DefaultDispatcher.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\DispatcherFactory.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\DistributeContext.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\DistributedEventArgs.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\DistributingEventArgs.cs" />
+    <Compile Include="Host\EDI\Handlers\Distribute\MessageRequester.cs" />
+    <Compile Include="Host\EDI\Handlers\EventSourceType.cs" />
+    <Compile Include="Host\EDI\Handlers\EventSubjectCode.cs" />
+    <Compile Include="Host\EDI\Handlers\Execute\DefaultExecutor.cs" />
+    <Compile Include="Host\EDI\Handlers\Execute\ExecutedEventArgs.cs" />
+    <Compile Include="Host\EDI\Handlers\Execute\ExecutingEventArgs.cs" />
+    <Compile Include="Host\EDI\Handlers\Execute\ExecutorFactory.cs" />
+    <Compile Include="Host\EDI\Handlers\IAuditDiscriminator.cs" />
+    <Compile Include="Host\EDI\Handlers\IDispatcher.cs" />
+    <Compile Include="Host\EDI\Handlers\IDispatcherFactory.cs" />
+    <Compile Include="Host\EDI\Handlers\IElementActionTrigger.cs" />
+    <Compile Include="Host\EDI\Handlers\IEntityProvider.cs" />
+    <Compile Include="Host\EDI\Handlers\IEntityProviderSet.cs" />
+    <Compile Include="Host\EDI\Handlers\IExecutor.cs" />
+    <Compile Include="Host\EDI\Handlers\IExecutorFactory.cs" />
+    <Compile Include="Host\EDI\Handlers\IInputValidator.cs" />
+    <Compile Include="Host\EDI\Handlers\IMessage.cs" />
+    <Compile Include="Host\EDI\Handlers\IMessageProducer.cs" />
+    <Compile Include="Host\EDI\Handlers\IMessageProvider.cs" />
+    <Compile Include="Host\EDI\Handlers\IMessageProviderSet.cs" />
+    <Compile Include="Host\EDI\Handlers\IMessageTransfer.cs" />
+    <Compile Include="Host\EDI\Handlers\IMessageTransferSet.cs" />
+    <Compile Include="Host\EDI\Handlers\IPermissionValidator.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageBase.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageContext.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageEntity.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageHandler.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageTransferBase.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageTuple.cs" />
+    <Compile Include="Host\EDI\Handlers\MessageTypeKind.cs" />
+    <Compile Include="Host\EDI\Hecp\ApiVersion.cs" />
+    <Compile Include="Host\EDI\Hecp\BeatRequest.cs" />
+    <Compile Include="Host\EDI\Hecp\BeatResponse.cs" />
+    <Compile Include="Host\EDI\Hecp\ClientType.cs" />
+    <Compile Include="Host\EDI\Hecp\CredentialObject.cs" />
+    <Compile Include="Host\EDI\Hecp\CredentialType.cs" />
+    <Compile Include="Host\EDI\Hecp\HecpContext.cs" />
+    <Compile Include="Host\EDI\Hecp\HecpHandler.cs" />
+    <Compile Include="Host\EDI\Hecp\HecpRequest.cs" />
+    <Compile Include="Host\EDI\Hecp\HecpResponse.cs" />
+    <Compile Include="Host\EDI\Hecp\MessageType.cs" />
+    <Compile Include="Host\EDI\Hecp\SignatureMethod.cs" />
+    <Compile Include="Host\EDI\Hecp\UserType.cs" />
+    <Compile Include="Host\EDI\Hecp\Verb.cs" />
+    <Compile Include="Host\EDI\HostConfig.cs" />
+    <Compile Include="Host\EDI\IAuthenticator.cs" />
+    <Compile Include="Host\EDI\InfoDicItemState.cs" />
+    <Compile Include="Host\EDI\InfoDicState.cs" />
+    <Compile Include="Host\EDI\InfoGroupState.cs" />
+    <Compile Include="Host\EDI\InfoRuleState.cs" />
+    <Compile Include="Host\EDI\Info\DataItem.cs" />
+    <Compile Include="Host\EDI\Info\DataItems.cs" />
+    <Compile Include="Host\EDI\Info\DataItemsTuple.cs" />
+    <Compile Include="Host\EDI\Info\DataTuple.cs" />
+    <Compile Include="Host\EDI\Info\IDataTuples.cs" />
+    <Compile Include="Host\EDI\Info\IInfoCheck.cs" />
+    <Compile Include="Host\EDI\Info\IInfoDicSet.cs" />
+    <Compile Include="Host\EDI\Info\IInfoRule.cs" />
+    <Compile Include="Host\EDI\Info\IInfoRuleSet.cs" />
+    <Compile Include="Host\EDI\Info\IInfoStringConverter.cs" />
+    <Compile Include="Host\EDI\Info\IInfoStringConverterSet.cs" />
+    <Compile Include="Host\EDI\Info\InfoItem.cs" />
+    <Compile Include="Host\EDI\Info\InfoRuleBase.cs" />
+    <Compile Include="Host\EDI\Info\InfoRuleEntityBase.cs" />
+    <Compile Include="Host\EDI\Info\InfoTuplePair.cs" />
+    <Compile Include="Host\EDI\Info\KeyValueExtension.cs" />
+    <Compile Include="Host\EDI\Info\TowInfoTuple.cs" />
+    <Compile Include="Host\EDI\INodeHostBootstrap.cs" />
+    <Compile Include="Host\EDI\INodeSet.cs" />
+    <Compile Include="Host\EDI\IOntologySet.cs" />
+    <Compile Include="Host\EDI\IPlugin.cs" />
+    <Compile Include="Host\EDI\IPluginImporter.cs" />
+    <Compile Include="Host\EDI\IProcesseSet.cs" />
+    <Compile Include="Host\EDI\IStackTrace.cs" />
+    <Compile Include="Host\EDI\IStackTraceFormater.cs" />
+    <Compile Include="Host\EDI\IWfResource.cs" />
+    <Compile Include="Host\EDI\MemorySets\EntityProviderSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\InfoDicSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\InfoRuleSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\InfoStringConverterSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\MessageProviderSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\MessageTransferSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\NodeSet.cs" />
+    <Compile Include="Host\EDI\MemorySets\OntologySet.cs" />
+    <Compile Include="Host\EDI\MemorySets\ProcesseSet.cs" />
+    <Compile Include="Host\EDI\MessageHandlers\AddBatchCommandHandler.cs" />
+    <Compile Include="Host\EDI\MessageHandlers\RemoveBatchCommandHandler.cs" />
+    <Compile Include="Host\EDI\MessageHandlers\UpdateBatchCommandHandler.cs" />
+    <Compile Include="Host\EDI\Messages\ActionAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ActionRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ActionUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\AddActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddArchiveCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddBatchCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddElementCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddInfoDicCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddInfoDicItemCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddInfoGroupCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddNodeCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddNodeElementActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddNodeElementCareCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddNodeOntologyCareCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddOntologyCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddOntologyOrganizationCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddOrganizationActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddProcessCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddSystemElementCommand.cs" />
+    <Compile Include="Host\EDI\Messages\AddTopicCommand.cs" />
+    <Compile Include="Host\EDI\Messages\ArchiveDeletedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ArchivedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ArchiveUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\BatchAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\BatchRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\BatchUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ChangeProcessNetPortCommand.cs" />
+    <Compile Include="Host\EDI\Messages\ChangeProcessOrganizationCommand.cs" />
+    <Compile Include="Host\EDI\Messages\ElementActionAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementActionRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementActionUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementInfoRuleAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementInfoRuleRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementInfoRuleUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ElementUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoDicAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoDicItemAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoDicItemRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoDicItemUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoDicRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoDicUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoGroupAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoGroupRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\InfoGroupUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeActionAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeActionRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeActionUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeElementActionAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeElementActionRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeElementCareAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeElementCareRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeElementCareUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeOntologyCareAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeOntologyCareRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeOrganizationActionAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeOrganizationActionRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\NodeUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OntologyAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OntologyOrganizationAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OntologyOrganizationRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OntologyRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OntologyUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OrganizationActionAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OrganizationActionRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\OrganizationActionUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ProcessAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ProcessRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\ProcessUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveArchiveCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveBatchCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveElementCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveInfoDicCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveInfoDicItemCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveInfoGroupCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveNodeCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveNodeElementActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveNodeElementCareCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveNodeOntologyCareCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveOntologyCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveOntologyOrganizationCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveOrganizationActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveProcessCommand.cs" />
+    <Compile Include="Host\EDI\Messages\RemoveTopicCommand.cs" />
+    <Compile Include="Host\EDI\Messages\TopicAddedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\TopicRemovedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\TopicUpdatedEvent.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateArchiveCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateBatchCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateElementCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateInfoDicCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateInfoDicItemCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateInfoGroupCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateNodeCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateNodeElementCareCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateOntologyCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateOrganizationActionCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateProcessCommand.cs" />
+    <Compile Include="Host\EDI\Messages\UpdateTopicCommand.cs" />
+    <Compile Include="Host\EDI\NodeDescriptor.cs" />
+    <Compile Include="Host\EDI\NodeElementActionState.cs" />
+    <Compile Include="Host\EDI\NodeElementCareState.cs" />
+    <Compile Include="Host\EDI\NodeOntologyCareState.cs" />
+    <Compile Include="Host\EDI\NodeOntologyOrganizationState.cs" />
+    <Compile Include="Host\EDI\NodeState.cs" />
+    <Compile Include="Host\EDI\OntologyDescriptor.cs" />
+    <Compile Include="Host\EDI\OntologyOrganizationState.cs" />
+    <Compile Include="Host\EDI\OntologyState.cs" />
+    <Compile Include="Host\EDI\OrderedElementSet.cs" />
+    <Compile Include="Host\EDI\PluginBase.cs" />
+    <Compile Include="Host\EDI\ProcessDescriptor.cs" />
+    <Compile Include="Host\EDI\ProcessResult.cs" />
+    <Compile Include="Host\EDI\ProcessState.cs" />
+    <Compile Include="Host\EDI\QueryResult.cs" />
+    <Compile Include="Host\EDI\Entities\Action.cs" />
+    <Compile Include="Host\EDI\Entities\Archive.cs" />
+    <Compile Include="Host\EDI\Entities\Batch.cs" />
+    <Compile Include="Host\EDI\Entities\Element.cs" />
+    <Compile Include="Host\EDI\Entities\InfoDic.cs" />
+    <Compile Include="Host\EDI\Entities\InfoDicItem.cs" />
+    <Compile Include="Host\EDI\Entities\InfoGroup.cs" />
+    <Compile Include="Host\EDI\Entities\InfoRule.cs" />
+    <Compile Include="Host\EDI\Entities\Node.cs" />
+    <Compile Include="Host\EDI\Entities\NodeElementAction.cs" />
+    <Compile Include="Host\EDI\Entities\NodeElementCare.cs" />
+    <Compile Include="Host\EDI\Entities\NodeOntologyCare.cs" />
+    <Compile Include="Host\EDI\Entities\NodeOntologyOrganization.cs" />
+    <Compile Include="Host\EDI\Entities\NodeTopic.cs" />
+    <Compile Include="Host\EDI\Entities\Ontology.cs" />
+    <Compile Include="Host\EDI\Entities\OntologyOrganization.cs" />
+    <Compile Include="Host\EDI\Entities\Plugin.cs" />
+    <Compile Include="Host\EDI\Entities\Process.cs" />
+    <Compile Include="Host\EDI\Entities\StateCode.cs" />
+    <Compile Include="Host\EDI\Entities\Topic.cs" />
+    <Compile Include="Host\EDI\Status.cs" />
+    <Compile Include="Host\EDI\TopicState.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IActionCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IActionUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IArchiveCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IArchiveUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IBatchCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IBatchUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IElementCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IElementUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IInfoDicCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IInfoDicItemCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IInfoDicItemUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IInfoDicUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IInfoGroupCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IInfoGroupUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\INodeCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\INodeElementActionCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\INodeElementCareCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\INodeOntologyCareCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\INodeUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IOntologyCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IOntologyOrganizationCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IOntologyUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IOrganizationActionCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IOrganizationActionUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IProcessCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\IProcessUpdateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\ITopicCreateInput.cs" />
+    <Compile Include="Host\EDI\ValueObjects\ITopicUpdateInput.cs" />
+    <Compile Include="Host\EDI\WfAct.cs" />
+    <Compile Include="Host\GroupState.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountAddedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountLoginedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountLogoutedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountRemovedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountSignInCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountSignOutCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AccountUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AddAccountCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\AddPasswordCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\ChangePasswordCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\DeveloperAddedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\DeveloperRemovedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\DisableAccountCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\EnableAccountCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\LoginNameChangedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\PasswordUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Identity\Messages\RemoveAccountCommand.cs" />
+    <Compile Include="Host\AC\Identity\Messages\UpdateAccountCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddAppSystemCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AppSystemAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AppSystemRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AppSystemRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AppSystemUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveAppSystemCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateAppSystemCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddButtonCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ButtonAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ButtonRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ButtonRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ButtonUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveButtonCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateButtonCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddDicCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddDicItemCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicItemAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicItemRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicItemUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\DicUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveDicCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveDicItemCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateDicCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateDicItemCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddCommonPropertiesCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddEntityTypeCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddPropertyCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\EntityTypeAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\EntityTypeRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\EntityTypeRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\EntityTypeUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PropertyAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PropertyRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PropertyUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveEntityTypeCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemovePropertyCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateEntityTypeCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdatePropertyCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddFunctionCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\FunctionAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\FunctionRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\FunctionRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\FunctionUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveFunctionCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\SaveHelpCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateFunctionCommand.cs" />
+    <Compile Include="Host\AC\Messages\AddGroupCommand.cs" />
+    <Compile Include="Host\AC\Messages\GroupAddedEvent.cs" />
+    <Compile Include="Host\AC\Messages\GroupRemovedEvent.cs" />
+    <Compile Include="Host\AC\Messages\GroupRemovingEvent.cs" />
+    <Compile Include="Host\AC\Messages\GroupUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Messages\RemoveGroupCommand.cs" />
+    <Compile Include="Host\AC\Messages\UpdateGroupCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddMenuCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\MenuAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\MenuRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\MenuRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\MenuUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveMenuCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateMenuCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddOrganizationCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\OrganizationAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\OrganizationRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\OrganizationRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\OrganizationUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveOrganizationCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateOrganizationCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddPageButtonCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddPageCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageButtonAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageButtonRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageButtonUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\PageUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemovePageButtonCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemovePageCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdatePageButtonCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdatePageCommand.cs" />
+    <Compile Include="Host\AC\ValueObjects\AccountPrivilegeUpdateInput.cs" />
+    <Compile Include="Host\AC\Messages\AddPrivilegeBigramCommand.cs" />
+    <Compile Include="Host\AC\Messages\RemovePrivilegeBigramCommand.cs" />
+    <Compile Include="Host\AC\Messages\PrivilegeBigramAddedEvent.cs" />
+    <Compile Include="Host\AC\Messages\PrivilegeBigramRemovedEvent.cs" />
+    <Compile Include="Host\AC\Messages\PrivilegeBigramUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Messages\UpdatePrivilegeBigramCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\AddResourceCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\RemoveResourceTypeCommand.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ResourceTypeAddedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ResourceTypeRemovedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ResourceTypeRemovingEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\ResourceTypeUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\Messages\UpdateResourceCommand.cs" />
+    <Compile Include="Host\AC\Messages\AddRoleCommand.cs" />
+    <Compile Include="Host\AC\Messages\RemoveRoleCommand.cs" />
+    <Compile Include="Host\AC\Messages\RoleAddedEvent.cs" />
+    <Compile Include="Host\AC\Messages\RoleRemovedEvent.cs" />
+    <Compile Include="Host\AC\Messages\RoleRemovingEvent.cs" />
+    <Compile Include="Host\AC\Messages\RoleUpdatedEvent.cs" />
+    <Compile Include="Host\AC\Messages\UpdateRoleCommand.cs" />
+    <Compile Include="Host\AC\NAcl\AccessRule.cs" />
+    <Compile Include="Host\AC\NAcl\AclManager.cs" />
+    <Compile Include="Host\AC\NAcl\Allow.cs" />
+    <Compile Include="Host\AC\NAcl\Configuration\Ace.cs" />
+    <Compile Include="Host\AC\NAcl\Configuration\Acl.cs" />
+    <Compile Include="Host\AC\NAcl\Configuration\AclConfigurationSection.cs" />
+    <Compile Include="Host\AC\NAcl\Configuration\ProviderCollection.cs" />
+    <Compile Include="Host\AC\NAcl\Configuration\ProviderElement.cs" />
+    <Compile Include="Host\AC\NAcl\Deny.cs" />
+    <Compile Include="Host\AC\NAcl\OrderedList.cs" />
+    <Compile Include="Host\AC\NAcl\Providers\HubProvider.cs" />
+    <Compile Include="Host\AC\NAcl\Providers\IAclProvider.cs" />
+    <Compile Include="Host\AC\NAcl\Providers\MemoryProvider.cs" />
+    <Compile Include="Host\AC\NAcl\Providers\RouterProvider.cs" />
+    <Compile Include="Host\AC\NAcl\Providers\SqlAclProvider.cs" />
+    <Compile Include="Host\AC\NAcl\ReverseComparer.cs" />
+    <Compile Include="INodeHost.cs" />
+    <Compile Include="ISecurityService.cs" />
+    <Compile Include="AC\IPrivilegeBigram.cs" />
+    <Compile Include="AC\PrivilegeBigramBase.cs" />
+    <Compile Include="Host\PrivilegeBigramState.cs" />
+    <Compile Include="AC\ACObjectType.cs" />
+    <Compile Include="Host\RoleState.cs" />
+    <Compile Include="Host\AC\ValueObjects\IAccountCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IAccountPrivilegeCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IAccountPrivilegeUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IAccountUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IAppSystemCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IAppSystemUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IButtonCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IButtonUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IDicCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IDicItemCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IDicItemUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IDicUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IDSDSetCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IEntityTypeCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IEntityTypeUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IFunctionCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IFunctionUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IGroupCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IGroupUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IMenuCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IMenuUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IOrganizationCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IOrganizationUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPageButtonCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPageButtonUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPageCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPageUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPasswordChangeInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPasswordCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPropertyCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPropertyUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IResourceCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IResourceUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IRoleCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPrivilegeBigramCreateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IPrivilegeBigramUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\IRoleUpdateInput.cs" />
+    <Compile Include="Host\AC\ValueObjects\ISSDSetCreateInput.cs" />
+    <Compile Include="Container\AnyCmdServiceAttribute.cs" />
+    <Compile Include="Container\AnyCmdServiceContainer.cs" />
+    <Compile Include="Bus\IMessage.cs" />
+    <Compile Include="Dapper\SqlMapper.cs" />
+    <Compile Include="Dapper\SqlMapperAsync.cs" />
+    <Compile Include="Bus\DirectBus\DirectBus.cs" />
+    <Compile Include="Bus\DirectBus\DirectCommandBus.cs" />
+    <Compile Include="Bus\DirectBus\DirectEventBus.cs" />
+    <Compile Include="Model\EntityCreateInput.cs" />
+    <Compile Include="Host\AC\Infra\EntityTypeMap.cs" />
+    <Compile Include="Bus\EventAggregator\EventAggregatorBus.cs" />
+    <Compile Include="Bus\EventAggregator\EventAggregatorCommandBus.cs" />
+    <Compile Include="Bus\EventAggregator\EventAggregatorEventBus.cs" />
+    <Compile Include="Events\EventAggregatorExtension.cs" />
+    <Compile Include="Extensions\DataTableExtension.cs" />
+    <Compile Include="Host\AC\MessageHandlers\AccountSignInCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\AccountSignOutCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\ChangePasswordCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\AddAccountCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\AddPasswordCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\RemoveAccountCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\UpdateAccountCommandHandler.cs" />
+    <Compile Include="Host\AC\MessageHandlers\SaveHelpCommandHandler.cs" />
+    <Compile Include="Host\AC\DSDRole.cs" />
+    <Compile Include="Host\AC\MessageHandlers\OperatedEventHandler.cs" />
+    <Compile Include="Host\AC\Group.cs" />
+    <Compile Include="Host\AC\Identity\Account.cs" />
+    <Compile Include="Host\AC\Identity\DeveloperID.cs" />
+    <Compile Include="Host\AC\Identity\VisitingLog.cs" />
+    <Compile Include="Host\AC\Infra\AppSystem.cs" />
+    <Compile Include="Host\AC\Infra\Button.cs" />
+    <Compile Include="Host\AC\Infra\Dic.cs" />
+    <Compile Include="Host\AC\Infra\DicItem.cs" />
+    <Compile Include="Host\AC\Infra\EntityType.cs" />
+    <Compile Include="Host\AC\Infra\Function.cs" />
+    <Compile Include="Host\AC\Infra\Menu.cs" />
+    <Compile Include="Host\AC\Infra\OperationHelp.cs" />
+    <Compile Include="Host\AC\Infra\Organization.cs" />
+    <Compile Include="Host\AC\Infra\Page.cs" />
+    <Compile Include="Host\AC\Infra\PageButton.cs" />
+    <Compile Include="Host\AC\Infra\Property.cs" />
+    <Compile Include="Host\AC\Infra\ResourceType.cs" />
+    <Compile Include="Host\AC\MemorySets\AppSystemSet.cs" />
+    <Compile Include="Host\AC\MemorySets\ButtonSet.cs" />
+    <Compile Include="Host\Rdb\DbTableColumns.cs" />
+    <Compile Include="Host\Rdb\DbTables.cs" />
+    <Compile Include="Host\Rdb\DbViewColumns.cs" />
+    <Compile Include="Host\Rdb\DbViews.cs" />
+    <Compile Include="Host\AC\MemorySets\DicSet.cs" />
+    <Compile Include="Host\AC\MemorySets\EntityTypeSet.cs" />
+    <Compile Include="Host\AC\MemorySets\FunctionSet.cs" />
+    <Compile Include="Host\AC\MemorySets\GroupSet.cs" />
+    <Compile Include="Host\AC\MemorySets\MenuSet.cs" />
+    <Compile Include="Host\AC\MemorySets\OrganizationSet.cs" />
+    <Compile Include="Host\AC\MemorySets\PageSet.cs" />
+    <Compile Include="Host\AC\MemorySets\PrivilegeSet.cs" />
+    <Compile Include="Host\Rdb\Rdbs.cs" />
+    <Compile Include="Host\AC\MemorySets\ResourceTypeSet.cs" />
+    <Compile Include="Host\AC\MemorySets\RoleSet.cs" />
+    <Compile Include="Host\AC\MemorySets\SysUserSet.cs" />
+    <Compile Include="Host\AC\Role.cs" />
+    <Compile Include="Host\AC\PrivilegeBigram.cs" />
+    <Compile Include="Host\AC\SSDRole.cs" />
+    <Compile Include="Host\AC\SSDSet.cs" />
+    <Compile Include="Host\IAppHostBootstrap.cs" />
+    <Compile Include="Host\IFunctionListImport.cs" />
+    <Compile Include="DefaultAppHost.cs" />
+    <Compile Include="Host\DefaultAppHostBootstrap.cs" />
+    <Compile Include="Host\DefaultSecurityService.cs" />
+    <Compile Include="Host\DefaultUserSession.cs" />
+    <Compile Include="Host\FastRdbAppHostBootstrap.cs" />
+    <Compile Include="Host\PasswordEncryptionService.cs" />
+    <Compile Include="Host\IPasswordEncryptionService.cs" />
+    <Compile Include="IRBACService.cs" />
+    <Compile Include="Host\IAppConfig.cs" />
+    <Compile Include="Model\IEntityCreateInput.cs" />
+    <Compile Include="Model\IEntityUpdateInput.cs" />
+    <Compile Include="Host\ITracer.cs" />
+    <Compile Include="Host\JITMode.cs" />
+    <Compile Include="Model\IManagedPropertyValues.cs" />
+    <Compile Include="NodeHost.cs" />
+    <Compile Include="Properties\IdentityEntities.Designer.cs">
+      <DependentUpon>IdentityEntities.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\InfraEntities.Designer.cs">
+      <DependentUpon>InfraEntities.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Util\DicReader.cs" />
+    <Compile Include="Util\EntityTypeExtension.cs" />
+    <Compile Include="Model\IManagedEntityData.cs" />
+    <Compile Include="Model\ManagedEntityData.cs" />
+    <Compile Include="Host\AccountState.cs" />
+    <Compile Include="Model\IInputModel.cs" />
+    <Compile Include="Host\AppSystemState.cs" />
+    <Compile Include="Bus\BusException.cs" />
+    <Compile Include="Bus\DispatchingException.cs" />
+    <Compile Include="Bus\IBus.cs" />
+    <Compile Include="Bus\ICommandBus.cs" />
+    <Compile Include="Bus\IEventBus.cs" />
+    <Compile Include="Bus\IMessageDispatcher.cs" />
+    <Compile Include="Bus\MessageDispatcher.cs" />
+    <Compile Include="Bus\MessageDispatchEventArgs.cs" />
+    <Compile Include="Bus\RegisterDispatchAttribute.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandHandler.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Host\Constants.cs" />
+    <Compile Include="Util\DynamicQueryable.cs" />
+    <Compile Include="Events\ActionDelegatedEventHandler.cs" />
+    <Compile Include="Events\DomainEvent.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\HandlesAttribute.cs" />
+    <Compile Include="Events\IDomainEvent.cs" />
+    <Compile Include="Events\IDomainEventHandler.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Events\IEventAggregator.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Events\InlineDomainEventHandler.cs" />
+    <Compile Include="Events\ParallelExecutionAttribute.cs" />
+    <Compile Include="Events\Serialization\DomainEventBinarySerializer.cs" />
+    <Compile Include="Events\Serialization\DomainEventDataContractSerializer.cs" />
+    <Compile Include="Events\Serialization\DomainEventJsonSerializer.cs" />
+    <Compile Include="Events\Serialization\DomainEventXmlSerializer.cs" />
+    <Compile Include="Events\Serialization\IDomainEventSerializer.cs" />
+    <Compile Include="Events\Storage\DomainEventDataObject.cs" />
+    <Compile Include="Events\Storage\IDomainEventStorage.cs" />
+    <Compile Include="Events\Storage\RdbmsDomainEventStorage.cs" />
+    <Compile Include="Exceptions\ExceptionHandler.cs" />
+    <Compile Include="Exceptions\IExceptionHandler.cs" />
+    <Compile Include="Model\IAggregateRoot.cs" />
+    <Compile Include="AC\Identity\IDeveloperID.cs" />
+    <Compile Include="Bus\IHandler`1.cs" />
+    <Compile Include="Host\ButtonState.cs" />
+    <Compile Include="Host\AC\Infra\IMenuSet.cs" />
+    <Compile Include="Host\AC\IGroupSet.cs" />
+    <Compile Include="Host\AC\IPrivilegeSet.cs" />
+    <Compile Include="Host\AC\IRoleSet.cs" />
+    <Compile Include="Host\DicItemState.cs" />
+    <Compile Include="Host\DicState.cs" />
+    <Compile Include="Host\EntityTypeExtension.cs" />
+    <Compile Include="Host\EntityTypeState.cs" />
+    <Compile Include="Host\FunctionState.cs" />
+    <Compile Include="Host\MenuState.cs" />
+    <Compile Include="Host\OrganizationState.cs" />
+    <Compile Include="Host\PageButtonState.cs" />
+    <Compile Include="Host\PageState.cs" />
+    <Compile Include="Host\PropertyState.cs" />
+    <Compile Include="Host\ResourceTypeState.cs" />
+    <Compile Include="Model\ISourcedAggregateRoot.cs" />
+    <Compile Include="IUserSession.cs" />
+    <Compile Include="Logging\ExceptionLog.cs" />
+    <Compile Include="Logging\FunctionDescriptor.cs" />
+    <Compile Include="Logging\LoggingService.cs" />
+    <Compile Include="Logging\OperationLogBase.cs" />
+    <Compile Include="Model\ManagedEntityData`2.cs" />
+    <Compile Include="Model\ManagedPropertyValue.cs" />
+    <Compile Include="Model\ManagedPropertyValues.cs" />
+    <Compile Include="Model\ManagedPropertyValue`1.cs" />
+    <Compile Include="Logging\OperationLog.cs" />
+    <Compile Include="Query\PagedResult.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Rdb\Events\RDatabaseAddedEvent.cs" />
+    <Compile Include="Rdb\Events\RDatabaseDeletedEvent.cs" />
+    <Compile Include="Rdb\Events\RDatabaseUpdatedEvent.cs" />
+    <Compile Include="Rdb\IDbTableColumns.cs" />
+    <Compile Include="Rdb\IDbTables.cs" />
+    <Compile Include="Rdb\IDbViewColumns.cs" />
+    <Compile Include="Rdb\IDbViews.cs" />
+    <Compile Include="Rdb\IRdbs.cs" />
+    <Compile Include="Rdb\RdbmsType.cs" />
+    <Compile Include="Repositories\DomainRepository.cs" />
+    <Compile Include="Repositories\EventPublisherDomainRepository.cs" />
+    <Compile Include="Repositories\EventSourcedDomainRepository.cs" />
+    <Compile Include="Repositories\IDomainRepository.cs" />
+    <Compile Include="Repositories\IRepository`1.cs" />
+    <Compile Include="Repositories\IRepositoryContext.cs" />
+    <Compile Include="Exceptions\NotExistException.cs" />
+    <Compile Include="Repositories\RegularDomainRepository.cs" />
+    <Compile Include="Repositories\RegularEventPublisherDomainRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\RepositoryContext.cs" />
+    <Compile Include="Repositories\RepositoryException.cs" />
+    <Compile Include="Repositories\SnapshotDomainRepository.cs" />
+    <Compile Include="Serialization\IObjectSerializer.cs" />
+    <Compile Include="Serialization\ObjectBinarySerializer.cs" />
+    <Compile Include="Serialization\ObjectDataContractSerializer.cs" />
+    <Compile Include="Serialization\ObjectJsonSerializer.cs" />
+    <Compile Include="Serialization\ObjectXmlSerializer.cs" />
+    <Compile Include="Serialization\SerializationException.cs" />
+    <Compile Include="Host\ConstKeys.cs" />
+    <Compile Include="Snapshots\ISnapshot.cs" />
+    <Compile Include="Snapshots\ISnapshotOrignator.cs" />
+    <Compile Include="Snapshots\Providers\EventNumberSnapshotProvider.cs" />
+    <Compile Include="Snapshots\Providers\ISnapshotProvider.cs" />
+    <Compile Include="Snapshots\Providers\SnapshotProvider.cs" />
+    <Compile Include="Snapshots\Providers\SnapshotProviderOption.cs" />
+    <Compile Include="Snapshots\Providers\StorageBasedSnapshotProvider.cs" />
+    <Compile Include="Snapshots\Providers\SuppressedSnapshotProvider.cs" />
+    <Compile Include="Snapshots\Serialization\ISnapshotSerializer.cs" />
+    <Compile Include="Snapshots\Serialization\SnapshotBinarySerializer.cs" />
+    <Compile Include="Snapshots\Serialization\SnapshotDataContractSerializer.cs" />
+    <Compile Include="Snapshots\Serialization\SnapshotJsonSerializer.cs" />
+    <Compile Include="Snapshots\Serialization\SnapshotXmlSerializer.cs" />
+    <Compile Include="Snapshots\Snapshot.cs" />
+    <Compile Include="Snapshots\SnapshotDataObject.cs" />
+    <Compile Include="Model\SourcedAggregateRoot.cs" />
+    <Compile Include="Specifications\AndNotSpecification.cs" />
+    <Compile Include="Specifications\AndSpecification.cs" />
+    <Compile Include="Specifications\AnySpecification.cs" />
+    <Compile Include="Specifications\CompositeSpecification.cs" />
+    <Compile Include="Specifications\ExpressionFuncExtender.cs" />
+    <Compile Include="Specifications\ExpressionSpecification.cs" />
+    <Compile Include="Specifications\ICompositeSpecification.cs" />
+    <Compile Include="Specifications\ISpecification.cs" />
+    <Compile Include="Specifications\ISpecificationParser.cs" />
+    <Compile Include="Specifications\NoneSpecification.cs" />
+    <Compile Include="Specifications\NotSpecification.cs" />
+    <Compile Include="Specifications\OrSpecification.cs" />
+    <Compile Include="Specifications\ParameterRebinder.cs" />
+    <Compile Include="Specifications\Specification.cs" />
+    <Compile Include="Specifications\SpecificationException.cs" />
+    <Compile Include="Query\SqlFilter.cs" />
+    <Compile Include="Storage\Builders\IWhereClauseBuilder.cs" />
+    <Compile Include="Storage\Builders\WhereClauseBuilder.cs" />
+    <Compile Include="Storage\Builders\WhereClauseBuildResult.cs" />
+    <Compile Include="Storage\IStorage.cs" />
+    <Compile Include="Storage\IStorageMappingResolver.cs" />
+    <Compile Include="Storage\PropertyBag.cs" />
+    <Compile Include="Storage\RdbmsStorage.cs" />
+    <Compile Include="Storage\SortOrder.cs" />
+    <Compile Include="Storage\StorageException.cs" />
+    <Compile Include="Storage\StorageMappingSchema.cs">
+      <DependentUpon>StorageMappingSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Storage\XmlStorageMappingResolver.cs" />
+    <Compile Include="Commands\ISysCommand.cs" />
+    <Compile Include="Model\IEntityBase.cs" />
+    <Compile Include="Util\EnumExtension.cs" />
+    <Compile Include="Exceptions\ExceptionEventArgs.cs" />
+    <Compile Include="Host\AC\AllowType.cs" />
+    <Compile Include="Host\AC\AuditType.cs" />
+    <Compile Include="Host\AC\Infra\ConfigLevel.cs" />
+    <Compile Include="Host\AC\Infra\DiscriminateResult.cs" />
+    <Compile Include="Host\AC\Infra\ElementDataSchema.cs" />
+    <Compile Include="Host\AC\EntityLogon.cs" />
+    <Compile Include="AC\Infra\IMenu.cs" />
+    <Compile Include="Logging\AnyLog.cs" />
+    <Compile Include="Logging\IAnyLog.cs" />
+    <Compile Include="Logging\AnyCmdLogMessage.cs" />
+    <Compile Include="Logging\OperatedEvent.cs" />
+    <Compile Include="Host\AC\Infra\DirectionType.cs" />
+    <Compile Include="AC\Infra\IOperationHelp.cs" />
+    <Compile Include="AC\Infra\OperationHelpBase.cs" />
+    <Compile Include="Model\DisposableObject.cs" />
+    <Compile Include="Model\EntityObject.cs" />
+    <Compile Include="Model\IEntity.cs" />
+    <Compile Include="Extensions\DataRecordExtension.cs" />
+    <Compile Include="Extensions\StringBuilderExtension.cs" />
+    <Compile Include="Host\IParameter.cs" />
+    <Compile Include="Model\IUnitOfWork.cs" />
+    <Compile Include="AppHost.cs" />
+    <Compile Include="Host\Tracer.cs" />
+    <Compile Include="Host\UserSessionExtension.cs" />
+    <Compile Include="Exceptions\ServiceNotFoundException.cs" />
+    <Compile Include="Host\SleepingEventArgs.cs" />
+    <Compile Include="Query\SqlFilterStringBuilder.cs" />
+    <Compile Include="Query\ISqlFilterStringBuilder.cs" />
+    <Compile Include="Query\PagingInput.cs" />
+    <Compile Include="Host\AC\Infra\IAppSystemSet.cs" />
+    <Compile Include="Host\AC\Infra\IButtonSet.cs" />
+    <Compile Include="Host\AC\Identity\ISysUserSet.cs" />
+    <Compile Include="Host\AC\Infra\IDicSet.cs" />
+    <Compile Include="Host\AC\Infra\IEntityTypeSet.cs" />
+    <Compile Include="Host\AC\Infra\IFunctionSet.cs" />
+    <Compile Include="Host\AC\Infra\IOrganizationSet.cs" />
+    <Compile Include="Host\AC\Infra\IPageSet.cs" />
+    <Compile Include="Host\AC\Infra\IResourceSet.cs" />
+    <Compile Include="AC\Identity\AccountBase.cs" />
+    <Compile Include="AC\Infra\AppSystemBase.cs" />
+    <Compile Include="AC\Infra\ButtonBase.cs" />
+    <Compile Include="AC\Infra\DicBase.cs" />
+    <Compile Include="AC\Infra\DicItemBase.cs" />
+    <Compile Include="Logging\ExceptionLogBase.cs" />
+    <Compile Include="AC\Infra\PropertyBase.cs" />
+    <Compile Include="AC\GroupBase.cs" />
+    <Compile Include="AC\Infra\MenuBase.cs" />
+    <Compile Include="AC\Infra\EntityTypeBase.cs" />
+    <Compile Include="AC\Infra\FunctionBase.cs" />
+    <Compile Include="AC\Infra\OrganizationBase.cs" />
+    <Compile Include="AC\Infra\PageBase.cs" />
+    <Compile Include="AC\Infra\PageButtonBase.cs" />
+    <Compile Include="Host\Parameter.cs" />
+    <Compile Include="Host\ParameterBase.cs" />
+    <Compile Include="AC\Infra\ResourceTypeBase.cs" />
+    <Compile Include="AC\RoleBase.cs" />
+    <Compile Include="Logging\VisitingLogBase.cs" />
+    <Compile Include="AC\Infra\IDic.cs" />
+    <Compile Include="Logging\VisitState.cs" />
+    <Compile Include="Rdb\Events\DbConnStringUpdatedEvent.cs" />
+    <Compile Include="Rdb\IRDatabase.cs" />
+    <Compile Include="Rdb\SQLServerMetaDataService.cs" />
+    <Compile Include="Rdb\RDbMetaDataType.cs" />
+    <Compile Include="Rdb\IRdbMetaDataService.cs" />
+    <Compile Include="Rdb\RdbDescriptor.cs" />
+    <Compile Include="Rdb\DbTableColumn.cs" />
+    <Compile Include="Logging\ILoggingService.cs" />
+    <Compile Include="Rdb\RDatabase.cs" />
+    <Compile Include="Rdb\DbView.cs" />
+    <Compile Include="AC\Infra\IAppSystem.cs" />
+    <Compile Include="Rdb\DbTable.cs" />
+    <Compile Include="Rdb\DbViewColumn.cs" />
+    <Compile Include="AC\Infra\IFunction.cs" />
+    <Compile Include="Rdb\DbTableSpace.cs" />
+    <Compile Include="Host\StoppingEventArgs.cs" />
+    <Compile Include="Transactions\DistributedTransactionCoordinator.cs" />
+    <Compile Include="Transactions\ITransactionCoordinator.cs" />
+    <Compile Include="Transactions\SuppressedTransactionCoordinator.cs" />
+    <Compile Include="Transactions\TransactionCoordinator.cs" />
+    <Compile Include="Transactions\TransactionCoordinatorFactory.cs" />
+    <Compile Include="Util\IPHelper.cs" />
+    <Compile Include="Util\ReflectionHelper.cs" />
+    <Compile Include="Util\ByAttribute.cs" />
+    <Compile Include="Host\AppConfig.cs" />
+    <Compile Include="Extensions\DateTimeExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="AC\Identity\IAccount.cs" />
+    <Compile Include="AC\IGroup.cs" />
+    <Compile Include="AC\Infra\IOrganization.cs" />
+    <Compile Include="AC\IRole.cs" />
+    <Compile Include="Logging\IOperationLogStorage.cs" />
+    <Compile Include="AC\Infra\IResourceType.cs" />
+    <Compile Include="Host\IUserSessionStorage.cs" />
+    <Compile Include="AC\Infra\IButton.cs" />
+    <Compile Include="AC\Infra\IDicItem.cs" />
+    <Compile Include="AC\Infra\IPage.cs" />
+    <Compile Include="AC\Infra\IProperty.cs" />
+    <Compile Include="AC\Infra\IEntityType.cs" />
+    <Compile Include="AC\Infra\IPageButton.cs" />
+    <Compile Include="Util\SystemTime.cs" />
+    <Compile Include="Util\TokenObject.cs" />
+    <Compile Include="Host\AppSettingsHelper.cs" />
+    <Compile Include="Query\FilterData.cs" />
+    <Compile Include="Exceptions\CoreException.cs" />
+    <Compile Include="Util\EncryptionHelper.cs" />
+    <Compile Include="Model\EntityBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Exceptions\ValidationException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Dapper\Dapper.cd" />
+    <EntityDeploy Include="Properties\EDIEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EDIEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="Properties\ACEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ACEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="EDI\packages.config" />
+    <None Include="Extensions\Extensions.cd" />
+    <None Include="Host\EDI\Hecp\Hecp.cd" />
+    <None Include="Logging\Logging.cd" />
+    <None Include="packages.config" />
+    <EntityDeploy Include="Properties\InfraEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>InfraEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="Properties\IdentityEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>IdentityEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Specifications\Specifications.cd" />
+    <None Include="Rdb\Rdb.cd" />
+    <None Include="Repositories\Repositories.cd" />
+    <None Include="Storage\StorageMappingSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Transactions\Transactions.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Host\AC\Identity\OAuth\" />
+    <Folder Include="Host\AC\Identity\SSO\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnyCmd.DataContracts\Anycmd.DataContracts.csproj">
+      <Project>{7ebbd487-f38f-475c-bc2c-3ebfacbd8f7d}</Project>
+      <Name>Anycmd.DataContracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

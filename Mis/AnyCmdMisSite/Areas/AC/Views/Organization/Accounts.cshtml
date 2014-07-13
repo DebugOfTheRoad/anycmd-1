@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var entityTypeCode = ViewContext.RouteData.Values["Controller"].ToString();
+    string codespace = ViewContext.RouteData.DataTokens["area"].ToString();
+    var accountTabPage = Html.GetRuntimePage("ContractorAccounts", "Account");
+    var prifix = "AC_Organization_Accounts_";
+}
+<div class="mini-toolbar" style="border: 0; padding: 2px;">
+    <div style="float: left">
+        @{Html.RenderPartial("Partials/PageButtons");}
+        <input id="@(prifix)chkbIncludedescendants" class="mini-checkbox" text="包括下级" truevalue="1"
+               falsevalue="0" />
+    </div>
+    <div style="float: right">
+        <input id="@(prifix)key" class="mini-textbox" emptytext="请输入关键字" style="width: 150px;" />
+        <a id="@(prifix)btnSearch" class="mini-button">查询</a>
+    </div>
+    <div style="clear: both;">
+    </div>
+</div>
+<!--撑满页面-->
+<div class="mini-fit">
+    <div id="@(prifix)datagrid1" class="mini-datagrid" style="width:100%;height:100%;" allowalternating="true"
+         url="@Url.Action("GetPlistAccountOrganizationPrivileges", "Account")" idfield="Id" multiselect="true"
+         sizelist="[5,10,20,50]" pagesize="10">
+        <div property="columns">
+            <div type="indexcolumn"></div>
+            <div type="checkcolumn"></div>
+            <div name="action" width="50" headeralign="center" align="center" cellstyle="padding:0;">
+            </div>
+            <div field="OrganizationName" width="120" headeralign="center" allowsort="true">
+                范围
+            </div>
+            <div field="LoginName" width="120" headeralign="center" allowsort="true">
+                账户
+            </div>
+            <div field="IsEnabled" width="80" headeralign="center" allowsort="true">
+                账户有效状态
+            </div>
+            <div header="用户信息" headeralign="center">
+                <div property="columns">
+                    <div field="UserOrganizationName" width="120" headeralign="center" allowsort="true">
+                        来自
+                    </div>
+                    <div field="ContractorName" width="120" headeralign="center" allowsort="true">
+                        姓名
+                    </div>
+                    <div field="IsContractorEnabled" width="80" headeralign="center" allowsort="true">
+                        有效状态
+                    </div>
+                    <div type="expandcolumn" width="80">全部账户</div>
+                </div>
+            </div>
+            <div field="CreateBy" width="80" headeralign="center" allowsort="true">
+                添加人
+            </div>
+            <div field="CreateOn" width="140" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowsort="true">
+                @Html.IconLabel("CreateOn")
+            </div>
+        </div>
+    </div>
+</div>
+<div id="@(prifix)showRowDetail" style="display:none;">
+    <div id="@(prifix)userDetail" class="mini-tabs" style="width: 100%;" activeindex="0">
+        <div name="accountTab" title="本人的全部账户" iconstyle="background:url(/content/icons/16x16/@accountTabPage.Icon)">
+            <div class="mini-fit">
+                <div id="@(prifix)dgUserAccount" class="mini-datagrid" style="height: 150px; width: 60%;"
+                     url="@Url.Action("GetAccountsByContractorID", "Account", new { area = "AC" })"
+                     idfield="Id" multiselect="true">
+                    <div property="columns">
+                        <div type="indexcolumn"></div>
+                        <div field="AccountType" width="120" headeralign="center" allowsort="true">
+                            @Html.IconLabel("AccountType", "Account")
+                        </div>
+                        <div field="LoginName" width="100" headeralign="center">
+                            @Html.IconLabel("LoginName", "Account")
+                        </div>
+                        <div field="AuditState" width="70" headeralign="center" allowsort="true">
+                            @Html.IconLabel("AuditState", "Account")
+                        </div>
+                        <div field="AuditState" width="70" headeralign="center" allowsort="true">
+                            @Html.IconLabel("AuditState", "Account")
+                        </div>
+                        <div field="IsEnabled" width="80" headeralign="center">
+                            @Html.IconLabel("IsEnabled", "Account")
+                        </div>
+                        <div field="FirstLoginOn" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("FirstLoginOn", "Account")
+                        </div>
+                        <div field="PreviousLoginOn" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("PreviousLoginOn", "Account")
+                        </div>
+                        <div field="LoginCount" width="70" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("LoginCount", "Account")
+                        </div>
+                        <div field="AllowStartTime" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("AllowStartTime", "Account")
+                        </div>
+                        <div field="AllowEndTime" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("AllowEndTime", "Account")
+                        </div>
+                        <div field="LockStartTime" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("LockStartTime", "Account")
+                        </div>
+                        <div field="LockEndTime" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowresize="false" allowsort="true">
+                            @Html.IconLabel("LockEndTime", "Account")
+                        </div>
+                        <div field="CreateOn" width="140" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss">
+                            @Html.IconLabel("CreateOn", "Account", "AC")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: right; padding-top: 5px; padding-right: 20px;" colspan="6">
+    </div>
+</div>
+<div id="Select_win1" class="mini-window" iconcls="icon-user" title="添加账户" style="width: 700px; height: 400px;"
+     showmaxbutton="true" showfooter="true" showtoolbar="true"
+     showmodal="true" allowresize="true" allowdrag="true">
+    @{ Html.RenderPartial("Partials/SelectBar"); }
+    @{ Html.RenderPartial("Partials/SelectAccounts"); }
+</div>
+@section Foot{
+    <script type="text/javascript" src="@Url.Content("~/Scripts/Areas/AC/Organization/Accounts.cshtml.js")"></script>
+}

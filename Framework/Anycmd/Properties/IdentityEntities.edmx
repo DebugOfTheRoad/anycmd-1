@@ -1,0 +1,402 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="IdentityModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ContractorID" Type="uniqueidentifier" />
+          <Property Name="NumberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoginName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="200" />
+          <Property Name="SecurityLevel" Type="int" />
+          <Property Name="PrivilegeState" Type="int" />
+          <Property Name="LastPasswordChangeOn" Type="datetime" />
+          <Property Name="Lang" Type="varchar" MaxLength="50" />
+          <Property Name="Theme" Type="varchar" MaxLength="50" />
+          <Property Name="AllowStartTime" Type="datetime" />
+          <Property Name="AllowEndTime" Type="datetime" />
+          <Property Name="LockStartTime" Type="datetime" />
+          <Property Name="LockEndTime" Type="datetime" />
+          <Property Name="FirstLoginOn" Type="datetime" />
+          <Property Name="PreviousLoginOn" Type="datetime" />
+          <Property Name="LoginCount" Type="int" />
+          <Property Name="OpenID" Type="varchar" MaxLength="50" />
+          <Property Name="IPAddress" Type="varchar" MaxLength="50" />
+          <Property Name="MacAddress" Type="varchar" MaxLength="50" />
+          <Property Name="Question" Type="varchar" MaxLength="50" />
+          <Property Name="AnswerQuestion" Type="varchar" MaxLength="50" />
+          <Property Name="Wallpaper" Type="varchar" MaxLength="255" />
+          <Property Name="BackColor" Type="varchar" MaxLength="50" />
+          <Property Name="IsEnabled" Type="int" Nullable="false" />
+          <Property Name="AuditState" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="OrganizationCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" />
+          <Property Name="QuickQuery" Type="varchar" MaxLength="50" />
+          <Property Name="QuickQuery1" Type="varchar" MaxLength="50" />
+          <Property Name="QuickQuery2" Type="varchar" MaxLength="50" />
+          <Property Name="CommunicationPassword" Type="nvarchar" MaxLength="100" />
+          <Property Name="SignedPassword" Type="nvarchar" MaxLength="100" />
+          <Property Name="PublicKey" Type="nvarchar" MaxLength="200" />
+          <Property Name="Email" Type="varchar" MaxLength="200" />
+          <Property Name="Mobile" Type="varchar" MaxLength="50" />
+          <Property Name="Telephone" Type="varchar" MaxLength="50" />
+          <Property Name="QQ" Type="varchar" MaxLength="50" />
+          <Property Name="DeletionStateCode" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="CreateUserID" Type="uniqueidentifier" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedUserID" Type="uniqueidentifier" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="RowVersionID" Type="timestamp" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="DeveloperID">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="CreateUserID" Type="uniqueidentifier" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedUserID" Type="uniqueidentifier" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="255" />
+          <Property Name="RowVersionID" Type="timestamp" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="VisitingLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AccountID" Type="uniqueidentifier" />
+          <Property Name="LoginName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="VisitOn" Type="datetime" Nullable="false" />
+          <Property Name="VisitedOn" Type="datetime" />
+          <Property Name="IPAddress" Type="nvarchar" MaxLength="255" />
+          <Property Name="StateCode" Type="int" Nullable="false" />
+          <Property Name="ReasonPhrase" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="RowVersionID" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Account_Account">
+          <End Role="Account" Type="Self.Account" Multiplicity="0..1" />
+          <End Role="Account1" Type="Self.Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Account1">
+              <PropertyRef Name="ContractorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeveloperID_Account">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="DeveloperID" Type="Self.DeveloperID" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeveloperID">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VisitingLog_Account">
+          <End Role="Account" Type="Self.Account" Multiplicity="0..1" />
+          <End Role="VisitingLog" Type="Self.VisitingLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="VisitingLog">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="IdentityModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeveloperID" EntityType="Self.DeveloperID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VisitingLog" EntityType="Self.VisitingLog" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Account_Account" Association="Self.FK_Account_Account">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Account1" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeveloperID_Account" Association="Self.FK_DeveloperID_Account">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="DeveloperID" EntitySet="DeveloperID" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VisitingLog_Account" Association="Self.FK_VisitingLog_Account">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="VisitingLog" EntitySet="VisitingLog" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AnycmdModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="IdentityEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="AnycmdModel.Account" />
+          <EntitySet Name="VisitingLogs" EntityType="AnycmdModel.VisitingLog" />
+          <AssociationSet Name="FK_VisitingLog_Account" Association="AnycmdModel.FK_VisitingLog_Account">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="VisitingLog" EntitySet="VisitingLogs" />
+          </AssociationSet>
+          <EntitySet Name="DeveloperIDs" EntityType="AnycmdModel.DeveloperID" />
+          <AssociationSet Name="FK_DeveloperID_Account" Association="AnycmdModel.FK_DeveloperID_Account">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="DeveloperID" EntitySet="DeveloperIDs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Account_Account" Association="AnycmdModel.FK_Account_Account">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Account1" EntitySet="Accounts" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="NumberID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SecurityLevel" Type="Int32" />
+          <Property Name="PrivilegeState" Type="Int32" />
+          <Property Name="LastPasswordChangeOn" Type="DateTime" Precision="3" />
+          <Property Name="Lang" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Theme" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AllowStartTime" Type="DateTime" Precision="3" />
+          <Property Name="AllowEndTime" Type="DateTime" Precision="3" />
+          <Property Name="LockStartTime" Type="DateTime" Precision="3" />
+          <Property Name="LockEndTime" Type="DateTime" Precision="3" />
+          <Property Name="FirstLoginOn" Type="DateTime" Precision="3" />
+          <Property Name="PreviousLoginOn" Type="DateTime" Precision="3" />
+          <Property Name="LoginCount" Type="Int32" />
+          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IPAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Question" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AnswerQuestion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Wallpaper" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BackColor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsEnabled" Type="Int32" Nullable="false" />
+          <Property Name="AuditState" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DeletionStateCode" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateUserID" Type="Guid" />
+          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Guid" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RowVersionID" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ContractorID" Type="Guid" Nullable="true" />
+          <Property Name="OrganizationCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="QuickQuery" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="QuickQuery1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="QuickQuery2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CommunicationPassword" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SignedPassword" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PublicKey" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Telephone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="QQ" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="VisitingLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="AccountID" Type="Guid" />
+          <Property Name="LoginName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VisitOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="VisitedOn" Type="DateTime" Precision="3" />
+          <Property Name="IPAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="Int32" Nullable="false" />
+          <Property Name="ReasonPhrase" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RowVersionID" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <Association Name="FK_VisitingLog_Account">
+          <End Type="AnycmdModel.Account" Role="Account" Multiplicity="0..1" />
+          <End Type="AnycmdModel.VisitingLog" Role="VisitingLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="VisitingLog">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DeveloperID">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateUserID" Type="Guid" />
+          <Property Name="CreateBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Guid" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RowVersionID" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <Association Name="FK_DeveloperID_Account">
+          <End Type="AnycmdModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="AnycmdModel.DeveloperID" Role="DeveloperID" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeveloperID">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Account_Account">
+          <End Type="AnycmdModel.Account" Role="Account" Multiplicity="0..1" />
+          <End Type="AnycmdModel.Account" Role="Account1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Account1">
+              <PropertyRef Name="ContractorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IdentityModelStoreContainer" CdmEntityContainer="IdentityEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="AnycmdModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="QQ" ColumnName="QQ" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PublicKey" ColumnName="PublicKey" />
+                <ScalarProperty Name="SignedPassword" ColumnName="SignedPassword" />
+                <ScalarProperty Name="CommunicationPassword" ColumnName="CommunicationPassword" />
+                <ScalarProperty Name="QuickQuery2" ColumnName="QuickQuery2" />
+                <ScalarProperty Name="QuickQuery1" ColumnName="QuickQuery1" />
+                <ScalarProperty Name="QuickQuery" ColumnName="QuickQuery" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OrganizationCode" ColumnName="OrganizationCode" />
+                <ScalarProperty Name="ContractorID" ColumnName="ContractorID" />
+                <ScalarProperty Name="RowVersionID" ColumnName="RowVersionID" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DeletionStateCode" ColumnName="DeletionStateCode" />
+                <ScalarProperty Name="AuditState" ColumnName="AuditState" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="BackColor" ColumnName="BackColor" />
+                <ScalarProperty Name="Wallpaper" ColumnName="Wallpaper" />
+                <ScalarProperty Name="AnswerQuestion" ColumnName="AnswerQuestion" />
+                <ScalarProperty Name="Question" ColumnName="Question" />
+                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
+                <ScalarProperty Name="LoginCount" ColumnName="LoginCount" />
+                <ScalarProperty Name="PreviousLoginOn" ColumnName="PreviousLoginOn" />
+                <ScalarProperty Name="FirstLoginOn" ColumnName="FirstLoginOn" />
+                <ScalarProperty Name="LockEndTime" ColumnName="LockEndTime" />
+                <ScalarProperty Name="LockStartTime" ColumnName="LockStartTime" />
+                <ScalarProperty Name="AllowEndTime" ColumnName="AllowEndTime" />
+                <ScalarProperty Name="AllowStartTime" ColumnName="AllowStartTime" />
+                <ScalarProperty Name="Theme" ColumnName="Theme" />
+                <ScalarProperty Name="Lang" ColumnName="Lang" />
+                <ScalarProperty Name="LastPasswordChangeOn" ColumnName="LastPasswordChangeOn" />
+                <ScalarProperty Name="PrivilegeState" ColumnName="PrivilegeState" />
+                <ScalarProperty Name="SecurityLevel" ColumnName="SecurityLevel" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="NumberID" ColumnName="NumberID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VisitingLogs">
+            <EntityTypeMapping TypeName="AnycmdModel.VisitingLog">
+              <MappingFragment StoreEntitySet="VisitingLog">
+                <ScalarProperty Name="RowVersionID" ColumnName="RowVersionID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ReasonPhrase" ColumnName="ReasonPhrase" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="VisitedOn" ColumnName="VisitedOn" />
+                <ScalarProperty Name="VisitOn" ColumnName="VisitOn" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeveloperIDs">
+            <EntityTypeMapping TypeName="AnycmdModel.DeveloperID">
+              <MappingFragment StoreEntitySet="DeveloperID">
+                <ScalarProperty Name="RowVersionID" ColumnName="RowVersionID" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram DiagramId="dce53fc955e54231a2f6984595181a49" Name="Diagram1" ZoomLevel="87">
+        <EntityTypeShape EntityType="AnycmdModel.Account" Width="2.125" PointX="0.5" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.VisitingLog" Width="1.5" PointX="3.5" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.DeveloperID" Width="1.5" PointX="3.375" PointY="4.75" IsExpanded="true" />
+        <AssociationConnector Association="AnycmdModel.FK_VisitingLog_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="AnycmdModel.FK_DeveloperID_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="AnycmdModel.FK_Account_Account" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

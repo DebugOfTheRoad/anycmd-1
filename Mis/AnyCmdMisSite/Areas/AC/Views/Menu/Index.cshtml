@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+    var infoTabPage = Html.GetRuntimePage("Details");
+    var childrenTabPage = Html.GetRuntimePage("Children");
+    var roleTabPage = Html.GetRuntimePage("Roles");
+}
+@section Head{
+}
+<div id="AC_Menu_Index_helperSplitter" class="mini-splitter helperSplitter" style="width: 100%; height: 100%;">
+    <div showcollapsebutton="true">
+        <div class="mini-splitter" style="width: 100%; height: 100%;">
+            <div size="270" class="mini-toolbar" showcollapsebutton="true">
+                <div class="mini-toolbar" style="border-left: 0; border-right: 0; border-top: 0px;padding: 2px;">
+                    @{Html.RenderPartial("Partials/PageButtons");}
+                </div>
+                <div class="mini-fit">
+                    <ul id="AC_Menu_Index_tree1" class="mini-tree" style="height: 100%;"
+                        url="@Url.Action("GetNodesByParentID")"
+                        imgpath="/content/icons/16x16/"
+                        showtreeicon="true" textfield="Name" expandonload="true"
+                        idfield="Id" parentfield="ParentID" resultastree="false"></ul>
+                </div>
+            </div>
+            <div showcollapsebutton="true">
+                <div id="AC_Menu_Index_tabs1" class="mini-tabs hidden" style="width: 100%; height: 100%;display:none;"
+                     activeindex="0" bodystyle="padding:0;border:0;">
+                    <div name="infoTab" bodycls="inner" title="@infoTabPage.Title" iconstyle="background:url(/content/icons/16x16/@infoTabPage.Icon)">
+                    </div>
+                    <div name="childrenTab" title="@childrenTabPage.Title" iconstyle="background:url(/content/icons/16x16/@childrenTabPage.Icon)">
+                    </div>
+                    <div name="roleTab" title="@roleTabPage.Title" iconstyle="background:url(/content/icons/16x16/@roleTabPage.Icon)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div size="250" showcollapsebutton="true" visible="false" expanded="false">
+        @{Html.RenderPartial("Partials/HelpPane");}
+    </div>
+</div>
+@section Foot{
+}

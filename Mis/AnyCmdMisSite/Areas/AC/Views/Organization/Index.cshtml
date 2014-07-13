@@ -1,0 +1,46 @@
+﻿@{
+	Layout = "~/Views/Shared/_Index.cshtml";
+	var infoTabPage = Html.GetRuntimePage("Details");
+	var managerTabPage = Html.GetRuntimePage("Accounts");
+	var childrenTabPage = Html.GetRuntimePage("Children");
+	var prifix = "AC_Organization_Index_";
+}
+<div id="@(prifix)helperSplitter" class="mini-splitter helperSplitter" style="width: 100%; height: 100%;">
+	<div showcollapsebutton="true">
+		<div class="mini-splitter" style="width: 100%; height: 100%;">
+			<div size="380" class="mini-toolbar" showcollapsebutton="true">
+				<div class="mini-toolbar" style="padding: 2px; border-top: 0; border-left: 0; border-right: 0;">
+					@{Html.RenderPartial("Partials/PageButtons");}
+					@if (this.GetUser().IsDeveloper()) {
+						<a style="text-decoration:none;" target="_blank" 
+						href="/api/Organization/GetAll">文档</a>
+					}
+					<input id="@(prifix)keyOrganization" emptytext="在展开过的组织结构中搜索" class="mini-textbox" style="width: 150px;" />
+					<a id="@(prifix)btnSearchOrganization" tooltip="离线搜索不搜索未展开的组织结构节点" class="mini-button" iconcls="icon-search" style="width: 60px;">搜索</a>
+				</div>
+				<span id="@(prifix)msg" style="color: red;display:none;">没有匹配项</span>
+				<div class="mini-fit">
+					<ul id="@(prifix)treeOrganization" class="mini-tree" style="height: 100%;"
+						url="@Url.Action("GetNodesByParentID", "Organization", new { area = "AC" })"
+						showtreeicon="true" textfield="Name" expandOnLoad="true"
+						idfield="Id" parentfield="ParentID" resultastree="false">
+					</ul>
+				</div>
+			</div>
+			<div showcollapsebutton="true">
+				<div id="@(prifix)tabs1" class="mini-tabs hidden" style="width: 100%; height: 100%;display:none;"
+					activeindex="0" bodystyle="padding:0;border:0;">
+					<div name="infoTab" bodyCls="inner" title="@infoTabPage.Title" iconStyle="background:url(/content/icons/16x16/@infoTabPage.Icon)">
+					</div>
+					<div name="managerTab" title="@(managerTabPage.Title)" iconStyle="background:url(/content/icons/16x16/@managerTabPage.Icon)">
+					</div>
+					<div name="childrenTab" title="@(childrenTabPage.Title)" iconStyle="background:url(/content/icons/16x16/@childrenTabPage.Icon)">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div size="250" showcollapsebutton="true" visible="false" expanded="false">
+		@{Html.RenderPartial("Partials/HelpPane");}
+	</div>
+</div>

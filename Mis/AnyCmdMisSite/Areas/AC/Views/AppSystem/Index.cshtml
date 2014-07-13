@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+    var infoTabPage = Html.GetRuntimePage("Details");
+    var pageTabPage = Html.GetRuntimePage("Index", "Page");
+    var resourceTabPage = Html.GetRuntimePage("Index", "ResourceType");
+    var functionTabPage = Html.GetRuntimePage("Index", "Function");
+    var prifix = "AC_AppSystem_Index_";
+}
+<div id="@(prifix)helperSplitter" class="mini-splitter helperSplitter" style="width: 100%; height: 100%;">
+    <div showcollapsebutton="true">
+        <div id="@(prifix)splitter" class="mini-splitter" style="width: 100%; height: 100%;">
+            <div size="300" showcollapsebutton="true">
+                <div class="mini-toolbar" style="border-left: 0; border-right: 0; border-top: 0px; padding: 2px;">
+                    <div style="float: left">
+                        @{Html.RenderPartial("Partials/PageButtons");}
+                    </div>
+                    <div style="float: right">
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                </div>
+                <!--撑满页面-->
+                <div class="mini-fit">
+                    <div id="@(prifix)datagrid1" class="mini-datagrid" style="width:100%;height:100%;" allowalternating="true"
+                         url="@Url.Action("GetPlistAppSystems")" idfield="Id" multiselect="true"
+                         sizelist="[5,10,20,50]" pagesize="10" showmodified="false">
+                        <div property="columns">
+                            <div type="indexcolumn"></div>
+                            <div type="checkcolumn"></div>
+                            <div name="action" width="50" headeralign="center" align="center"
+                                 cellstyle="padding:0;">
+                            </div>
+                            <div field="Code" width="100" headeralign="center" allowsort="true">
+                                @Html.IconLabel("Code")
+                            </div>
+                            <div field="Name" width="120" headeralign="center" allowsort="true">
+                                @Html.IconLabel("Name")
+                            </div>
+                            <div field="IsEnabled" width="50" headeralign="center" allowsort="true">
+                                @Html.IconLabel("IsEnabled")
+                            </div>
+                            <div field="SortCode" width="50" headeralign="center" align="center" allowsort="true">
+                                @Html.IconLabel("SortCode")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div showcollapsebutton="true">
+                <div id="@(prifix)tabs1" class="mini-tabs" style="width: 100%; height: 100%;display:none;"
+                     activeindex="0" bodystyle="padding:0;border:0;">
+                    <div name="infoTab" bodycls="inner" title="@infoTabPage.Title" iconstyle="background:url(/content/icons/16x16/@infoTabPage.Icon)">
+                    </div>
+                    <div name="resourceTab" bodycls="inner" title="@resourceTabPage.Title" iconstyle="background:url(/content/icons/16x16/@resourceTabPage.Icon)">
+                    </div>
+                    <div name="functionTab" bodycls="inner" title="@functionTabPage.Title" iconstyle="background:url(/content/icons/16x16/@functionTabPage.Icon)">
+                    </div>
+                    <div name="pageTab" bodycls="inner" title="@pageTabPage.Title" iconstyle="background:url(/content/icons/16x16/@pageTabPage.Icon)">
+                    </div>
+                    @{
+                        var operationLogPage = this.GetOperationLogEntityType();
+                        if (operationLogPage.Permit())
+                        {
+                            <div name="operationLogTab" bodycls="inner" title="@operationLogPage.Title" iconstyle="background:url(/content/icons/16x16/@operationLogPage.Icon)">
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div size="250" showcollapsebutton="true" visible="false" expanded="false">
+        @{Html.RenderPartial("Partials/HelpPane");}
+    </div>
+</div>
+@section Foot{
+}

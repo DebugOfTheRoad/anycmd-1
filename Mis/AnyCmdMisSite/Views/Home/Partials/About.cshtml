@@ -1,0 +1,98 @@
+﻿@using Anycmd.Util
+@{
+    long totalMemory = GC.GetTotalMemory(true);
+    var mb = totalMemory / (1024 * 1024);
+}
+<table border="0">
+    <tr>
+        <td><b>介绍：</b></td>
+        <td>Anycmd.AC是完全开源免费的通用权限管理框架、系统、中间件。</td>
+    </tr>
+    <tr>
+        <td valign="top"><b>路线图：</b></td>
+        <td>
+            1，书写单元测试；<br />
+            2，书写教程；<br />
+            3，替换掉UI层，去除试用版的miniui框架，考虑使用extjs；<br />
+            4，内置数据交换系统，用以各业务系统与中心系统间的权限数据交换；<br />
+            5，优化性能；发布1.0版本；<br />
+            6，放入iopenworks开放工厂；<br />
+            7，支持SSO；<br />
+            8，基于wf5支持工作流http://wf5.codeplex.com/；<br />
+            9，组建开源社区；<br />
+            10，支持XACML；
+        </td>
+    </tr>
+    <tr>
+        <td><b>使用协议：</b></td>
+        <td><a href="http://baike.baidu.com/view/130692.htm?from_id=8274607&type=syn&fromtitle=GPL%E5%8D%8F%E8%AE%AE&fr=aladdin" target="_blank">GPL协议</a></td>
+    </tr>
+</table>
+<div>
+    <p style="padding: 0px; margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: 微软雅黑, Verdana, sans-serif, 宋体; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); ">
+        声明：本程序使用GPL协议，使用者和开发者必须遵守：
+    </p>
+    <p style="padding: 0px; margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: 微软雅黑, Verdana, sans-serif, 宋体; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); ">
+        <span style="padding: 0px; margin: 0px; color: rgb(255, 0, 0); ">1、确保软件自始至终都以开放源代码形式发布，保护开发成果不被窃取用作商业发售。任何一套软 件，只要其中使用了受 GPL 协议保护的第三方软件的源程序，并向非开发人员发布时，软件本身也就自动成为受 GPL 保护并且约束的实体。也就是说，此时它必须开放源代码。</span>
+    </p>
+    <p style="padding: 0px; margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: 微软雅黑, Verdana, sans-serif, 宋体; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); ">
+        <span style="padding: 0px; margin: 0px; color: rgb(255, 0, 0); ">2、你可以去掉所有原作的版权 信息，只要你保持开源，并且随源代码、二进制版附上 GPL 的许可证就行，让后人可以很明确地得知此软件的授权信息。</span>
+    </p>
+    <p style="padding: 0px; margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: 微软雅黑, Verdana, sans-serif, 宋体; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); ">
+        <span style="padding: 0px; margin: 0px; color: rgb(255, 0, 0); ">3、无论软件以何种形式发布，都必须同时附上源代码。例如在 Web 上提供下载，就必须在二进制版本（如果有的话）下载的同一个页面，清楚地提供源代码下载的链接。如果以光盘形式发布，就必须同时附上源文件的光盘。</span>
+    </p>
+    <p style="padding: 0px; margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: 微软雅黑, Verdana, sans-serif, 宋体; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); ">
+        <span style="padding: 0px; margin: 0px; color: rgb(255, 0, 0); ">4、开发或维护遵循 GPL 协议开发的软件的公司或个人，可以对使用者收取一定的服务费用。但还是一句老话——必须无偿提供软件的完整源代码，不得将源代码与服务做捆绑或任何变相捆绑销售。</span>
+    </p>
+    <p style="padding: 0px; margin: 0px 0px 10px; font-family: 微软雅黑, Verdana, sans-serif, 宋体; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); " class="auto-style2">
+        <span style="padding: 0px; margin: 0px; color: rgb(255, 0, 0); ">5、请在软件下方保留原软件的授权信息。</span>
+    </p>
+</div>
+<table style="border:1px double #d2e2f2;width:400px;">
+    <tr>
+        <td style="width:100px;" class="auto-style1">联系人:</td>
+        <td class="auto-style1">薛兴帅</td>
+    </tr>
+    <tr>
+        <td class="auto-style1">QQ：</td>
+        <td class="auto-style1">23934360</td>
+    </tr>
+    <tr>
+        <td class="auto-style1">
+            Email：
+        </td>
+        <td class="auto-style1"><a href="mailto:anycmd@qq.com">anycmd@qq.com</a></td>
+    </tr>
+</table>
+<b>内存消耗：</b><span>@totalMemory = @mb M</span>
+<table>
+    <tr>
+        <td valign="top"><b>开发者:</b></td>
+        <td>
+            <table class="table" style="border-collapse:collapse;">
+                <thead>
+                    <tr style="text-align:center; font-weight:bold;"><td>登录名</td><td>姓名</td><td>QQ</td><td>Email</td></tr>
+                </thead>
+                <tbody>
+                    @foreach (var account in Html.GetHost().SysUsers.GetDevAccounts())
+                    {
+                        <tr><td>@account.LoginName</td><td>@account.Name</td><td>@account.QQ</td><td>@account.Email</td></tr>
+                    }
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
+<table class="table" style="border-collapse:collapse; float:left;">
+    <thead>
+        <tr style="text-align:center; font-weight:bold;"><td>Assembly</td><td>JITMode</td><td>Version</td><td>CLR Version</td></tr>
+    </thead>
+    <tbody>
+        @foreach (var item in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Anycmd", StringComparison.OrdinalIgnoreCase)).OrderBy(a => a.FullName))
+        {
+            var name = item.GetName();
+            <tr><td>@name.Name</td><td>@item.GetJITMode().ToName()</td><td>@name.Version</td><td>@item.ImageRuntimeVersion</td></tr>
+        }
+    </tbody>
+</table>
+<script src="@Url.Content("~/Scripts/Views/Home/About.cshtml.js")" type="text/javascript"></script>

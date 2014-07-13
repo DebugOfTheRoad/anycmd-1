@@ -1,0 +1,52 @@
+﻿@{
+	var entityTypeCode = "Account";
+	string codespace = "AC";
+	var entityType = Html.GetEntityType(codespace, entityTypeCode);
+	string editWidth = entityType.EditWidth.ToString() + "px";
+	string editHeight = entityType.EditHeight.ToString() + "px";
+	var prifix = "AC_Account_ContractorAccounts_";
+}
+<div class="mini-toolbar" style="border-left: 0; border-right: 0; border-top: 0px; padding: 2px;">
+	<table style="width: 100%;">
+		<tr>
+			<td style="width: 100%;">
+				@{Html.RenderPartial("Partials/PageButtons");}
+				@{
+					<a id="@(prifix)btnBreak" class="mini-button" iconstyle="background:url(/content/icons/16x16/group_delete.png) no-repeat" @Html.IsEnabled("Account", "Break")>解约</a>
+				}
+			</td>
+		</tr>
+	</table>
+</div>
+<!--撑满页面-->
+<div class="mini-fit">
+	<div id="@(prifix)datagrid1" class="mini-datagrid" style="height: 100%; width: 100%;"
+		url="@Url.Action("GetAccountsByContractorID", "Account", new { area = "AC" })"
+		idfield="Id" multiselect="true">
+		<div property="columns">
+			<div type="indexcolumn"></div>
+			<div type="checkcolumn"></div>
+			<div name="action" width="50" headeralign="center" align="center" cellstyle="padding:0;">
+			</div>
+			<div field="LoginName" width="100" headeralign="center">
+				@Html.IconLabel("LoginName", "Account", "AC")
+			</div>
+			<div field="IsEnabled" width="80" headeralign="center">
+				@Html.IconLabel("IsEnabled", "Account", "AC")
+			</div>
+			<div field="CreateOn" width="100" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss">
+				@Html.IconLabel("CreateOn", "Account", "AC")
+			</div>
+		</div>
+	</div>
+</div>
+<div id="@(prifix)Edit_win1" class="mini-window" title="" style="width: @editWidth; height: @editHeight;display:none;"
+	showmaxbutton="true" showfooter="true" showtoolbar="true"
+	showmodal="true" allowresize="true" allowdrag="true">
+	@{ Html.RenderPartial("Partials/EditBar", "AC_Account_ContractorAccounts_Edit_"); }
+	@{ Html.RenderPartial("../Account/Partials/Edit", "AC_Account_ContractorAccounts_Edit_"); }
+</div>
+<script type="text/javascript" src="@Url.Content("~/Scripts/Areas/AC/Account/ContractorAccounts.cshtml.js")"></script>
+@if (Request.IsAjaxRequest()) {
+	<script src="@Url.Content("~/Scripts/tooltipBoot.js")"></script>
+}

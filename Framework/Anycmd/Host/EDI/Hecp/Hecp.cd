@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Anycmd.EDI.Hecp.CredentialObject">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAIAAAAAAAAAAAAAAAAACAACEQAAFAAAAAA=</HashCode>
+      <FileName>Hecp\CredentialObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.HecpHandler" BaseTypeListCollapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACIBAAAAAgAAAEAgBAAAQAAAAAAAAAQQAAAAAAAAA=</HashCode>
+      <FileName>Hecp\HecpHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.HecpContext">
+    <Position X="4.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAABAAhAAEAwAAAAAAIAAgBAEAEAAAAAAAIA=</HashCode>
+      <FileName>Hecp\HecpContext.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.HecpRequest">
+    <Position X="6.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>JoIAAASACgEAAAgBAAEAAAAIAAAIAEAEAQAAFCOKADQ=</HashCode>
+      <FileName>Hecp\HecpRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.HecpResponse">
+    <Position X="0.5" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IsAABICEAACAAgAAAAEBAEAIAQBICEAEAQAAACFIAAA=</HashCode>
+      <FileName>Hecp\HecpResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.BeatRequest">
+    <Position X="8.25" Y="7" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Hecp\BeatRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.BeatResponse" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAEAAAgAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Hecp\BeatResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.Hecp.Verb">
+    <Position X="9" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAQAIBEwAAgDAAAgAEAAMAEAAAAAAAAAiA=</HashCode>
+      <FileName>Hecp\Verb.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Anycmd.EDI.Hecp.ApiVersion">
+    <Position X="4.5" Y="7.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAACA=</HashCode>
+      <FileName>Hecp\ApiVersion.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Anycmd.EDI.Hecp.ClientType">
+    <Position X="3" Y="5.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAEgACA=</HashCode>
+      <FileName>Hecp\ClientType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Anycmd.EDI.Hecp.CredentialType">
+    <Position X="3" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABACE=</HashCode>
+      <FileName>Hecp\CredentialType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Anycmd.EDI.Hecp.UserType">
+    <Position X="3" Y="7" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Hecp\UserType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Anycmd.EDI.Hecp.SignatureMethod">
+    <Position X="4.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Hecp\SignatureMethod.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Anycmd.EDI.Hecp.MessageType">
+    <Position X="4.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAgAAAAAAAAAAAAAAACQ=</HashCode>
+      <FileName>Hecp\MessageType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

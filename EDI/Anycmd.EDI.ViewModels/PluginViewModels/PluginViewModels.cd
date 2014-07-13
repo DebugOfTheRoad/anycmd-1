@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Anycmd.EDI.ViewModels.PluginViewModels.GetPlistPlugins">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PluginViewModels\GetPlistPlugins.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.PluginViewModels.PluginInfo" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAsAAAAEABAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PluginViewModels\PluginInfo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.PluginViewModels.PluginTr" BaseTypeListCollapsed="true">
+    <Position X="2" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAsAAAAEABAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PluginViewModels\PluginTr.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Anycmd.EDI.ViewModels.PluginViewModels.IPluginInfo">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAsAAAAEABAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PluginViewModels\IPluginInfo.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Anycmd.EDI.ViewModels.PluginViewModels.IPluginQuery">
+    <Position X="3.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>PluginViewModels\IPluginQuery.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Anycmd.EDI.ViewModels.PluginViewModels.IPluginTr">
+    <Position X="2" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAsAAAAEABAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PluginViewModels\IPluginTr.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

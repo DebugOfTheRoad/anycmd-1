@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Anycmd.EDI.ViewModels.InfoDicViewModels.GetPlistInfoDicItems">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>InfoDicViewModels\GetPlistInfoDicItems.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.InfoDicViewModels.GetPlistInfoDics">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>InfoDicViewModels\GetPlistInfoDics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.InfoDicViewModels.InfoDicInfo" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACCABAAAAgAiAAgAEiAAQAAAAAAAACEAAAQAgAAAA=</HashCode>
+      <FileName>InfoDicViewModels\InfoDicInfo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.InfoDicViewModels.InfoDicItemInfo" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACCABAAAAgAiBAgAEiAAQAAAAAAACDEAAAQAgAAAA=</HashCode>
+      <FileName>InfoDicViewModels\InfoDicItemInfo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.InfoDicViewModels.InfoDicItemTr" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgBAAAEgAAQAAAAAAACBAAAAQAAAAAA=</HashCode>
+      <FileName>InfoDicViewModels\InfoDicItemTr.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Anycmd.EDI.ViewModels.InfoDicViewModels.InfoDicTr" BaseTypeListCollapsed="true">
+    <Position X="4" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAgAAAAEgAAQAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>InfoDicViewModels\InfoDicTr.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Anycmd.EDI.ViewModels.InfoDicViewModels.IInfoDicItemQuery">
+    <Position X="7.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>InfoDicViewModels\IInfoDicItemQuery.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Anycmd.EDI.ViewModels.InfoDicViewModels.IInfoDicQuery">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>InfoDicViewModels\IInfoDicQuery.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

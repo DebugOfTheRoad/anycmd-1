@@ -1,0 +1,40 @@
+﻿@{
+    var routeData = ViewContext.RouteData;
+    var area = routeData.DataTokens["Area"].ToString();
+    var controller = routeData.Values["Controller"].ToString();
+    var action = routeData.Values["Action"].ToString();
+    var prifix = string.Format("{0}_{1}_{2}_", area, controller, action);
+    var page = Html.GetRuntimePage(action, controller);
+    var pageButtons = AppHost.Instance.PageSet.GetPageButtons(page.Page);
+    if (pageButtons != null) {
+        foreach (var button in AppHost.Instance.ButtonSet.OrderBy(a => a.SortCode)) {
+            if (pageButtons.Any(a => a.ButtonID == button.Id)) {
+                var pageButton = pageButtons.First(a => a.ButtonID == button.Id);
+                string attrs = string.Empty;
+                string buttonName = button.Name;
+                if (button.Code == "btnVSplit") {
+                    attrs = " checkonclick='true' checked='true' groupname='split'";
+                    buttonName = string.Empty;
+                }
+                else if (button.Code == "btnHSplit") {
+                    attrs = " checkonclick='true' groupname='split'";
+                    buttonName = string.Empty;
+                }
+                string htmlEnabled = string.Empty;
+                bool isAllowed = true; ;
+                if (pageButton.FunctionID.HasValue) {
+                    var function = Html.GetFunction(pageButton.FunctionID.Value);
+                    isAllowed = this.GetUser().Permit(function);
+                }
+                if (button.IsEnabled == 0 || button.IsEnabled == 0 || !isAllowed) {
+                    htmlEnabled = "enabled='false'";
+                }
+                <a id="@(prifix + button.Code)" @Html.Raw(attrs) class="mini-button" iconstyle="background: url(/content/icons/16x16/@button.Icon) no-repeat;" @Html.Raw(htmlEnabled)>@buttonName</a>
+            }
+        }
+    }
+    @Html.Qtip(page.Page)
+    if ("Index".Equals(action, StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(Request["isInner"])) {
+        <a class="mini-button mini-button-iconLeft @(prifix)btnHelp" plain="true" tooltip="展开或收起帮助" iconstyle="background: url(/content/icons/16x16/help.png) no-repeat;" plain="true"></a>
+    }
+}
