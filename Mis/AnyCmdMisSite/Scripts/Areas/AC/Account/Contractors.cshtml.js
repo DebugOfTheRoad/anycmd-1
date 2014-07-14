@@ -38,6 +38,11 @@
             params: [{ "pName": 'accountID', "pValue": "Id" }],
             namespace: "Account.Groups"
         },
+        organizationTab: {
+            url: bootPATH + "../AC/Account/Organizations",
+            params: [{ "pName": 'accountID', "pValue": "Id" }],
+            namespace: "Account.Organizations"
+        },
         operationLogTab: {
             url: bootPATH + "../AC/OperationLog/Index",
             params: [{ "pName": 'targetID', "pValue": "Id" }],

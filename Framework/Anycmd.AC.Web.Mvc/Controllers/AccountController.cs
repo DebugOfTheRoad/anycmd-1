@@ -101,6 +101,13 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         }
 
         [By("xuexs")]
+        [Description("账户所在的组织结构")]
+        public ViewResultBase Organizations()
+        {
+            return ViewResult();
+        }
+
+        [By("xuexs")]
         [Description("包工头列表")]
         public ViewResultBase Contractors()
         {

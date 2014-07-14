@@ -572,7 +572,7 @@ namespace Anycmd.Host.AC.MemorySets
                 this.Handle(message.Source.Id, false);
             }
 
-            private void Handle(Guid rolePrivilegeID, bool isCommand)
+            private void Handle(Guid privilegeBigramID, bool isCommand)
             {
                 var host = set.host;
                 var _privilegeList = set._privilegeList;
@@ -580,8 +580,8 @@ namespace Anycmd.Host.AC.MemorySets
                 PrivilegeBigram entity;
                 lock (this)
                 {
-                    var bkState = host.PrivilegeSet.FirstOrDefault(a => a.Id == rolePrivilegeID);
-                    entity = privilegeRepository.GetByKey(rolePrivilegeID);
+                    var bkState = host.PrivilegeSet.FirstOrDefault(a => a.Id == privilegeBigramID);
+                    entity = privilegeRepository.GetByKey(privilegeBigramID);
                     bool isAccountSubjectType = bkState == null;
                     if (entity == null)
                     {

@@ -7,6 +7,7 @@
     var accountTabPage = Html.GetRuntimePage("ContractorAccounts");
     var roleTabPage = Html.GetRuntimePage("Roles");
     var groupTabPage = Html.GetRuntimePage("Groups");
+    var organizationTabPage = Html.GetRuntimePage("Organizations");
     var infoTabPage = Html.GetRuntimePage("Details");
     var prifix = "AC_Account_Contractors_";
 }
@@ -132,6 +133,8 @@
             <div name="roleTab" bodycls="inner" title="@roleTabPage.Title" iconstyle="background:url(/content/icons/16x16/@roleTabPage.Icon)">
             </div>
             <div name="groupTab" bodycls="inner" title="@groupTabPage.Title" iconstyle="background:url(/content/icons/16x16/@groupTabPage.Icon)">
+            </div>
+            <div name="organizationTab" bodycls="inner" title="@organizationTabPage.Title" iconstyle="background:url(/content/icons/16x16/@organizationTabPage.Icon)">
             </div>
             @{
                 var operationLogPage = this.GetOperationLogEntityType();

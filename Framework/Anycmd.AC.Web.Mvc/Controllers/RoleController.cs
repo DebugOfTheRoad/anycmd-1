@@ -416,22 +416,23 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         {
             string[] addIDs = addMenuIDs.Split(',');
             string[] removeIDs = removeMenuIDs.Split(',');
+            var subjectType = ACSubjectType.Role.ToName();
+            var acObjectType = ACObjectType.Menu.ToName();
             foreach (var item in addIDs)
             {
                 if (!string.IsNullOrEmpty(item))
                 {
                     var mID = new Guid(item);
-                    var acObjectType = ACObjectType.Menu.ToName();
-                    var entity = GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().FirstOrDefault(a => a.ObjectType == acObjectType && a.ObjectInstanceID == mID);
+                    var entity = GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().FirstOrDefault(a => a.SubjectType == subjectType && a.SubjectInstanceID == roleID && a.ObjectType == acObjectType && a.ObjectInstanceID == mID);
                     if (entity == null)
                     {
                         var createInput = new PrivilegeBigramCreateInput
                         {
                             Id = Guid.NewGuid(),
-                            SubjectType = ACSubjectType.Role.ToName(),
+                            SubjectType = subjectType,
                             SubjectInstanceID = roleID,
                             ObjectInstanceID = mID,
-                            ObjectType = ACObjectType.Menu.ToName(),
+                            ObjectType = acObjectType,
                             PrivilegeOrientation = 1,
                             PrivilegeConstraint = null
                         };
@@ -444,8 +445,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 if (!string.IsNullOrEmpty(item))
                 {
                     var mID = new Guid(item);
-                    var acObjectType = ACObjectType.Menu.ToName();
-                    var entity = GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().FirstOrDefault(a => a.ObjectType == acObjectType && a.ObjectInstanceID == mID);
+                    var entity = GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().FirstOrDefault(a => a.SubjectType == subjectType && a.SubjectInstanceID == roleID && a.ObjectType == acObjectType && a.ObjectInstanceID == mID);
                     if (entity != null)
                     {
                         AppHostInstance.Handle(new RemovePrivilegeBigramCommand(entity.Id));
