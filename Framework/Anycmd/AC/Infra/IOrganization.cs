@@ -88,6 +88,11 @@ namespace Anycmd.AC.Infra
         string CategoryCode { get; }
 
         /// <summary>
+        /// 包工头标识
+        /// </summary>
+        Guid? ContractorID { get; }
+
+        /// <summary>
         /// 说明
         /// </summary>
         string Description { get; }
@@ -96,8 +101,6 @@ namespace Anycmd.AC.Infra
         /// 是否有效。1有效，0无效
         /// </summary>
         int IsEnabled { get; }
-
-        int? PrivilegeState { get; }
 
         int SortCode { get; }
     }

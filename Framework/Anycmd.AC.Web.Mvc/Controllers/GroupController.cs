@@ -28,7 +28,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public GroupController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Group", out groupEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Group", out groupEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -51,7 +51,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 Guid id;
                 if (Guid.TryParse(Request["id"], out id))
                 {
-                    var data = new GroupInfo(AppHostInstance, groupEntityType.GetData(id));
+                    var data = new GroupInfo(Host, groupEntityType.GetData(id));
                     return new PartialViewResult { ViewName = "Partials/Details", ViewData = new ViewDataDictionary(data) };
                 }
                 else
@@ -104,7 +104,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 throw new ValidationException("未传入标识");
             }
-            return this.JsonResult(new GroupInfo(AppHostInstance, groupEntityType.GetData(id.Value)));
+            return this.JsonResult(new GroupInfo(Host, groupEntityType.GetData(id.Value)));
         }
 
         [By("xuexs")]
@@ -115,7 +115,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistGroups(requestModel);
+            var data = Host.GetPlistGroups(requestModel);
 
             return this.JsonResult(new MiniGrid<GroupTr> { total = requestModel.total.Value, data = data });
         }
@@ -132,7 +132,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             List<AccountAssignGroupTr> data = new List<AccountAssignGroupTr>();
             var privilegeType = ACObjectType.Group.ToName();
             var accountGroups = GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().Where(a => a.SubjectInstanceID == requestData.accountID && a.ObjectType == privilegeType);
-            foreach (var group in AppHostInstance.GroupSet)
+            foreach (var group in Host.GroupSet)
             {
                 var accountGroup = accountGroups.FirstOrDefault(a => a.ObjectInstanceID == group.Id);
                 if (requestData.isAssigned.HasValue)
@@ -207,7 +207,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistRoleGroups(requestData);
+            var data = Host.GetPlistRoleGroups(requestData);
 
             return this.JsonResult(new MiniGrid<RoleAssignGroupTr> { total = requestData.total.Value, data = data });
         }
@@ -226,7 +226,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 throw new ValidationException("非法的操作，试图越权。");
             }
-            AppHostInstance.Handle(new AddGroupCommand(input));
+            Host.Handle(new AddGroupCommand(input));
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -244,7 +244,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 throw new ValidationException("非法的操作，试图越权。");
             }
-            AppHostInstance.Handle(new UpdateGroupCommand(input));
+            Host.Handle(new UpdateGroupCommand(input));
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -270,7 +270,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveGroupCommand(item));
+                Host.Handle(new RemoveGroupCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -298,13 +298,13 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(entity.Id));
+                            Host.Handle(new RemovePrivilegeBigramCommand(entity.Id));
                         }
                         else
                         {
                             if (row.ContainsKey("PrivilegeConstraint"))
                             {
-                                AppHostInstance.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
+                                Host.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
                                 {
                                     Id = id,
                                     PrivilegeConstraint = row["PrivilegeConstraint"].ToString()
@@ -328,7 +328,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                         {
                             createInput.PrivilegeConstraint = row["PrivilegeConstraint"].ToString();
                         }
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(createInput));
+                        Host.Handle(new AddPrivilegeBigramCommand(createInput));
                     }
                 }
             }
@@ -345,7 +345,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             foreach (var item in aIds)
             {
                 var accountID = new Guid(item);
-                AppHostInstance.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
+                Host.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
                 {
                     Id = Guid.NewGuid(),
                     ObjectType = ACObjectType.Group.ToName(),
@@ -366,7 +366,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             string[] ids = id.Split(',');
             foreach (var item in ids)
             {
-                AppHostInstance.Handle(new RemovePrivilegeBigramCommand(new Guid(item)));
+                Host.Handle(new RemovePrivilegeBigramCommand(new Guid(item)));
             }
 
             return this.JsonResult(new ResponseData { success = true, id = id });

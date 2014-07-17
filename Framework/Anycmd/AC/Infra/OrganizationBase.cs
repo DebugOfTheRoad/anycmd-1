@@ -1,6 +1,7 @@
 ﻿
 namespace Anycmd.AC.Infra
 {
+    using Exceptions;
     using Model;
     using System;
 
@@ -10,6 +11,7 @@ namespace Anycmd.AC.Infra
     public abstract class OrganizationBase : EntityBase, IOrganization
     {
         private string _code;
+        private string _name;
 
         #region Ctor
         protected OrganizationBase() { }
@@ -19,8 +21,6 @@ namespace Anycmd.AC.Infra
         /// 是否启用
         /// </summary>
         public virtual int IsEnabled { get; set; }
-
-        public virtual int? PrivilegeState { get; set; }
 
         /// <summary>
         /// 
@@ -54,7 +54,26 @@ namespace Anycmd.AC.Infra
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("名称是必须的");
+                }
+                if (value != _name)
+                {
+                    _name = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 包工头标识
+        /// </summary>
+        public Guid? ContractorID { get; set; }
 
         /// <summary>
         /// 说明
@@ -100,56 +119,6 @@ namespace Anycmd.AC.Infra
         /// 
         /// </summary>
         public virtual string WebPage { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? LeadershipID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? AssistantLeadershipID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? ManagerID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? AssistantManagerID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? FinancialID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? AccountingID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? CashierID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Guid? PrincipalID { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual string Bank { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual string BankAccount { get; set; }
 
         /// <summary>
         /// 

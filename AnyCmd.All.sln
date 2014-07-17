@@ -27,8 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C1B2E81A-5
 	ProjectSection(SolutionItems) = preProject
 		Docs\GBT 25062-2010 RBAC.pdf = Docs\GBT 25062-2010 RBAC.pdf
 		Docs\MBAPI模型——向统一标准化的努力.docx = Docs\MBAPI模型——向统一标准化的努力.docx
+		README.md = README.md
 		Docs\基于角色的访问控制模型与管理规范.pdf = Docs\基于角色的访问控制模型与管理规范.pdf
-		Docs\用RBAC实现DAC和MAC的一种方法.pdf = Docs\用RBAC实现DAC和MAC的一种方法.pdf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anycmd.EDI.Queries.Ef", "EDI\AnyCmd.EDI.Queries.Ef\Anycmd.EDI.Queries.Ef.csproj", "{E41A2250-96EE-4008-9FA0-B9B8F7D57497}"

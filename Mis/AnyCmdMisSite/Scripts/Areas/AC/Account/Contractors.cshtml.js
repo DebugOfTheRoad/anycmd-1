@@ -23,11 +23,6 @@
             params: [{ "pName": 'id', "pValue": "Id" }],
             namespace: "Account.Details"
         },
-        accountTab: {
-            url: bootPATH + "../AC/Account/ContractorAccounts",
-            params: [{ "pName": 'contractorID', "pValue": "Id" }],
-            namespace: "Account.ContractorAccounts"
-        },
         roleTab: {
             url: bootPATH + "../AC/Account/Roles",
             params: [{ "pName": 'accountID', "pValue": "Id" }],

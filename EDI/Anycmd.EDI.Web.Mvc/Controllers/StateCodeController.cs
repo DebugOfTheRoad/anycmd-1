@@ -23,7 +23,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static StateCodeController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "StateCode", out stateCodeEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "StateCode", out stateCodeEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }

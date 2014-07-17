@@ -1,7 +1,6 @@
 ﻿
 namespace Anycmd.Tests
 {
-    using Anycmd.Web;
     using Host;
     using Host.AC;
     using Host.AC.Identity;
@@ -20,18 +19,62 @@ namespace Anycmd.Tests
     {
         public static AppHost GetAppHost()
         {
-            var host = new DefaultAppHost();
+            var host = new MoqAppHost();
             host.RegisterRepository(typeof(AppHost).Assembly);
             var container = host.Container;
             container.AddService(typeof(ILoggingService), new log4netLoggingService(host));
-            container.AddService(typeof(IUserSessionStorage), new WebUserSessionStorage());
-            container.AddService(typeof(IOperationLogStorage), new WebOperationLogStorage());
+            container.AddService(typeof(IUserSessionStorage), new SimpleUserSessionStorage());
+            Guid accountID = Guid.NewGuid();
+            host.GetRequiredService<IRepository<Account>>().Add(new Account
+            {
+                Id = accountID,
+                LoginName = "LoginName1",
+                Password = "111111",
+                AuditState = string.Empty,
+                BackColor = string.Empty,
+                AllowEndTime = null,
+                AllowStartTime = null,
+                AnswerQuestion = string.Empty,
+                Description = string.Empty,
+                FirstLoginOn = null,
+                DeletionStateCode = 0,
+                IPAddress = string.Empty,
+                Lang = string.Empty,
+                IsEnabled = 1,
+                LastPasswordChangeOn = null,
+                LockEndTime = null,
+                LockStartTime = null,
+                LoginCount = null,
+                MacAddress = string.Empty,
+                OpenID = string.Empty,
+                PreviousLoginOn = null,
+                NumberID = 10,
+                Question = string.Empty,
+                Theme = string.Empty,
+                Wallpaper = string.Empty,
+                SecurityLevel = 0,
+                Code = "user1",
+                CommunicationPassword = string.Empty,
+                Email = string.Empty,
+                Mobile = string.Empty,
+                PublicKey = string.Empty,
+                QQ = string.Empty,
+                Name = "user1",
+                QuickQuery = string.Empty,
+                QuickQuery1 = string.Empty,
+                QuickQuery2 = string.Empty,
+                SignedPassword = string.Empty,
+                Telephone = string.Empty,
+                OrganizationCode = string.Empty
+            });
+            host.GetRequiredService<IRepository<Account>>().Context.Commit();
             Guid appSystemID = Guid.NewGuid();
             host.GetRequiredService<IRepository<AppSystem>>().Add(new AppSystem
             {
                 Id = appSystemID,
                 Name = "test",
-                Code = "test"
+                Code = "test",
+                PrincipalID = host.GetRequiredService<IRepository<Account>>().FindAll().First().Id
             });
             host.GetRequiredService<IRepository<AppSystem>>().Context.Commit();
             host.GetRequiredService<IRepository<ResourceType>>().Add(new ResourceType
@@ -47,52 +90,6 @@ namespace Anycmd.Tests
                     AppSystemID = appSystemID
                 });
             host.GetRequiredService<IRepository<ResourceType>>().Context.Commit();
-            Guid userID = Guid.NewGuid();
-            host.GetRequiredService<IRepository<Account>>().Add(new Account
-                {
-                    Id = Guid.NewGuid(),
-                    LoginName = "LoginName1",
-                    AuditState = string.Empty,
-                    BackColor = string.Empty,
-                    AllowEndTime = null,
-                    AllowStartTime = null,
-                    AnswerQuestion = string.Empty,
-                    Description = string.Empty,
-                    FirstLoginOn = null,
-                    DeletionStateCode = 0,
-                    IPAddress = string.Empty,
-                    Lang = string.Empty,
-                    IsEnabled = 1,
-                    LastPasswordChangeOn = null,
-                    LockEndTime = null,
-                    LockStartTime = null,
-                    LoginCount = null,
-                    MacAddress = string.Empty,
-                    OpenID = string.Empty,
-                    Password = string.Empty,
-                    PreviousLoginOn = null,
-                    PrivilegeState = null,
-                    NumberID = 10,
-                    Question = string.Empty,
-                    Theme = string.Empty,
-                    ContractorID = userID,
-                    Wallpaper = string.Empty,
-                    SecurityLevel = 0,
-                    Code = "user1",
-                    CommunicationPassword = string.Empty,
-                    Email = string.Empty,
-                    Mobile = string.Empty,
-                    PublicKey = string.Empty,
-                    QQ = string.Empty,
-                    Name = "user1",
-                    QuickQuery = string.Empty,
-                    QuickQuery1 = string.Empty,
-                    QuickQuery2 = string.Empty,
-                    SignedPassword = string.Empty,
-                    Telephone = string.Empty,
-                    OrganizationCode = string.Empty
-                });
-            host.GetRequiredService<IRepository<Account>>().Context.Commit();
             container.RemoveService(typeof(IAppHostBootstrap));
             var moAppHostBootstrap = new Mock<IAppHostBootstrap>();
             moAppHostBootstrap.Setup<IList<RDatabase>>(a => a.GetAllRDatabases()).Returns(new List<RDatabase>

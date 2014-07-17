@@ -90,7 +90,8 @@ namespace Anycmd.Tests
             {
                 Id = appSystemID,
                 Code = "app1",
-                Name = "app1"
+                Name = "app1",
+                PrincipalID = host.SysUsers.GetDevAccounts().First().Id
             }));
             host.Handle(new AddFunctionCommand(new FunctionCreateInput
             {

@@ -11,14 +11,6 @@
         IsEnabled: {
             type: 'numeric',
             comparison: 'eq'
-        },
-        ContractorCode: {
-            type: 'string',
-            comparison: 'like'
-        },
-        ContractorName: {
-            type: 'string',
-            comparison: 'like'
         }
     };
 

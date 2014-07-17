@@ -17,17 +17,10 @@ namespace Anycmd.AC.Identity
         /// </summary>
         int NumberID { get; }
 
-        /// <summary>   
-        /// 账户所属用户用户ID
-        /// </summary>
-        Guid? ContractorID { get; }
-
         /// <summary>
         /// 登录名
         /// </summary>
         string LoginName { get; }
-
-        int? PrivilegeState { get; }
 
         /// <summary>
         /// 我的本体

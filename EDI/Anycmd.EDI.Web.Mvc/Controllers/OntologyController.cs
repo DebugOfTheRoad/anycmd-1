@@ -31,7 +31,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static OntologyController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Ontology", out ontologyEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Ontology", out ontologyEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -66,7 +66,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 Guid id;
                 if (Guid.TryParse(Request["id"], out id))
                 {
-                    var data = new OntologyInfo(AppHostInstance, ontologyEntityType.GetData(id));
+                    var data = new OntologyInfo(Host, ontologyEntityType.GetData(id));
                     return new PartialViewResult { ViewName = "Partials/Details", ViewData = new ViewDataDictionary(data) };
                 }
                 else
@@ -171,7 +171,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 throw new ValidationException("未传入标识");
             }
-            return this.JsonResult(new OntologyInfo(AppHostInstance, ontologyEntityType.GetData(id.Value)));
+            return this.JsonResult(new OntologyInfo(Host, ontologyEntityType.GetData(id.Value)));
         }
 
         /// <summary>
@@ -192,14 +192,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Ontology", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Ontology", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.Ontology");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Ontology实体类型属性" + filter.field);
                 }
@@ -230,7 +230,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddOntology(input);
+            Host.AddOntology(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -249,7 +249,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateOntology(input);
+            Host.UpdateOntology(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -338,14 +338,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "InfoGroup", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "InfoGroup", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.InfoGroup");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的InfoGroup实体类型属性" + filter.field);
                 }
@@ -381,14 +381,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Action", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Action", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.Action");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Action实体类型属性" + filter.field);
                 }
@@ -460,15 +460,15 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             if (parentID.HasValue)
             {
                 OrganizationState org;
-                if (!AppHostInstance.OrganizationSet.TryGetOrganization(parentID.Value, out org))
+                if (!Host.OrganizationSet.TryGetOrganization(parentID.Value, out org))
                 {
                     throw new ValidationException("意外的组织结构标识" + parentID);
                 }
                 parentCode = org.Code;
             }
             var ontologyOrgDic = ontology.Organizations;
-            var orgs = AppHostInstance.OrganizationSet;
-            return this.JsonResult(AppHostInstance.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && string.Equals(a.ParentCode, parentCode, StringComparison.OrdinalIgnoreCase)).OrderBy(a => a.Code)
+            var orgs = Host.OrganizationSet;
+            return this.JsonResult(Host.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && string.Equals(a.ParentCode, parentCode, StringComparison.OrdinalIgnoreCase)).OrderBy(a => a.Code)
                 .Select(a =>
                 {
                     return new
@@ -477,7 +477,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         a.Code,
                         a.Name,
                         ParentID = a.ParentCode,
-                        isLeaf = AppHostInstance.OrganizationSet.All(b => !a.Code.Equals(b.ParentCode, StringComparison.OrdinalIgnoreCase)),
+                        isLeaf = Host.OrganizationSet.All(b => !a.Code.Equals(b.ParentCode, StringComparison.OrdinalIgnoreCase)),
                         expanded = false,
                         @checked = ontologyOrgDic.Values.Any(b => b.OrganizationID == a.Id),
                         OntologyID = ontologyID.Value
@@ -504,7 +504,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("意外的本体标识" + input.ontologyID);
             }
             OrganizationState organization;
-            if (!AppHostInstance.OrganizationSet.TryGetOrganization(input.organizationID, out organization))
+            if (!Host.OrganizationSet.TryGetOrganization(input.organizationID, out organization))
             {
                 throw new ValidationException("意外的组织结构标识" + input.organizationID);
             }
@@ -575,21 +575,21 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 if (!string.IsNullOrEmpty(item))
                 {
-                    var mID = new Guid(item);
-                    AppHostInstance.Handle(new AddOntologyOrganizationCommand(new OntologyOrganizationCreateInput
+                    var organizationID = new Guid(item);
+                    Host.AddOntologyOrganization(new OntologyOrganizationCreateInput
                     {
                         Id = Guid.NewGuid(),
                         OntologyID = ontologyID,
-                        OrganizationID = mID
-                    }));
+                        OrganizationID = organizationID
+                    });
                 }
             }
             foreach (var item in removeIDs)
             {
                 if (!string.IsNullOrEmpty(item))
                 {
-                    var mID = new Guid(item);
-                    AppHostInstance.Handle(new RemoveOntologyOrganizationCommand(ontologyID, mID));
+                    var organizationID = new Guid(item);
+                    Host.RemoveOntologyOrganization(ontologyID, organizationID);
                 }
             }
 
@@ -636,7 +636,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         throw new ValidationException("意外的动作本体标识" + action.OntologyID);
                     }
                     OrganizationState organization;
-                    if (!AppHostInstance.OrganizationSet.TryGetOrganization(inputModel.OrganizationID, out organization))
+                    if (!Host.OrganizationSet.TryGetOrganization(inputModel.OrganizationID, out organization))
                     {
                         throw new ValidationException("意外的组织结构标识");
                     }
@@ -652,7 +652,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                             Id = inputModel.Id,
                             OrganizationID = inputModel.OrganizationID
                         };
-                        AppHostInstance.PublishEvent(new OrganizationActionUpdatedEvent(entity));
+                        Host.PublishEvent(new OrganizationActionUpdatedEvent(entity));
                     }
                     else
                     {
@@ -662,9 +662,9 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         entity.ActionID = inputModel.ActionID;
                         entity.IsAudit = inputModel.IsAudit;
                         entity.IsAllowed = inputModel.IsAllowed;
-                        AppHostInstance.PublishEvent(new OrganizationActionAddedEvent(entity));
+                        Host.PublishEvent(new OrganizationActionAddedEvent(entity));
                     }
-                    AppHostInstance.CommitEventBus();
+                    Host.CommitEventBus();
                 }
             }
 
@@ -751,7 +751,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddInfoGroup(input);
+            Host.AddInfoGroup(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -771,7 +771,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateInfoGroup(input);
+            Host.UpdateInfoGroup(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -804,7 +804,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveInfoGroup(item);
+                Host.RemoveInfoGroup(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -826,7 +826,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddAction(input);
+            Host.AddAction(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -846,7 +846,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateAction(input);
+            Host.UpdateAction(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -879,7 +879,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveAction(item);
+                Host.RemoveAction(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -901,7 +901,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddTopic(input);
+            Host.AddTopic(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -921,7 +921,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateTopic(input);
+            Host.UpdateTopic(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -954,7 +954,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveTopic(item);
+                Host.RemoveTopic(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -995,7 +995,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         entity.IsLogicalDeletionEntity = inputModel.IsLogicalDeletionEntity;
                         GetRequiredService<IRepository<Ontology>>().Update(entity);
                         GetRequiredService<IRepository<Ontology>>().Context.Commit();
-                        AppHostInstance.CommitEventBus();
+                        Host.CommitEventBus();
                     }
                     else
                     {
@@ -1108,7 +1108,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveOntology(item);
+                Host.RemoveOntology(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

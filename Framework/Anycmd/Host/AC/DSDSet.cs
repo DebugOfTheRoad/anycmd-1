@@ -3,7 +3,7 @@ namespace Anycmd.Host.AC
 {
     using Anycmd.AC;
 
-    public class DSDRole : DSDRoleBase
+    public class DSDSet : DSDSetBase
     {
     }
 }

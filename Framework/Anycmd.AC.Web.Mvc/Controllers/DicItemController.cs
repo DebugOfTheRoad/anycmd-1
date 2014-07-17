@@ -4,7 +4,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
-    using Host.AC.Infra.Messages;
+    using Host.AC;
     using Infra.ViewModels.DicViewModels;
     using MiniUI;
     using System;
@@ -22,7 +22,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public DicItemController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "DicItem", out dicItemEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "DicItem", out dicItemEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -95,7 +95,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistDicItems(requestModel);
+            var data = Host.GetPlistDicItems(requestModel);
 
             return this.JsonResult(new MiniGrid<DicItemTr> { total = requestModel.total.Value, data = data });
         }
@@ -110,7 +110,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddDicItemCommand(input));
+            Host.AddDicItem(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -125,7 +125,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateDicItemCommand(input));
+            Host.UpdateDicItem(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -152,7 +152,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveDicItemCommand(item));
+                Host.RemoveDicItem(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

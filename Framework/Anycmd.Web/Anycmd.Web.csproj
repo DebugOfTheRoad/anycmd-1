@@ -103,7 +103,6 @@
     <Compile Include="Mvc\ResourceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtension.cs" />
-    <Compile Include="WebOperationLogStorage.cs" />
     <Compile Include="WebUserSessionStorage.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -64,7 +64,6 @@ namespace Anycmd.EDI.MessageDispatcher {
 			var container = appHost.Container;
 			container.AddService(typeof(ILoggingService), new log4netLoggingService(appHost));
 			container.AddService(typeof(IUserSessionStorage), new WebUserSessionStorage());
-			container.AddService(typeof(IOperationLogStorage), new WebOperationLogStorage());
 			appHost.Init();
 			new DefaultNodeHost(appHost).Init();
 			appHost.RegisterRepository(new List<string>

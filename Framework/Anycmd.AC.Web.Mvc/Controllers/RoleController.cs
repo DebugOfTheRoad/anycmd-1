@@ -28,7 +28,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public RoleController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Role", out roleEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Role", out roleEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -129,7 +129,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistRoles(requestModel);
+            var data = Host.GetPlistRoles(requestModel);
 
             return this.JsonResult(new MiniGrid<RoleTr> { total = requestModel.total.Value, data = data });
         }
@@ -153,7 +153,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     foreach (var ar in accountRoles)
                     {
                         RoleState role;
-                        if (!AppHostInstance.RoleSet.TryGetRole(ar.ObjectInstanceID, out role))
+                        if (!Host.RoleSet.TryGetRole(ar.ObjectInstanceID, out role))
                         {
                             throw new CoreException("意外的角色标识" + ar.ObjectInstanceID);
                         }
@@ -176,7 +176,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 }
                 else
                 {
-                    foreach (var role in AppHostInstance.RoleSet)
+                    foreach (var role in Host.RoleSet)
                     {
                         if (!accountRoles.Any(a => a.ObjectInstanceID == role.Id))
                         {
@@ -201,7 +201,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             else
             {
-                foreach (var role in AppHostInstance.RoleSet)
+                foreach (var role in Host.RoleSet)
                 {
                     var ar = accountRoles.FirstOrDefault(a => a.ObjectInstanceID == role.Id);
                     if (ar == null)
@@ -264,7 +264,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistGroupRoles(requestData);
+            var data = Host.GetPlistGroupRoles(requestData);
 
             return this.JsonResult(new MiniGrid<GroupAssignRoleTr> { total = requestData.total.Value, data = data });
         }
@@ -280,7 +280,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             if (requestData.menuID.HasValue && requestData.menuID.Value != Guid.Empty)
             {
-                var data = AppHostInstance.GetPlistMenuRoles(requestData);
+                var data = Host.GetPlistMenuRoles(requestData);
 
                 return this.JsonResult(new MiniGrid<MenuAssignRoleTr> { total = requestData.total.Value, data = data });
             }
@@ -299,7 +299,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddRoleCommand(input));
+            Host.Handle(new AddRoleCommand(input));
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -313,7 +313,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateRoleCommand(input));
+            Host.Handle(new UpdateRoleCommand(input));
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -339,7 +339,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveRoleCommand(item));
+                Host.Handle(new RemoveRoleCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -368,13 +368,13 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(entity.Id));
+                            Host.Handle(new RemovePrivilegeBigramCommand(entity.Id));
                         }
                         else
                         {
                             if (row.ContainsKey("PrivilegeConstraint"))
                             {
-                                AppHostInstance.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
+                                Host.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
                                 {
                                     Id = entity.Id,
                                     PrivilegeConstraint = row["PrivilegeConstraint"] == null ? null : row["PrivilegeConstraint"].ToString()
@@ -399,7 +399,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                         {
                             createInput.PrivilegeConstraint = row["PrivilegeConstraint"] == null ? null : row["PrivilegeConstraint"].ToString();
                         }
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(createInput));
+                        Host.Handle(new AddPrivilegeBigramCommand(createInput));
                     }
                 }
             }
@@ -436,7 +436,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                             PrivilegeOrientation = 1,
                             PrivilegeConstraint = null
                         };
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(createInput));
+                        Host.Handle(new AddPrivilegeBigramCommand(createInput));
                     }
                 }
             }
@@ -448,7 +448,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     var entity = GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().FirstOrDefault(a => a.SubjectType == subjectType && a.SubjectInstanceID == roleID && a.ObjectType == acObjectType && a.ObjectInstanceID == mID);
                     if (entity != null)
                     {
-                        AppHostInstance.Handle(new RemovePrivilegeBigramCommand(entity.Id));
+                        Host.Handle(new RemovePrivilegeBigramCommand(entity.Id));
                     }
                 }
             }
@@ -466,7 +466,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             foreach (var item in aIds)
             {
                 var accountID = new Guid(item);
-                AppHostInstance.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
+                Host.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
                 {
                     Id = Guid.NewGuid(),
                     ObjectInstanceID = roleID,
@@ -487,7 +487,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             string[] ids = id.Split(',');
             foreach (var item in ids)
             {
-                AppHostInstance.Handle(new RemovePrivilegeBigramCommand(new Guid(item)));
+                Host.Handle(new RemovePrivilegeBigramCommand(new Guid(item)));
             }
 
             return this.JsonResult(new ResponseData { success = true, id = id });
@@ -516,13 +516,13 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(id));
+                            Host.Handle(new RemovePrivilegeBigramCommand(id));
                         }
                         else
                         {
                             if (row.ContainsKey("PrivilegeConstraint"))
                             {
-                                AppHostInstance.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
+                                Host.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
                                 {
                                     Id = id,
                                     PrivilegeConstraint = row["PrivilegeConstraint"].ToString()
@@ -546,7 +546,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                         {
                             createInput.PrivilegeConstraint = row["PrivilegeConstraint"].ToString();
                         }
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(createInput));
+                        Host.Handle(new AddPrivilegeBigramCommand(createInput));
                     }
                 }
             }

@@ -26,17 +26,17 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (!id.HasValue)
             {
                 AppSystemState appSystem;
-                if (!AppHostInstance.AppSystemSet.TryGetAppSystem(appSystemCode, out appSystem))
+                if (!Host.AppSystemSet.TryGetAppSystem(appSystemCode, out appSystem))
                 {
                     throw new ValidationException("意外的应用系统码" + appSystemCode);
                 }
                 ResourceTypeState resource;
-                if (!AppHostInstance.ResourceSet.TryGetResource(AppHostInstance.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+                if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
                 {
                     throw new ValidationException("意外的资源码" + resourceCode);
                 }
                 FunctionState function;
-                if (!AppHostInstance.FunctionSet.TryGetFunction(resource, functionCode, out function))
+                if (!Host.FunctionSet.TryGetFunction(resource, functionCode, out function))
                 {
                     throw new ValidationException(string.Format("非法的操作:{0}.{1}.{2}", appSystemCode, resourceCode, functionCode));
                 }
@@ -78,17 +78,17 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (!id.HasValue)
             {
                 AppSystemState appSystem;
-                if (!AppHostInstance.AppSystemSet.TryGetAppSystem(appSystemCode, out appSystem))
+                if (!Host.AppSystemSet.TryGetAppSystem(appSystemCode, out appSystem))
                 {
                     throw new ValidationException("意外的应用系统码" + appSystemCode);
                 }
                 ResourceTypeState resource;
-                if (!AppHostInstance.ResourceSet.TryGetResource(AppHostInstance.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+                if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
                 {
                     throw new ValidationException("意外的资源码" + resourceCode);
                 }
                 FunctionState function;
-                if (!AppHostInstance.FunctionSet.TryGetFunction(resource, functionCode, out function))
+                if (!Host.FunctionSet.TryGetFunction(resource, functionCode, out function))
                 {
                     throw new ValidationException(string.Format("非法的操作:{0}.{1}.{2}", appSystemCode, resourceCode, functionCode));
                 }
@@ -115,23 +115,23 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (!id.HasValue || id == Guid.Empty)
             {
                 AppSystemState appSystem;
-                if (!AppHostInstance.AppSystemSet.TryGetAppSystem(appSystemCode, out appSystem))
+                if (!Host.AppSystemSet.TryGetAppSystem(appSystemCode, out appSystem))
                 {
                     throw new ValidationException("意外的应用系统码" + appSystemCode);
                 }
                 ResourceTypeState resource;
-                if (!AppHostInstance.ResourceSet.TryGetResource(AppHostInstance.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+                if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
                 {
                     throw new ValidationException("意外的资源码" + resourceCode);
                 }
                 FunctionState function;
-                if (!AppHostInstance.FunctionSet.TryGetFunction(resource, functionCode, out function))
+                if (!Host.FunctionSet.TryGetFunction(resource, functionCode, out function))
                 {
                     throw new ValidationException(string.Format("非法的操作:{0}.{1}.{2}", appSystemCode, resourceCode, functionCode));
                 }
                 id = function.Id;
             }
-            AppHostInstance.Handle(new SaveHelpCommand(id.Value, content, isEnabled));
+            Host.Handle(new SaveHelpCommand(id.Value, content, isEnabled));
 
             return new FormatJsonResult { Data = new ResponseData { success = true } };
         }

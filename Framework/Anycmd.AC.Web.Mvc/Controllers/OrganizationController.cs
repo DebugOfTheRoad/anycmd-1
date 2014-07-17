@@ -30,7 +30,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public OrganizationController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Organization", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Organization", out entityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -163,15 +163,15 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             if (!parentID.HasValue)
             {
-                if (CurrentUser.IsDeveloper())
+                if (Host.User.IsDeveloper())
                 {
-                    return this.JsonResult(AppHostInstance.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && a.ParentCode == null).OrderBy(a => a.SortCode).Select(a => new OrganizationMiniNode
+                    return this.JsonResult(Host.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && a.ParentCode == null).OrderBy(a => a.SortCode).Select(a => new OrganizationMiniNode
                     {
                         CategoryCode = a.CategoryCode,
                         Code = a.Code,
                         expanded = false,
                         Id = a.Id.ToString(),
-                        isLeaf = !AppHostInstance.OrganizationSet.Any(o => a.Code.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)),
+                        isLeaf = !Host.OrganizationSet.Any(o => a.Code.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)),
                         Name = a.Name,
                         ParentCode = a.ParentCode,
                         ParentID = a.Parent.Id.ToString(),
@@ -180,7 +180,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 }
                 else
                 {
-                    IList<IOrganization> orgs = CurrentUser.GetOrganizations();
+                    var orgs = Host.User.GetOrganizations();
                     if (orgs != null && orgs.Count > 0)
                     {
                         return this.JsonResult(orgs.Select(org => new OrganizationMiniNode
@@ -188,7 +188,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                             Code = org.Code ?? string.Empty,
                             Id = org.Id.ToString(),
                             Name = org.Name,
-                            isLeaf = AppHostInstance.OrganizationSet.All(o => !org.Code.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase))
+                            isLeaf = Host.OrganizationSet.All(o => !org.Code.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase))
                         }));
                     }
                     return this.JsonResult(new List<OrganizationMiniNode>());
@@ -198,17 +198,17 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 var pid = parentID.Value;
                 OrganizationState parentOrg;
-                if (!AppHostInstance.OrganizationSet.TryGetOrganization(pid, out parentOrg))
+                if (!Host.OrganizationSet.TryGetOrganization(pid, out parentOrg))
                 {
                     throw new ValidationException("意外的组织结构标识" + pid);
                 }
-                return this.JsonResult(AppHostInstance.OrganizationSet.Where(a => parentOrg.Code.Equals(a.ParentCode, StringComparison.OrdinalIgnoreCase)).OrderBy(a => a.SortCode).Select(a => new OrganizationMiniNode
+                return this.JsonResult(Host.OrganizationSet.Where(a => parentOrg.Code.Equals(a.ParentCode, StringComparison.OrdinalIgnoreCase)).OrderBy(a => a.SortCode).Select(a => new OrganizationMiniNode
                 {
                     CategoryCode = a.CategoryCode,
                     Code = a.Code,
                     expanded = false,
                     Id = a.Id.ToString(),
-                    isLeaf = !AppHostInstance.OrganizationSet.Any(o => a.Code.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)),
+                    isLeaf = !Host.OrganizationSet.Any(o => a.Code.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)),
                     Name = a.Name,
                     ParentCode = a.ParentCode,
                     ParentID = a.Parent.Id.ToString(),
@@ -242,7 +242,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             IQueryable<OrganizationTr> queryable = null;
             if (requestModel.includeDescendants.HasValue && requestModel.includeDescendants.Value)
             {
-                queryable = AppHostInstance.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot).Select(a => OrganizationTr.Create(a)).AsQueryable().Where(a => a.Code.Contains(requestModel.parentCode));
+                queryable = Host.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot).Select(a => OrganizationTr.Create(a)).AsQueryable().Where(a => a.Code.Contains(requestModel.parentCode));
             }
             else
             {
@@ -250,7 +250,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 {
                     requestModel.parentCode = null;
                 }
-                queryable = AppHostInstance.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && string.Equals(a.ParentCode, requestModel.parentCode, StringComparison.OrdinalIgnoreCase)).Select(a => OrganizationTr.Create(a)).AsQueryable();
+                queryable = Host.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && string.Equals(a.ParentCode, requestModel.parentCode, StringComparison.OrdinalIgnoreCase)).Select(a => OrganizationTr.Create(a)).AsQueryable();
             }
             foreach (var filter in requestModel.filters)
             {
@@ -275,7 +275,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 throw new ValidationException("organizationID是必须的");
             }
             OrganizationState organization;
-            if (!AppHostInstance.OrganizationSet.TryGetOrganization(organizationID, out organization))
+            if (!Host.OrganizationSet.TryGetOrganization(organizationID, out organization))
             {
                 throw new ValidationException("意外的组织结构标识" + organizationID);
             }
@@ -283,7 +283,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             foreach (var item in aIds)
             {
                 var accountID = new Guid(item);
-                AppHostInstance.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
+                Host.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
                 {
                     SubjectInstanceID = accountID,
                     SubjectType = ACSubjectType.Account.ToName(),
@@ -304,7 +304,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             string[] ids = id.Split(',');
             foreach (var item in ids)
             {
-                AppHostInstance.Handle(new RemovePrivilegeBigramCommand(new Guid(item)));
+                Host.Handle(new RemovePrivilegeBigramCommand(new Guid(item)));
             }
 
             return this.JsonResult(new ResponseData { success = true, id = id });
@@ -319,7 +319,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddOrganizationCommand(input));
+            Host.Handle(new AddOrganizationCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -333,7 +333,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateOrganizationCommand(input));
+            Host.Handle(new UpdateOrganizationCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -359,7 +359,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveOrganizationCommand(item));
+                Host.Handle(new RemoveOrganizationCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -388,12 +388,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(id));
+                            Host.Handle(new RemovePrivilegeBigramCommand(id));
                         }
                     }
                     else if (isAssigned)
                     {
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
+                        Host.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
                         {
                             Id = new Guid(row["Id"].ToString()),
                             ObjectType = ACObjectType.Role.ToName(),

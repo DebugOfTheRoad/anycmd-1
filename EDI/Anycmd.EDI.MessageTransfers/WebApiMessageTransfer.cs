@@ -2,17 +2,17 @@
 namespace Anycmd.EDI.MessageTransfers
 {
     using DataContracts;
-    using Util;
+    using Host.EDI;
+    using Host.EDI.Handlers;
+    using Host.EDI.Handlers.Distribute;
+    using Host.EDI.Hecp;
+    using Host.EDI.Info;
     using ServiceModel.Operations;
     using ServiceStack;
     using System;
     using System.ComponentModel.Composition;
     using System.Threading.Tasks;
-    using Anycmd.Host.EDI;
-    using Anycmd.Host.EDI.Handlers;
-    using Anycmd.Host.EDI.Handlers.Distribute;
-    using Anycmd.Host.EDI.Hecp;
-    using Anycmd.Host.EDI.Info;
+    using Util;
 
     /// <summary>
     /// 基于WebApi的命令发送策略

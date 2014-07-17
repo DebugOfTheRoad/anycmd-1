@@ -13,14 +13,12 @@ namespace Anycmd.Host
         public static readonly AccountState Empty = new AccountState
         {
             NumberID = int.MinValue,
-            ContractorID = Guid.Empty,
             CreateOn = SystemTime.MinDate,
             Id = Guid.Empty,
             LoginName = string.Empty,
             Theme = string.Empty,
             Wallpaper = string.Empty,
             BackColor = string.Empty,
-            PrivilegeState = 0,
             Code = string.Empty,
             Email = string.Empty,
             Mobile = string.Empty,
@@ -35,19 +33,17 @@ namespace Anycmd.Host
         {
             if (account == null)
             {
-                throw new ArgumentNullException("account");
+                return Empty;
             }
             return new AccountState()
             {
                 NumberID = account.NumberID,
                 Id = account.Id,
                 LoginName = account.LoginName,
-                ContractorID = account.ContractorID,
                 BackColor = account.BackColor,
                 CreateOn = account.CreateOn,
                 Theme = account.Theme,
                 Wallpaper = account.Wallpaper,
-                PrivilegeState = account.PrivilegeState,
                 Code = account.Code,
                 Email = account.Email,
                 Mobile = account.Mobile,
@@ -59,11 +55,7 @@ namespace Anycmd.Host
 
         public int NumberID { get; private set; }
 
-        public Guid? ContractorID { get; private set; }
-
         public string LoginName { get; private set; }
-
-        public int? PrivilegeState { get; private set; }
 
         public string Theme { get; private set; }
 
@@ -111,7 +103,6 @@ namespace Anycmd.Host
             return left.Id == right.Id &&
                 left.LoginName == right.LoginName &&
                 left.NumberID == right.NumberID &&
-                left.PrivilegeState == right.PrivilegeState &&
                 left.Name == right.Name &&
                 left.Code == right.Code &&
                 left.Email == right.Email &&

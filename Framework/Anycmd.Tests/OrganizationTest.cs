@@ -64,7 +64,7 @@ namespace Anycmd.Tests
             var entityID = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
 
-            OrganizationState OrganizationByID;
+            OrganizationState organizationByID;
             host.Handle(new AddOrganizationCommand(new OrganizationCreateInput
             {
                 Id = entityID,
@@ -75,7 +75,7 @@ namespace Anycmd.Tests
                 Icon = null,
             }));
             Assert.Equal(2, host.OrganizationSet.Count());
-            Assert.True(host.OrganizationSet.TryGetOrganization(entityID, out OrganizationByID));
+            Assert.True(host.OrganizationSet.TryGetOrganization(entityID, out organizationByID));
             bool catched = false;
             try
             {

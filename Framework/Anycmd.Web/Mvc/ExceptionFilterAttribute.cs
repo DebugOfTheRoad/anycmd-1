@@ -26,7 +26,7 @@ namespace Anycmd.Web.Mvc
             if (exceptionContext.Exception != null)
             {
                 var host = exceptionContext.HttpContext.Application["AppHostInstance"] as AppHost;
-                var user = host.UserSession;
+                var user = host.User;
                 bool isValidationException = exceptionContext.Exception is ValidationException;
                 bool isAjaxRequest = exceptionContext.HttpContext.Request.IsAjaxRequest();
                 ActionResult result = null;

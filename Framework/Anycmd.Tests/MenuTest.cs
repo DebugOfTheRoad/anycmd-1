@@ -22,7 +22,7 @@ namespace Anycmd.Tests
 
             var entityID = Guid.NewGuid();
 
-            MenuState MenuByID;
+            MenuState menuByID;
             host.Handle(new AddMenuCommand(new MenuCreateInput
             {
                 Id = entityID,
@@ -35,7 +35,7 @@ namespace Anycmd.Tests
                 Url = string.Empty
             }));
             Assert.Equal(1, host.MenuSet.Count());
-            Assert.True(host.MenuSet.TryGetMenu(entityID, out MenuByID));
+            Assert.True(host.MenuSet.TryGetMenu(entityID, out menuByID));
 
             host.Handle(new UpdateMenuCommand(new MenuUpdateInput
             {
@@ -48,11 +48,11 @@ namespace Anycmd.Tests
                 Url = string.Empty
             }));
             Assert.Equal(1, host.MenuSet.Count());
-            Assert.True(host.MenuSet.TryGetMenu(entityID, out MenuByID));
-            Assert.Equal("test2", MenuByID.Name);
+            Assert.True(host.MenuSet.TryGetMenu(entityID, out menuByID));
+            Assert.Equal("test2", menuByID.Name);
 
             host.Handle(new RemoveMenuCommand(entityID));
-            Assert.False(host.MenuSet.TryGetMenu(entityID, out MenuByID));
+            Assert.False(host.MenuSet.TryGetMenu(entityID, out menuByID));
             Assert.Equal(0, host.MenuSet.Count());
         }
         #endregion
@@ -66,7 +66,7 @@ namespace Anycmd.Tests
             var entityID = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
 
-            MenuState MenuByID;
+            MenuState menuByID;
             host.Handle(new AddMenuCommand(new MenuCreateInput
             {
                 Id = entityID,
@@ -93,7 +93,7 @@ namespace Anycmd.Tests
             Assert.NotNull(host.GetRequiredService<IRepository<Menu>>().GetByKey(entityID));
             Assert.NotNull(host.GetRequiredService<IRepository<Menu>>().GetByKey(entityID2));
             Assert.Equal(entityID, host.GetRequiredService<IRepository<Menu>>().GetByKey(entityID2).ParentID.Value);
-            Assert.True(host.MenuSet.TryGetMenu(entityID, out MenuByID));
+            Assert.True(host.MenuSet.TryGetMenu(entityID, out menuByID));
             bool catched = false;
             try
             {

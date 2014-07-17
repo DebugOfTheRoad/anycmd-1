@@ -15,7 +15,7 @@ namespace Anycmd.Web.Mvc
         protected EntityTypeState GetEntityType(string codespace, string entityTypeCode)
         {
             EntityTypeState entityTypeEntityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType(codespace, entityTypeCode, out entityTypeEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType(codespace, entityTypeCode, out entityTypeEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }

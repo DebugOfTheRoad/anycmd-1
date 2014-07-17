@@ -11,7 +11,7 @@ namespace Anycmd.Host.AC.MessageHandlers
     using System.Linq;
 
 
-    public class AddPasswordCommandHandler : CommandHandler<AddPasswordCommand>
+    public class AddPasswordCommandHandler : CommandHandler<AssignPasswordCommand>
     {
         private readonly AppHost host;
 
@@ -20,7 +20,7 @@ namespace Anycmd.Host.AC.MessageHandlers
             this.host = host;
         }
 
-        public override void Handle(AddPasswordCommand command)
+        public override void Handle(AssignPasswordCommand command)
         {
             var accountRepository = host.GetRequiredService<IRepository<Account>>();
             if (string.IsNullOrEmpty(command.Input.LoginName))
@@ -44,11 +44,11 @@ namespace Anycmd.Host.AC.MessageHandlers
             }
             bool loginNameChanged = !string.Equals(command.Input.LoginName, entity.LoginName);
             AccountState developer;
-            if (host.SysUsers.TryGetDevAccount(command.Input.Id, out developer) && !host.UserSession.IsDeveloper())
+            if (host.SysUsers.TryGetDevAccount(command.Input.Id, out developer) && !host.User.IsDeveloper())
             {
                 throw new ValidationException("对不起，您不能修改开发人员的密码。");
             }
-            if (!host.UserSession.IsDeveloper() && "admin".Equals(entity.LoginName, StringComparison.OrdinalIgnoreCase))
+            if (!host.User.IsDeveloper() && "admin".Equals(entity.LoginName, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ValidationException("对不起，您无权修改admin账户的密码");
             }

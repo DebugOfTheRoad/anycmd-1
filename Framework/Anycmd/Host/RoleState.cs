@@ -22,8 +22,7 @@ namespace Anycmd.Host
                 CreateOn = role.CreateOn,
                 IsEnabled = role.IsEnabled,
                 Icon = role.Icon,
-                SortCode = role.SortCode,
-                PrivilegeState = role.PrivilegeState
+                SortCode = role.SortCode
             };
         }
 
@@ -32,7 +31,6 @@ namespace Anycmd.Host
         public string CategoryCode { get; private set; }
         public DateTime? CreateOn { get; private set; }
         public int IsEnabled { get; private set; }
-        public int? PrivilegeState { get; private set; }
         public string Icon { get; private set; }
         public int SortCode { get; private set; }
 
@@ -59,7 +57,6 @@ namespace Anycmd.Host
             var right = (RoleState)obj;
 
             return left.Id == right.Id &&
-                left.PrivilegeState == right.PrivilegeState &&
                 left.Name == right.Name &&
                 left.CategoryCode == right.CategoryCode &&
                 left.IsEnabled == right.IsEnabled &&

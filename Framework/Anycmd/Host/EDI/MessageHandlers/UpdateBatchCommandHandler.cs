@@ -30,7 +30,6 @@ namespace Anycmd.Host.EDI.MessageHandlers
             batchRepository.Update(entity);
             batchRepository.Context.Commit();
 
-            host.PublishOperatedEvent(command.Input.Id);
             host.EventBus.Publish(new BatchUpdatedEvent(entity));
             host.EventBus.Commit();
         }

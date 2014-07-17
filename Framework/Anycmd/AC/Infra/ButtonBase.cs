@@ -1,6 +1,7 @@
 ﻿
 namespace Anycmd.AC.Infra
 {
+    using Exceptions;
     using Model;
 
     /// <summary>
@@ -9,6 +10,7 @@ namespace Anycmd.AC.Infra
     public abstract class ButtonBase : EntityBase, IButton
     {
         private string _code;
+        private string _name;
 
         protected ButtonBase()
         {
@@ -28,10 +30,11 @@ namespace Anycmd.AC.Infra
             get { return _code; }
             set
             {
-                if (value != null)
+                if (string.IsNullOrEmpty(value))
                 {
-                    value = value.Trim();
+                    throw new ValidationException("编码是必须的");
                 }
+                value = value.Trim();
                 if (value != _code)
                 {
                     _code = value;
@@ -41,7 +44,20 @@ namespace Anycmd.AC.Infra
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("名称是必须的");
+                }
+                if (value != _name)
+                {
+                    _name = value;
+                }
+            }
+        }
         /// <summary>
         /// 
         /// </summary>

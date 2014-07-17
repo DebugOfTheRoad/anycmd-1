@@ -6,6 +6,9 @@ namespace Anycmd.Host
     using System;
     using Util;
 
+    /// <summary>
+    /// <see cref="IFunction"/>
+    /// </summary>
     public sealed class FunctionState : IFunction
     {
         private Guid _resourceTypeID;

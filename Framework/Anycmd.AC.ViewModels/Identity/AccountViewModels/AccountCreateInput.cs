@@ -29,7 +29,7 @@ namespace Anycmd.AC.Identity.ViewModels.AccountViewModels
         /// 
         /// </summary>
         [Required]
-        public Guid? ContractorID { get; set; }
+        public Guid ContractorID { get; set; }
         /// <summary>
         /// 
         /// </summary>

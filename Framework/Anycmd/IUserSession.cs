@@ -2,47 +2,32 @@
 namespace Anycmd
 {
     using Host;
-    using System;
+    using System.Collections.Generic;
     using System.Security.Principal;
 
+    /// <summary>
+    /// 用户会话。起标识用户的作用，在AC命名空间下会往这个接口上扩展一些AC方面的方法。
+    /// </summary>
     public interface IUserSession
     {
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        AccountState GetAccount();
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        AccountState GetContractor();
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        Guid GetAccountID();
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         AppHost AppHost { get; }
         /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        T GetData<T>(string key);
-        /// <summary>
-        /// 
+        /// 当事人
         /// </summary>
         IPrincipal Principal { get; }
         /// <summary>
+        /// 工人
+        /// </summary>
+        /// <returns></returns>
+        AccountState Worker { get; }
+
+        /// <summary>
         /// 
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="data"></param>
-        void SetData(string key, object data);
+        IReadOnlyCollection<PrivilegeBigramState> AccountPrivileges { get; }
     }
 }

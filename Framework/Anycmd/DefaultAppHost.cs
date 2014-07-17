@@ -8,7 +8,7 @@ namespace Anycmd
     using Host.AC;
     using Host.AC.Identity;
     using Host.AC.Infra;
-    using Host.AC.MemorySets;
+    using Host.AC.MemorySets.Impl;
     using Host.AC.MessageHandlers;
     using Host.Rdb;
     using Logging;
@@ -26,7 +26,6 @@ namespace Anycmd
             base.CommandBus = new DirectCommandBus(this.MessageDispatcher);
             this.EventBus = new DirectEventBus(this.MessageDispatcher);
 
-            base.UserSession = new DefaultUserSession(this);
             base.Rdbs = new Rdbs(this);
             base.DbTables = new DbTables(this);
             base.DbViews = new DbViews(this);
@@ -55,13 +54,14 @@ namespace Anycmd
             this.AddDefaultService<ISecurityService>(container, new DefaultSecurityService());
             this.AddDefaultService<IPasswordEncryptionService>(container, new PasswordEncryptionService(this));
 
+            base.MessageDispatcher.Register(new AccountLoginedEventHandler(this));
+            base.MessageDispatcher.Register(new AccountLogoutedEventHandler(this));
+            base.MessageDispatcher.Register(new AddVisitingLogCommandHandler(this));
             base.MessageDispatcher.Register(new AddAccountCommandHandler(this));
             base.MessageDispatcher.Register(new UpdateAccountCommandHandler(this));
             base.MessageDispatcher.Register(new RemoveAccountCommandHandler(this));
             base.MessageDispatcher.Register(new AddPasswordCommandHandler(this));
             base.MessageDispatcher.Register(new ChangePasswordCommandHandler(this));
-            base.MessageDispatcher.Register(new AccountSignInCommandHandler(this));
-            base.MessageDispatcher.Register(new AccountSignOutCommandHandler(this));
             base.MessageDispatcher.Register(new SaveHelpCommandHandler(this));
 
             this.MessageDispatcher.Register(new OperatedEventHandler(this));

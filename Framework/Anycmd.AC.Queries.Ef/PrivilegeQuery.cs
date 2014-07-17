@@ -34,7 +34,7 @@ namespace Anycmd.AC.Services.Ef
             Func<SqlFilter> filter = () =>
             {
                 List<SqlParameter> parameters = new List<SqlParameter>();
-                string filterString = " where (a.ContractorName like @key or a.ContractorCode like @key)";
+                string filterString = " where (a.Name like @key or a.Code like @key or a.LoginName like @key)";
                 parameters.Add(new SqlParameter("key", "%" + key + "%"));
                 if (!includeDescendants)
                 {

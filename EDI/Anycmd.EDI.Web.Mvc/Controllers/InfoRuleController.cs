@@ -29,7 +29,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static InfoRuleController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "InfoRule", out infoRuleEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "InfoRule", out infoRuleEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -146,7 +146,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             EntityTypeState infoRuleEntityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "InfoRule", out infoRuleEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "InfoRule", out infoRuleEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -160,7 +160,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             int pageIndex = requestData.pageIndex ?? 0;
             int pageSize = requestData.pageSize ?? 10;
-            var queryable = NodeHost.Instance.InfoRules.Select(a => InfoRuleTr.Create(AppHostInstance, a)).AsQueryable();
+            var queryable = NodeHost.Instance.InfoRules.Select(a => InfoRuleTr.Create(Host, a)).AsQueryable();
             foreach (var filter in requestData.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);
@@ -233,7 +233,6 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 GetRequiredService<IRepository<InfoRule>>().Update(entity);
                 responseResult.id = entity.Id.ToString();
                 responseResult.success = true;
-                AppHostInstance.PublishOperatedEvent(requestModel.Id);
 
                 coordinator.Commit();
             }

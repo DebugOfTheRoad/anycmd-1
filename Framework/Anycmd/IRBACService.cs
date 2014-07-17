@@ -1,7 +1,7 @@
 ﻿
 namespace Anycmd
 {
-    using Anycmd.Host;
+    using Host;
     using Host.AC;
     using Host.AC.Identity;
     using Host.AC.ValueObjects;

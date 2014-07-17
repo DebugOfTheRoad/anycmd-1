@@ -15,7 +15,6 @@
           <Property Name="OrganizationCode" Type="varchar" MaxLength="50" />
           <Property Name="ShortName" Type="nvarchar" MaxLength="50" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="PrivilegeState" Type="int" />
           <Property Name="IsEnabled" Type="int" Nullable="false" />
           <Property Name="SortCode" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" />
@@ -54,7 +53,6 @@
           <Property Name="CategoryCode" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="NumberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="PrivilegeState" Type="int" />
           <Property Name="AllowEdit" Type="int" Nullable="false" />
           <Property Name="AllowDelete" Type="int" Nullable="false" />
           <Property Name="SortCode" Type="int" Nullable="false" />
@@ -69,10 +67,30 @@
           <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
           <Property Name="RowVersionID" Type="timestamp" StoreGeneratedPattern="Computed" />
         </EntityType>
+        <EntityType Name="UserSession">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AuthenticationType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsAuthenticated" Type="bit" Nullable="false" />
+          <Property Name="LoginName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="WorkerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="IsEnabled" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="CreateUserID" Type="uniqueidentifier" />
+          <Property Name="CreateBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedUserID" Type="uniqueidentifier" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="RowVersionID" Type="timestamp" StoreGeneratedPattern="Computed" />
+        </EntityType>
         <EntityContainer Name="ACTableModelStoreContainer">
           <EntitySet Name="Group" EntityType="Self.Group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PrivilegeBigram" EntityType="Self.PrivilegeBigram" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserSession" EntityType="Self.UserSession" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -87,7 +105,6 @@
           <Property Name="TypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ShortName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PrivilegeState" Type="Int32" />
           <Property Name="IsEnabled" Type="Int32" Nullable="false" />
           <Property Name="SortCode" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -108,7 +125,6 @@
           <Property Name="CategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="NumberID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PrivilegeState" Type="Int32" />
           <Property Name="AllowEdit" Type="Int32" Nullable="false" />
           <Property Name="AllowDelete" Type="Int32" Nullable="false" />
           <Property Name="SortCode" Type="Int32" Nullable="false" />
@@ -127,6 +143,7 @@
           <EntitySet Name="Groups" EntityType="Self.Group" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="PrivilegeBigrams" EntityType="AnycmdModel.PrivilegeBigram" />
+          <EntitySet Name="UserSessions" EntityType="AnycmdModel.UserSession" />
         </EntityContainer>
         <EntityType Name="PrivilegeBigram">
           <Key>
@@ -139,6 +156,25 @@
           <Property Name="ObjectInstanceID" Type="Guid" Nullable="false" />
           <Property Name="PrivilegeOrientation" Type="Int32" Nullable="false" />
           <Property Name="PrivilegeConstraint" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="CreateUserID" Type="Guid" />
+          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Guid" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RowVersionID" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="UserSession">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="AuthenticationType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsAuthenticated" Type="Boolean" Nullable="false" />
+          <Property Name="LoginName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkerID" Type="Guid" Nullable="false" />
+          <Property Name="IsEnabled" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="CreateOn" Type="DateTime" Precision="3" />
           <Property Name="CreateUserID" Type="Guid" />
           <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -162,7 +198,6 @@
                 <ScalarProperty Name="TypeCode" ColumnName="TypeCode" />
                 <ScalarProperty Name="ShortName" ColumnName="ShortName" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="PrivilegeState" ColumnName="PrivilegeState" />
                 <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
                 <ScalarProperty Name="SortCode" ColumnName="SortCode" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -183,7 +218,6 @@
                 <ScalarProperty Name="CategoryCode" ColumnName="CategoryCode" />
                 <ScalarProperty Name="NumberID" ColumnName="NumberID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="PrivilegeState" ColumnName="PrivilegeState" />
                 <ScalarProperty Name="AllowEdit" ColumnName="AllowEdit" />
                 <ScalarProperty Name="AllowDelete" ColumnName="AllowDelete" />
                 <ScalarProperty Name="SortCode" ColumnName="SortCode" />
@@ -220,6 +254,26 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="UserSessions">
+            <EntityTypeMapping TypeName="AnycmdModel.UserSession">
+              <MappingFragment StoreEntitySet="UserSession">
+                <ScalarProperty Name="RowVersionID" ColumnName="RowVersionID" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="IsAuthenticated" ColumnName="IsAuthenticated" />
+                <ScalarProperty Name="AuthenticationType" ColumnName="AuthenticationType" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -243,9 +297,10 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram DiagramId="0a093552d4e242ca87b0a83d8d1917f6" Name="Diagram1">
-        <EntityTypeShape EntityType="AnycmdModel.Group" Width="1.75" PointX="2.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Role" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.PrivilegeBigram" Width="1.75" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="AnycmdModel.Group" Width="1.75" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Role" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.PrivilegeBigram" Width="1.75" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AnycmdModel.UserSession" Width="1.75" PointX="0.75" PointY="5.75" />
       </Diagram>
     </Diagrams>
   </Designer>

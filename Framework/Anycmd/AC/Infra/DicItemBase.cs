@@ -11,6 +11,7 @@ namespace Anycmd.AC.Infra
     public abstract class DicItemBase : EntityBase, IDicItem
     {
         private string _code;
+        private string _name;
         private Guid _dicID;
 
         protected DicItemBase()
@@ -40,7 +41,21 @@ namespace Anycmd.AC.Infra
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("名称是必须的");
+                }
+                if (value != _name)
+                {
+                    _name = value;
+                }
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -63,7 +78,7 @@ namespace Anycmd.AC.Infra
                 {
                     if (_dicID != Guid.Empty)
                     {
-                        throw new CoreException("不能更改所属字典");
+                        throw new CoreException("不能更改字典项的所属字典");
                     }
                     _dicID = value;
                 }

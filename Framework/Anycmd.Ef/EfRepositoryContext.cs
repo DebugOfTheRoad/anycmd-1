@@ -105,16 +105,16 @@ namespace Anycmd.Ef
             if ((obj is IEntityBase))
             {
                 var entity = (obj as IEntityBase);
-                if (entity.CreateUserID == null && host.UserSession.Principal.Identity.IsAuthenticated)
+                if (entity.CreateUserID == null && host.User.Principal.Identity.IsAuthenticated)
                 {
-                    var user = host.UserSession;
+                    var user = host.User;
                     if (string.IsNullOrEmpty(entity.CreateBy))
                     {
-                        entity.CreateBy = user.GetAccount().Name;
+                        entity.CreateBy = user.Worker.Name;
                     }                    
                     if (!entity.CreateUserID.HasValue)
                     {
-                        entity.CreateUserID = user.GetAccountID();
+                        entity.CreateUserID = user.Worker.Id;
                     }
                     if (!entity.CreateOn.HasValue)
                     {
@@ -135,16 +135,16 @@ namespace Anycmd.Ef
             if ((obj is IEntityBase) && state == EntityState.Modified)
             {
                 var entity = (obj as IEntityBase);
-                if (entity.ModifiedUserID == null && host.UserSession.Principal.Identity.IsAuthenticated)
+                if (entity.ModifiedUserID == null && host.User.Principal.Identity.IsAuthenticated)
                 {
-                    var user = host.UserSession;
+                    var user = host.User;
                     if (string.IsNullOrEmpty(entity.ModifiedBy))
                     {
-                        entity.ModifiedBy = user.GetAccount().Name;
+                        entity.ModifiedBy = user.Worker.Name;
                     }
                     if (!entity.ModifiedUserID.HasValue)
                     {
-                        entity.ModifiedUserID = user.GetAccountID();
+                        entity.ModifiedUserID = user.Worker.Id;
                     }
                     if (!entity.ModifiedOn.HasValue)
                     {

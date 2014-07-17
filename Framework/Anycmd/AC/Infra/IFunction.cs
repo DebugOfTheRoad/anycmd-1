@@ -4,7 +4,12 @@ namespace Anycmd.AC.Infra
     using System;
 
     /// <summary>
-    /// 定义操作、功能
+    /// 定义操作、功能、函数、逻辑单元。一个Function标识的是一个输入输入装置，是一个逻辑单元。
+    /// <remarks>
+    /// 功能是一个程序的可执行映像，被调用时能为用户执行某些引起系统状态变化的操作
+    /// （判定是否引起了系统变化的标准是什么？需要具体分析，如果系统中有“访问计数”
+    /// 功能的话，那么只读的操作也是引起了系统的状态变化的）。
+    /// </remarks>
     /// </summary>
     public interface IFunction
     {

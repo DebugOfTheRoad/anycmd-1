@@ -37,7 +37,7 @@ namespace Anycmd.Tests
             FunctionState functionByID;
             Assert.Equal(1, host.FunctionSet.Count());
             Assert.True(host.FunctionSet.TryGetFunction(entityID, out functionByID));
-            PageState PageByID;
+            PageState pageByID;
             host.Handle(new AddPageCommand(new PageCreateInput
             {
                 Id = entityID,
@@ -45,7 +45,7 @@ namespace Anycmd.Tests
                 Tooltip = null
             }));
             Assert.Equal(1, host.PageSet.Count());
-            Assert.True(host.PageSet.TryGetPage(entityID, out PageByID));
+            Assert.True(host.PageSet.TryGetPage(entityID, out pageByID));
             bool catched = false;
             try
             {
@@ -71,10 +71,10 @@ namespace Anycmd.Tests
                 Tooltip = null
             }));
             Assert.Equal(1, host.PageSet.Count());
-            Assert.True(host.PageSet.TryGetPage(entityID, out PageByID));
+            Assert.True(host.PageSet.TryGetPage(entityID, out pageByID));
 
             host.Handle(new RemovePageCommand(entityID));
-            Assert.False(host.PageSet.TryGetPage(entityID, out PageByID));
+            Assert.False(host.PageSet.TryGetPage(entityID, out pageByID));
             Assert.Equal(0, host.PageSet.Count());
         }
         #endregion

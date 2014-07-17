@@ -7,8 +7,6 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Host;
     using Host.AC;
     using Host.AC.Identity;
-    using Host.AC.Identity.Messages;
-    using Host.AC.Messages;
     using Identity.ViewModels.AccountViewModels;
     using Identity.ViewModels.ContractorViewModels;
     using MiniUI;
@@ -32,14 +30,13 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public AccountController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Account", out accountEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Account", out accountEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
         }
 
         #region Views
-
         [By("xuexs")]
         [Description("账户")]
         public ViewResultBase Index()
@@ -53,23 +50,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         {
             if (!string.IsNullOrEmpty(isTooltip))
             {
-                var data = GetRequiredService<IAccountQuery>().Get("AccountInfo", AppHostInstance.UserSession.GetAccountID());
-
-                return this.PartialView("Partials/Details", data);
-            }
-            else
-            {
-                return this.PartialView("Partials/Details");
-            }
-        }
-
-        [By("xuexs")]
-        [Description("当前登录账户信息")]
-        public ViewResultBase CurrentContractor(string isTooltip)
-        {
-            if (!string.IsNullOrEmpty(isTooltip))
-            {
-                var data = GetRequiredService<IAccountQuery>().Get("AccountInfo", AppHostInstance.UserSession.GetContractor().Id);
+                var data = GetRequiredService<IAccountQuery>().Get("AccountInfo", Host.User.Worker.Id);
 
                 return this.PartialView("Partials/Details", data);
             }
@@ -113,25 +94,18 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         {
             return ViewResult();
         }
-
-        [By("xuexs")]
-        [Description("账户列表")]
-        public ViewResultBase ContractorAccounts()
-        {
-            return ViewResult();
-        }
         #endregion
 
         [By("xuexs")]
         [Description("修改指定账户的密码")]
         [HttpPost]
-        public ActionResult ChangePassword(PasswordSetInput input)
+        public ActionResult AssignPassword(PasswordAssignInput input)
         {
             if (!ModelState.IsValid)
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddPasswordCommand(input));
+            Host.AssignPassword(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -145,12 +119,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 throw new ValidationException("两次输入的密码不一致");
             }
-            AppHostInstance.Handle(new ChangePasswordCommand(new PasswordChangeInput
+            Host.ChangePassword(new PasswordChangeInput
             {
-                LoginName = AppHostInstance.UserSession.Principal.Identity.Name,
+                LoginName = Host.User.Principal.Identity.Name,
                 OldPassword = oldPassword,
                 NewPassword = password
-            }));
+            });
 
             return this.JsonResult(new ResponseData { success = true });
         }
@@ -203,14 +177,14 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Account", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Account", out entityType))
             {
                 throw new CoreException("意外的实体类型AC.Account");
             }
             foreach (var filter in requestModel.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Account实体类型属性" + filter.field);
                 }
@@ -221,7 +195,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             // 如果组织机构为空则需要检测是否是插法人员，因为只有开发人员才可以看到全部用户
             if (string.IsNullOrEmpty(requestModel.organizationCode))
             {
-                if (!AppHostInstance.UserSession.IsDeveloper())
+                if (!Host.User.IsDeveloper())
                 {
                     throw new ValidationException("对不起，您没有查看全部账户的权限");
                 }
@@ -281,7 +255,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddAccountCommand(input));
+            Host.AddAccount(input);
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -295,7 +269,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateAccountCommand(requestModel));
+            Host.UpdateAccount(requestModel);
 
             return this.JsonResult(new ResponseData { success = true, id = requestModel.Id });
         }
@@ -361,7 +335,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveAccountCommand(item));
+                Host.RemoveAccount(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -390,17 +364,17 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(id));
+                            Host.RemovePrivilegeBigram(id);
                         }
                         else
                         {
                             if (row.ContainsKey("PrivilegeConstraint"))
                             {
-                                AppHostInstance.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
+                                Host.UpdatePrivilegeBigram(new PrivilegeBigramUpdateInput
                                 {
                                     Id = id,
                                     PrivilegeConstraint = row["PrivilegeConstraint"].ToString()
-                                }));
+                                });
                             }
                         }
                     }
@@ -420,7 +394,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                         {
                             createInput.PrivilegeConstraint = row["PrivilegeConstraint"].ToString();
                         }
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(createInput));
+                        Host.AddPrivilegeBigram(createInput);
                     }
                 }
             }
@@ -452,19 +426,19 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(id));
+                            Host.RemovePrivilegeBigram(id);
                         }
                     }
                     else if (isAssigned)
                     {
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(new PrivilegeBigramCreateInput
+                        Host.AddPrivilegeBigram(new PrivilegeBigramCreateInput
                         {
                             Id = id,
                             ObjectType = ACObjectType.Group.ToName(),
                             ObjectInstanceID = new Guid(row["GroupID"].ToString()),
                             SubjectInstanceID = new Guid(row["AccountID"].ToString()),
                             SubjectType = ACSubjectType.Account.ToName()
-                        }));
+                        });
                     }
                 }
             }
@@ -485,7 +459,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             List<Dictionary<string, object>> data;
             if (string.IsNullOrEmpty(requestData.organizationCode))
             {
-                if (!AppHostInstance.UserSession.IsDeveloper())
+                if (!Host.User.IsDeveloper())
                 {
                     throw new ValidationException("对不起，您没有查看全部管理员的权限");
                 }
@@ -517,7 +491,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             // 如果组织机构为空则需要检测是否是超级管理员，因为只有超级管理员才可以看到全部包工头
             if (string.IsNullOrEmpty(requestData.organizationCode))
             {
-                if (!AppHostInstance.UserSession.IsDeveloper())
+                if (!Host.User.IsDeveloper())
                 {
                     throw new ValidationException("对不起，您没有查看全部包工头的权限");
                 }

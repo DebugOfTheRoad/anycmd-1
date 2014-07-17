@@ -13,7 +13,6 @@ namespace Anycmd.Host.AC.ValueObjects
         int IsEnabled { get; }
         DateTime? LockEndTime { get; }
         DateTime? LockStartTime { get; }
-        Guid? ContractorID { get; }
         string Code { get; }
         string Email { get; }
         string Mobile { get; }

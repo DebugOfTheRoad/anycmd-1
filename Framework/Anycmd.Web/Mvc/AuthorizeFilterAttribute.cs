@@ -3,10 +3,7 @@ namespace Anycmd.Web.Mvc
 {
     using Exceptions;
     using Host;
-    using Logging;
     using System;
-    using System.Net;
-    using System.Web;
     using System.Web.Mvc;
     using ViewModel;
 
@@ -73,7 +70,7 @@ namespace Anycmd.Web.Mvc
             }
 
             #region 登录验证
-            if (!filterContext.HttpContext.User.Identity.IsAuthenticated)
+            if (!host.User.Principal.Identity.IsAuthenticated)
             {
                 if (isAjaxRequest)
                 {
@@ -113,7 +110,7 @@ namespace Anycmd.Web.Mvc
             {
                 return;
             }
-            if (!host.UserSession.Permit(function, null))
+            if (!host.User.Permit(function, null))
             {
                 if (isAjaxRequest)
                 {
@@ -129,47 +126,6 @@ namespace Anycmd.Web.Mvc
                 return;
             }
             #endregion
-
-            // 初始化操作日志
-            host.GetRequiredService<IOperationLogStorage>().Set(new FunctionDescriptor
-            {
-                AccountID = host.UserSession.GetAccountID(),
-                LoginName = host.UserSession.Principal.Identity.Name,
-                AppSystemID = host.AppSystemSet.SelfAppSystem.Id,
-                AppSystemName = host.AppSystemSet.SelfAppSystem.Name,
-                UserName = host.UserSession.GetAccount().Name,
-                IPAddress = GetClientIP(),
-                CreateOn = DateTime.Now,
-                EntityTypeID = entityType.Id,
-                EntityTypeName = entityType.Name,
-                FunctionDescription = function.Description,
-                FunctionID = function.Id,
-                ResourceTypeID = resource.Id,
-                ResourceName = resource.Name
-            });
-        }
-
-        private string GetClientIP()
-        {
-            if (HttpContext.Current == null)
-            {
-                return IPAddress.Loopback.ToString();
-            }
-            string ip = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            if (null == ip || ip == String.Empty)
-            {
-                ip = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            }
-            if (null == ip || ip == String.Empty)
-            {
-                ip = HttpContext.Current.Request.UserHostAddress;
-            }
-            if (ip == "::1")
-            {
-                ip = "127.0.0.1";
-            }
-
-            return ip;
         }
     }
 }

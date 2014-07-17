@@ -41,7 +41,7 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
         [CacheFilter]
         public ActionResult LogOn()
         {
-            if (User.Identity.IsAuthenticated)
+            if (Host.User.Principal.Identity.IsAuthenticated)
             {
                 return this.RedirectToAction("Index");
             }
@@ -53,11 +53,11 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
         [Description("获取登录信息")]
         public ActionResult GetAccountInfo()
         {
-            if (User.Identity.IsAuthenticated)
+            if (Host.User.Principal.Identity.IsAuthenticated)
             {
-                var account = CurrentUser.GetAccount();
+                var account = Host.User.Worker;
                 var menuList = new List<IMenu>();
-                foreach (var item in CurrentUser.GetAllMenus())
+                foreach (var item in Host.User.GetAllMenus())
                 {
                     menuList.Add(item);
                 }
@@ -75,14 +75,13 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
                 });
                 return this.JsonResult(new
                 {
-                    isLogined = User.Identity.IsAuthenticated,
-                    loginName = CurrentUser.IsDeveloper() ? string.Format("{0}(开发人员)", account.LoginName) : account.LoginName,
-                    contractorName = CurrentUser.GetContractor().Name,
+                    isLogined = Host.User.Principal.Identity.IsAuthenticated,
+                    loginName = Host.User.IsDeveloper() ? string.Format("{0}(开发人员)", account.LoginName) : account.LoginName,
                     wallpaper = account.Wallpaper ?? string.Empty,
                     backColor = account.BackColor ?? string.Empty,
                     menus = menus,
-                    roles = CurrentUser.GetRoles(),
-                    groups = CurrentUser.GetGroups()
+                    roles = Host.User.GetRoles(),
+                    groups = Host.User.GetGroups()
                 });
             }
             else
@@ -98,7 +97,7 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
         [IgnoreAuth]
         public ActionResult SignIn(string loginName, string password, string rememberMe)
         {
-            AppHostInstance.Handle(new AccountSignInCommand(loginName, password, rememberMe));
+            Host.SignIn(loginName, password, rememberMe);
 
             return this.JsonResult(new ResponseData { success = true });
         }
@@ -108,7 +107,7 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
         [HttpPost]
         public ActionResult SignOut()
         {
-            AppHostInstance.Handle(new AccountSignOutCommand());
+            Host.SignOut();
 
             return this.JsonResult(new ResponseData { success = true });
         }

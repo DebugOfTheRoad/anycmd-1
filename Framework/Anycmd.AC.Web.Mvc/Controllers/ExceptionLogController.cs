@@ -23,7 +23,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public ExceptionLogController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "ExceptionLog", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "ExceptionLog", out entityType))
             {
                 throw new CoreException("意外的实体类型");
             }

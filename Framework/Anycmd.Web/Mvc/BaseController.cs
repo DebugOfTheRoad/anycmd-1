@@ -1,7 +1,6 @@
 ﻿
 namespace Anycmd.Web.Mvc
 {
-    using System.Security.Principal;
     using System.Web.Mvc;
     using System.Web.Routing;
 
@@ -11,27 +10,11 @@ namespace Anycmd.Web.Mvc
     public abstract class BaseController : Controller
     {
 
-        protected static AppHost AppHostInstance
+        protected static AppHost Host
         {
             get
             {
                 return System.Web.HttpContext.Current.Application["AppHostInstance"] as AppHost;
-            }
-        }
-
-        public new IPrincipal User
-        {
-            get
-            {
-                return AppHostInstance.UserSession.Principal;
-            }
-        }
-
-        public IUserSession CurrentUser
-        {
-            get
-            {
-                return AppHostInstance.UserSession;
             }
         }
 
@@ -40,7 +23,7 @@ namespace Anycmd.Web.Mvc
         /// </summary>
         protected T GetRequiredService<T>() where T : class
         {
-            return AppHostInstance.GetRequiredService<T>();
+            return Host.GetRequiredService<T>();
         }
 
         protected ViewResultBase ViewResult()

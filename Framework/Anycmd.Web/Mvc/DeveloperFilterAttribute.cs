@@ -20,7 +20,7 @@ namespace Anycmd.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var user = (filterContext.HttpContext.Application["AppHostInstance"] as AppHost).UserSession;
+            var user = (filterContext.HttpContext.Application["AppHostInstance"] as AppHost).User;
             if (!user.IsDeveloper())
             {
                 var request = filterContext.HttpContext.Request;

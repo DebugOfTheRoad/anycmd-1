@@ -24,7 +24,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public ResourceTypeController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "ResourceType", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "ResourceType", out entityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -97,7 +97,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistResources(requestModel);
+            var data = Host.GetPlistResources(requestModel);
 
             return this.JsonResult(new MiniGrid<ResourceTypeTr> { total = requestModel.total.Value, data = data });
         }
@@ -110,7 +110,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistAppSystemResources(requestModel);
+            var data = Host.GetPlistAppSystemResources(requestModel);
 
             return this.JsonResult(new MiniGrid<ResourceTypeTr> { total = requestModel.total.Value, data = data });
         }
@@ -125,7 +125,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddResourceCommand(input));
+            Host.Handle(new AddResourceCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -140,7 +140,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateResourceCommand(input));
+            Host.Handle(new UpdateResourceCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -167,7 +167,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveResourceTypeCommand(item));
+                Host.Handle(new RemoveResourceTypeCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

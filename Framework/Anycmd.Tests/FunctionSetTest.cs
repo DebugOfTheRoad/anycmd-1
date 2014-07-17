@@ -142,7 +142,8 @@ namespace Anycmd.Tests
             {
                 Id = appsystemID,
                 Code = "app1",
-                Name = "测试1"
+                Name = "测试1",
+                PrincipalID = host.SysUsers.GetDevAccounts().First().Id
             }));
 
             bool catched = false;

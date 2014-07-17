@@ -11,7 +11,8 @@ namespace Anycmd.AC.Identity
     public abstract class AccountBase : EntityBase, IAccount
     {
         private int numberID;
-        string loginName;
+        private string loginName;
+        private string password;
 
         /// <summary>
         /// 说明
@@ -36,11 +37,6 @@ namespace Anycmd.AC.Identity
         }
 
         /// <summary>
-        /// 账户所属用户用户ID
-        /// </summary>
-        public virtual Guid? ContractorID { get; set; }
-
-        /// <summary>
         /// 审核状态
         /// </summary>
         public virtual string AuditState { get; set; }
@@ -61,9 +57,18 @@ namespace Anycmd.AC.Identity
             }
         }
 
-        public virtual int? PrivilegeState { get; set; }
-
-        public virtual string Password { get; set; }
+        public virtual string Password
+        {
+            get { return password; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("密码不能为空");
+                }
+                password = value;
+            }
+        }
 
         /// <summary>
         /// 安全等级

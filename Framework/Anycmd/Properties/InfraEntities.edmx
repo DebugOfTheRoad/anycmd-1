@@ -175,26 +175,16 @@
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ParentCode" Type="varchar" MaxLength="50" />
           <Property Name="CategoryCode" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="PrincipalID" Type="uniqueidentifier" />
+          <Property Name="ContractorID" Type="uniqueidentifier" />
           <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="ShortName" Type="nvarchar" MaxLength="50" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="PrivilegeState" Type="int" />
           <Property Name="OuterPhone" Type="varchar" MaxLength="50" />
           <Property Name="InnerPhone" Type="varchar" MaxLength="50" />
           <Property Name="Fax" Type="varchar" MaxLength="50" />
           <Property Name="Postalcode" Type="varchar" MaxLength="50" />
           <Property Name="Address" Type="nvarchar" MaxLength="200" />
           <Property Name="WebPage" Type="varchar" MaxLength="256" />
-          <Property Name="LeadershipID" Type="uniqueidentifier" />
-          <Property Name="AssistantLeadershipID" Type="uniqueidentifier" />
-          <Property Name="ManagerID" Type="uniqueidentifier" />
-          <Property Name="AssistantManagerID" Type="uniqueidentifier" />
-          <Property Name="AccountingID" Type="uniqueidentifier" />
-          <Property Name="CashierID" Type="uniqueidentifier" />
-          <Property Name="FinancialID" Type="uniqueidentifier" />
-          <Property Name="Bank" Type="varchar" MaxLength="50" />
-          <Property Name="BankAccount" Type="varchar" MaxLength="50" />
           <Property Name="DeletionStateCode" Type="int" Nullable="false" />
           <Property Name="IsEnabled" Type="int" Nullable="false" />
           <Property Name="Icon" Type="varchar" MaxLength="200" />
@@ -689,26 +679,16 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="CategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ParentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContractorID" Type="Guid" />
           <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="PrincipalID" Type="Guid" />
           <Property Name="ShortName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PrivilegeState" Type="Int32" />
           <Property Name="OuterPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="InnerPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Fax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Postalcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="WebPage" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
-          <Property Name="LeadershipID" Type="Guid" />
-          <Property Name="AssistantLeadershipID" Type="Guid" />
-          <Property Name="ManagerID" Type="Guid" />
-          <Property Name="AssistantManagerID" Type="Guid" />
-          <Property Name="AccountingID" Type="Guid" />
-          <Property Name="CashierID" Type="Guid" />
-          <Property Name="FinancialID" Type="Guid" />
-          <Property Name="Bank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="BankAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DeletionStateCode" Type="Int32" Nullable="false" />
           <Property Name="IsEnabled" Type="Int32" Nullable="false" />
           <Property Name="Icon" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
@@ -1209,29 +1189,19 @@
           <EntitySetMapping Name="Organizations">
             <EntityTypeMapping TypeName="AnycmdModel.Organization">
               <MappingFragment StoreEntitySet="Organization">
+                <ScalarProperty Name="ContractorID" ColumnName="ContractorID" />
                 <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CategoryCode" ColumnName="CategoryCode" />
-                <ScalarProperty Name="PrincipalID" ColumnName="PrincipalID" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="ShortName" ColumnName="ShortName" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="PrivilegeState" ColumnName="PrivilegeState" />
                 <ScalarProperty Name="OuterPhone" ColumnName="OuterPhone" />
                 <ScalarProperty Name="InnerPhone" ColumnName="InnerPhone" />
                 <ScalarProperty Name="Fax" ColumnName="Fax" />
                 <ScalarProperty Name="Postalcode" ColumnName="Postalcode" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="WebPage" ColumnName="WebPage" />
-                <ScalarProperty Name="LeadershipID" ColumnName="LeadershipID" />
-                <ScalarProperty Name="AssistantLeadershipID" ColumnName="AssistantLeadershipID" />
-                <ScalarProperty Name="ManagerID" ColumnName="ManagerID" />
-                <ScalarProperty Name="AssistantManagerID" ColumnName="AssistantManagerID" />
-                <ScalarProperty Name="AccountingID" ColumnName="AccountingID" />
-                <ScalarProperty Name="CashierID" ColumnName="CashierID" />
-                <ScalarProperty Name="FinancialID" ColumnName="FinancialID" />
-                <ScalarProperty Name="Bank" ColumnName="Bank" />
-                <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
                 <ScalarProperty Name="DeletionStateCode" ColumnName="DeletionStateCode" />
                 <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
@@ -1358,18 +1328,18 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram DiagramId="027e1892ab0543529a35ea0861bcf6a7" Name="Diagram1" ZoomLevel="95">
-        <EntityTypeShape EntityType="AnycmdModel.AppSystem" Width="1.75" PointX="0.75" PointY="9.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Button" Width="1.5" PointX="7.5" PointY="18.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Dic" Width="1.5" PointX="11.75" PointY="6.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.DicItem" Width="1.5" PointX="14" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.EntityType" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Function" Width="1.5" PointX="5.25" PointY="12" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Menu" Width="1.5" PointX="3" PointY="19.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.OperationHelp" Width="1.5" PointX="7.5" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Organization" Width="1.875" PointX="2.75" PointY="2.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Page" Width="1.5" PointX="7.5" PointY="14.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.PageButton" Width="1.5" PointX="9.75" PointY="12.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="AnycmdModel.Property" Width="1.75" PointX="17" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.AppSystem" Width="1.75" PointX="8.75" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Button" Width="1.5" PointX="15.75" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Dic" Width="1.5" PointX="0.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.DicItem" Width="1.5" PointX="3" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.EntityType" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Function" Width="1.5" PointX="13.5" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Menu" Width="1.5" PointX="11.25" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.OperationHelp" Width="1.5" PointX="15.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Organization" Width="1.875" PointX="0.75" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Page" Width="1.5" PointX="15.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.PageButton" Width="1.5" PointX="18" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AnycmdModel.Property" Width="1.75" PointX="6" PointY="5.25" IsExpanded="true" />
         <AssociationConnector Association="AnycmdModel.FK_Menu_AppSystem" ManuallyRouted="false" />
         <AssociationConnector Association="AnycmdModel.FK_PageButton_Button" ManuallyRouted="false" />
         <AssociationConnector Association="AnycmdModel.FK_DicItem_Dic" ManuallyRouted="false" />
@@ -1381,7 +1351,7 @@
         <AssociationConnector Association="AnycmdModel.FK_Menu_Parent" ManuallyRouted="false" />
         <AssociationConnector Association="AnycmdModel.FK_PageButton_Page" ManuallyRouted="false" />
         <AssociationConnector Association="AnycmdModel.FK_Property_Property" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="AnycmdModel.ResourceType" Width="1.5" PointX="3" PointY="14.5" />
+        <EntityTypeShape EntityType="AnycmdModel.ResourceType" Width="1.5" PointX="11.25" PointY="4.75" />
         <AssociationConnector Association="AnycmdModel.FK_Resource_AppSystem" />
         <AssociationConnector Association="AnycmdModel.FK_Function_Resource" />
       </Diagram>

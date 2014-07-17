@@ -1,12 +1,12 @@
 ﻿
 namespace Anycmd.EDI.MessageProvider.SqlServer2008
 {
-    using Anycmd.Host.EDI;
-    using Anycmd.Host.EDI.Handlers;
-    using Anycmd.Host.EDI.Hecp;
-    using Anycmd.Host.EDI.Info;
     using Exceptions;
     using Extensions;
+    using Host.EDI;
+    using Host.EDI.Handlers;
+    using Host.EDI.Hecp;
+    using Host.EDI.Info;
     using Logging;
     using Rdb;
     using System;

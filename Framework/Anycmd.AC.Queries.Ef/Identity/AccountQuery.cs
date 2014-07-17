@@ -76,8 +76,8 @@ namespace Anycmd.AC.Identity.Queries.Ef
 			{
 				List<SqlParameter> parameters = new List<SqlParameter>();
 				var filterString =
-@" where (a.ContractorName like @key
-	or a.ContractorCode like @key
+@" where (a.Name like @key
+	or a.Code like @key
 	or a.LoginName like @key) and a.RoleID=@RoleID";
 				parameters.Add(new SqlParameter("key", "%" + key + "%"));
 				parameters.Add(new SqlParameter("RoleID", roleID));
@@ -95,8 +95,8 @@ namespace Anycmd.AC.Identity.Queries.Ef
 			{
 				List<SqlParameter> parameters = new List<SqlParameter>();
 				var filterString =
-@" where (a.ContractorName like @key
-	or a.ContractorCode like @key
+@" where (a.Name like @key
+	or a.Code like @key
 	or a.LoginName like @key) and a.GroupID=@GroupID";
 				parameters.Add(new SqlParameter("key", "%" + key + "%"));
 				parameters.Add(new SqlParameter("GroupID", groupID));

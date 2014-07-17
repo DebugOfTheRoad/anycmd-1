@@ -37,20 +37,7 @@
             <div field="IsEnabled" width="80" headeralign="center" allowsort="true">
                 账户有效状态
             </div>
-            <div header="用户信息" headeralign="center">
-                <div property="columns">
-                    <div field="UserOrganizationName" width="120" headeralign="center" allowsort="true">
-                        来自
-                    </div>
-                    <div field="ContractorName" width="120" headeralign="center" allowsort="true">
-                        姓名
-                    </div>
-                    <div field="IsContractorEnabled" width="80" headeralign="center" allowsort="true">
-                        有效状态
-                    </div>
-                    <div type="expandcolumn" width="80">全部账户</div>
-                </div>
-            </div>
+            <div type="expandcolumn" width="80">工人列表</div>
             <div field="CreateBy" width="80" headeralign="center" allowsort="true">
                 添加人
             </div>
@@ -62,7 +49,7 @@
 </div>
 <div id="@(prifix)showRowDetail" style="display:none;">
     <div id="@(prifix)userDetail" class="mini-tabs" style="width: 100%;" activeindex="0">
-        <div name="accountTab" title="本人的全部账户" iconstyle="background:url(/content/icons/16x16/@accountTabPage.Icon)">
+        <div name="accountTab" title="工人列表" iconstyle="background:url(/content/icons/16x16/@accountTabPage.Icon)">
             <div class="mini-fit">
                 <div id="@(prifix)dgUserAccount" class="mini-datagrid" style="height: 150px; width: 60%;"
                      url="@Url.Action("GetAccountsByContractorID", "Account", new { area = "AC" })"

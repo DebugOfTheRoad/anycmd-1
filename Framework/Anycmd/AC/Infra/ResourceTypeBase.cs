@@ -1,8 +1,9 @@
-﻿using System;
-
+﻿
 namespace Anycmd.AC.Infra
 {
+    using Exceptions;
     using Model;
+    using System;
 
     /// <summary>
     /// 资源基类
@@ -10,6 +11,7 @@ namespace Anycmd.AC.Infra
     public abstract class ResourceTypeBase : EntityBase, IResourceType
     {
         private string _code;
+        private string _name;
 
         /// <summary>
         /// 
@@ -35,7 +37,21 @@ namespace Anycmd.AC.Infra
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("名称是必须的");
+                }
+                if (value != _name)
+                {
+                    _name = value;
+                }
+            }
+        }
 
         /// <summary>
         /// 

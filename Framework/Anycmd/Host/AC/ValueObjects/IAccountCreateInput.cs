@@ -15,7 +15,6 @@ namespace Anycmd.Host.AC.ValueObjects
         DateTime? LockStartTime { get; }
         string LoginName { get; }
         string Password { get; }
-        Guid? ContractorID { get; }
         string Code { get; }
         string Email { get; }
         string Mobile { get; }

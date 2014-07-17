@@ -4,6 +4,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
+    using Host.EDI;
     using Host.EDI.Entities;
     using MiniUI;
     using Repositories;
@@ -24,7 +25,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static InfoDicController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "InfoDic", out infoDicEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "InfoDic", out infoDicEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -58,7 +59,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 Guid id;
                 if (Guid.TryParse(Request["id"], out id))
                 {
-                    var data = new InfoDicInfo(AppHostInstance, infoDicEntityType.GetData(id));
+                    var data = new InfoDicInfo(Host, infoDicEntityType.GetData(id));
                     return new PartialViewResult { ViewName = "Partials/Details", ViewData = new ViewDataDictionary(data) };
                 }
                 else
@@ -107,7 +108,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 throw new ValidationException("未传入标识");
             }
-            return this.JsonResult(new InfoDicInfo(AppHostInstance, infoDicEntityType.GetData(id.Value)));
+            return this.JsonResult(new InfoDicInfo(Host, infoDicEntityType.GetData(id.Value)));
         }
 
         /// <summary>
@@ -124,14 +125,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "InfoDic", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "InfoDic", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.InfoDic");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的InfoDic实体类型属性" + filter.field);
                 }
@@ -162,7 +163,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddInfoDic(input);
+            Host.AddInfoDic(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -181,7 +182,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateInfoDic(input);
+            Host.UpdateInfoDic(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -212,7 +213,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveInfoDic(item);
+                Host.RemoveInfoDic(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

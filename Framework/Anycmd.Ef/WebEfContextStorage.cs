@@ -43,6 +43,10 @@ namespace Anycmd.Ef
         private static void Application_EndRequest(object sender, EventArgs e)
         {
             var context = HttpContext.Current;
+            if (context == null)
+            {
+                return;
+            }
             var storage = context.Items[ConstKeys.WEB_EFDBCONTEXT_STORAGEKEY] as SimpleEfContextStorage;
             if (storage != null)
             {

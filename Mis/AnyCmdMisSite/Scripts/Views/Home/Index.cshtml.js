@@ -274,7 +274,6 @@
 							wallpaper("#bgimg", url);
 						}
 						$("#logout #currentAccount").text(result.loginName);
-						$("#logout #currentUser").text(result.contractorName);
 						$("#logout").show();
 						$("#logon").hide();
 						if (result.menus) {

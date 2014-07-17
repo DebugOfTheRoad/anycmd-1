@@ -1,9 +1,9 @@
 ﻿
 namespace Anycmd.Host.AC
 {
-    using Model;
+    using Anycmd.AC;
 
-    public class SSDSet : EntityBase
+    public class SSDSet : SSDSetBase
     {
     }
 }

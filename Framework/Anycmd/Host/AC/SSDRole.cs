@@ -1,12 +1,10 @@
-﻿using System;
-
+﻿
 namespace Anycmd.Host.AC
 {
-    using Model;
+    using Anycmd.AC;
 
-    public class SSDRole : EntityBase
+
+    public class SSDRole : SSDRoleBase
     {
-        public Guid SSDSetID { get; set; }
-        public Guid RoleID { get; set; }
     }
 }

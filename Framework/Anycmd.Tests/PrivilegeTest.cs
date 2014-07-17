@@ -42,8 +42,9 @@ namespace Anycmd.Tests
             host.GetRequiredService<IRepository<Account>>().Add(new Account
             {
                 Id = accountID,
-                Code="test",
-                Name="test"
+                Code = "test",
+                Name = "test",
+                Password = "111111"
             });
             host.GetRequiredService<IRepository<Account>>().Context.Commit();
             var entityID = Guid.NewGuid();
@@ -244,7 +245,8 @@ namespace Anycmd.Tests
             {
                 Id = accountID,
                 Code = "test",
-                Name = "test"
+                Name = "test",
+                Password = "111111"
             });
             host.GetRequiredService<IRepository<Account>>().Context.Commit();
             catched = false;

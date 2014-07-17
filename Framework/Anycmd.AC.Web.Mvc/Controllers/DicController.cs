@@ -4,8 +4,8 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
+    using Host.AC;
     using Host.AC.Infra;
-    using Host.AC.Infra.Messages;
     using Infra.ViewModels.DicViewModels;
     using MiniUI;
     using Repositories;
@@ -24,7 +24,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public DicController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Dic", out dicEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Dic", out dicEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -97,7 +97,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistDics(requestModel);
+            var data = Host.GetPlistDics(requestModel);
 
             return this.JsonResult(new MiniGrid<DicTr> { total = requestModel.total.Value, data = data });
         }
@@ -119,12 +119,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 }
                 else
                 {
-                    throw new ValidationException("意外的应用系统标识" + ids[i]);
+                    throw new ValidationException("意外的系统字典标识" + ids[i]);
                 }
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveDicCommand(item));
+                Host.RemoveDic(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

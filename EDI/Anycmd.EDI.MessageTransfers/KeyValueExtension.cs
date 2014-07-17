@@ -1,9 +1,9 @@
 ﻿
 namespace Anycmd.EDI.MessageTransfers {
     using DataContracts;
-    using Anycmd.Host.EDI.Info;
-    using Util;
+    using Host.EDI.Info;
     using System.Linq;
+    using Util;
 
     public static class KeyValueExtension {
         /// <summary>

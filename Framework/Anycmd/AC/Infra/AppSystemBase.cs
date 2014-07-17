@@ -12,6 +12,7 @@ namespace Anycmd.AC.Infra
     {
         private string _code;
         private string _name;
+        private Guid _principalID;
 
         protected AppSystemBase()
         {
@@ -54,7 +55,17 @@ namespace Anycmd.AC.Infra
         /// <summary>
         /// 负责人
         /// </summary>
-        public virtual Guid PrincipalID { get; set; }
+        public virtual Guid PrincipalID {
+            get { return _principalID; }
+            set
+            {
+                if (value == Guid.Empty)
+                {
+                    throw new ValidationException("负责人是必须的");
+                }
+                _principalID = value;
+            }
+        }
 
         /// <summary>
         /// 系统名称

@@ -161,7 +161,7 @@ namespace Anycmd.Host.EDI.MessageHandlers
                                         Status = 200,
                                         EventSourceType = string.Empty,
                                         EventSubjectCode = string.Empty,
-                                        UserName = NodeHost.Instance.AppHost.UserSession.GetAccountID().ToString(),
+                                        UserName = NodeHost.Instance.AppHost.User.Worker.Id.ToString(),
                                         IsDumb = false,
                                         ReceivedOn = DateTime.Now,
                                         Version = ApiVersion.V1.ToName()

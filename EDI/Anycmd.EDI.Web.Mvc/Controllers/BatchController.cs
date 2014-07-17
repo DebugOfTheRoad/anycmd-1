@@ -28,7 +28,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static BatchController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Batch", out batchEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Batch", out batchEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -176,7 +176,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddBatch(input);
+            Host.AddBatch(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -195,7 +195,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateBatch(input);
+            Host.UpdateBatch(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -226,7 +226,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveBatch(item);
+                Host.RemoveBatch(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

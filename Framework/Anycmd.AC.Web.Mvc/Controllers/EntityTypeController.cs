@@ -4,7 +4,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
-    using Host.AC.Infra.Messages;
+    using Host.AC;
     using Infra.ViewModels.EntityTypeViewModels;
     using MiniUI;
     using System;
@@ -22,7 +22,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public EntityTypeController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "EntityType", out entityTypeEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "EntityType", out entityTypeEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -96,7 +96,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistEntityTypes(requestData);
+            var data = Host.GetPlistEntityTypes(requestData);
 
             return this.JsonResult(new MiniGrid<EntityTypeTr> { total = requestData.total.Value, data = data });
         }
@@ -111,7 +111,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddEntityTypeCommand(input));
+            Host.AddEntityType(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -126,7 +126,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateEntityTypeCommand(input));
+            Host.UpdateEntityType(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -153,7 +153,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveEntityTypeCommand(item));
+                Host.RemoveEntityType(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

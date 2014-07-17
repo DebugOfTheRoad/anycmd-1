@@ -10,12 +10,10 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ContractorID" Type="uniqueidentifier" />
           <Property Name="NumberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LoginName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="200" />
           <Property Name="SecurityLevel" Type="int" />
-          <Property Name="PrivilegeState" Type="int" />
           <Property Name="LastPasswordChangeOn" Type="datetime" />
           <Property Name="Lang" Type="varchar" MaxLength="50" />
           <Property Name="Theme" Type="varchar" MaxLength="50" />
@@ -86,18 +84,6 @@
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="RowVersionID" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Account_Account">
-          <End Role="Account" Type="Self.Account" Multiplicity="0..1" />
-          <End Role="Account1" Type="Self.Account" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Account">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Account1">
-              <PropertyRef Name="ContractorID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DeveloperID_Account">
           <End Role="Account" Type="Self.Account" Multiplicity="1" />
           <End Role="DeveloperID" Type="Self.DeveloperID" Multiplicity="0..1" />
@@ -126,10 +112,6 @@
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeveloperID" EntityType="Self.DeveloperID" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VisitingLog" EntityType="Self.VisitingLog" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Account_Account" Association="Self.FK_Account_Account">
-            <End Role="Account" EntitySet="Account" />
-            <End Role="Account1" EntitySet="Account" />
-          </AssociationSet>
           <AssociationSet Name="FK_DeveloperID_Account" Association="Self.FK_DeveloperID_Account">
             <End Role="Account" EntitySet="Account" />
             <End Role="DeveloperID" EntitySet="DeveloperID" />
@@ -155,10 +137,6 @@
             <End Role="Account" EntitySet="Accounts" />
             <End Role="DeveloperID" EntitySet="DeveloperIDs" />
           </AssociationSet>
-          <AssociationSet Name="FK_Account_Account" Association="AnycmdModel.FK_Account_Account">
-            <End Role="Account" EntitySet="Accounts" />
-            <End Role="Account1" EntitySet="Accounts" />
-          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Account">
           <Key>
@@ -169,7 +147,6 @@
           <Property Name="LoginName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="SecurityLevel" Type="Int32" />
-          <Property Name="PrivilegeState" Type="Int32" />
           <Property Name="LastPasswordChangeOn" Type="DateTime" Precision="3" />
           <Property Name="Lang" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Theme" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -198,7 +175,6 @@
           <Property Name="ModifiedUserID" Type="Guid" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="RowVersionID" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="ContractorID" Type="Guid" Nullable="true" />
           <Property Name="OrganizationCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -265,18 +241,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Account_Account">
-          <End Type="AnycmdModel.Account" Role="Account" Multiplicity="0..1" />
-          <End Type="AnycmdModel.Account" Role="Account1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Account">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Account1">
-              <PropertyRef Name="ContractorID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -299,7 +263,6 @@
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="OrganizationCode" ColumnName="OrganizationCode" />
-                <ScalarProperty Name="ContractorID" ColumnName="ContractorID" />
                 <ScalarProperty Name="RowVersionID" ColumnName="RowVersionID" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
@@ -328,7 +291,6 @@
                 <ScalarProperty Name="Theme" ColumnName="Theme" />
                 <ScalarProperty Name="Lang" ColumnName="Lang" />
                 <ScalarProperty Name="LastPasswordChangeOn" ColumnName="LastPasswordChangeOn" />
-                <ScalarProperty Name="PrivilegeState" ColumnName="PrivilegeState" />
                 <ScalarProperty Name="SecurityLevel" ColumnName="SecurityLevel" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="LoginName" ColumnName="LoginName" />
@@ -395,7 +357,6 @@
         <EntityTypeShape EntityType="AnycmdModel.DeveloperID" Width="1.5" PointX="3.375" PointY="4.75" IsExpanded="true" />
         <AssociationConnector Association="AnycmdModel.FK_VisitingLog_Account" ManuallyRouted="false" />
         <AssociationConnector Association="AnycmdModel.FK_DeveloperID_Account" ManuallyRouted="false" />
-        <AssociationConnector Association="AnycmdModel.FK_Account_Account" />
       </Diagram>
     </Diagrams>
   </Designer>

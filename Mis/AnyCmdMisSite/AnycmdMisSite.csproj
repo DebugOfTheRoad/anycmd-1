@@ -1044,7 +1044,6 @@
     <Content Include="Scripts\Areas\AC\Menu\Children.cshtml.js" />
     <Content Include="Scripts\Areas\AC\Organization\Children.cshtml.js" />
     <Content Include="Scripts\Areas\AC\Account\Roles.cshtml.js" />
-    <Content Include="Scripts\Areas\AC\Account\ContractorAccounts.cshtml.js" />
     <Content Include="Scripts\Areas\AC\Account\Index.cshtml.js" />
     <Content Include="Scripts\Areas\AC\Account\Contractors.cshtml.js" />
     <Content Include="Scripts\Areas\AC\Menu\Index.cshtml.js" />
@@ -1082,7 +1081,6 @@
     <Content Include="Areas\AC\Views\Role\Accounts.cshtml" />
     <Content Include="Areas\AC\Views\Role\Permissions.cshtml" />
     <Content Include="Areas\AC\Views\Account\Contractors.cshtml" />
-    <Content Include="Areas\AC\Views\Account\ContractorAccounts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\AC\Views\Account\Roles.cshtml" />
@@ -1344,7 +1342,6 @@
     <Content Include="Areas\AC\Views\Account\Partials\Edit.cshtml" />
     <Content Include="Areas\AC\Views\Account\Groups.cshtml" />
     <Content Include="Areas\AC\Views\Menu\Roles.cshtml" />
-    <Content Include="Areas\AC\Views\Account\Partials\ContractorAccounts.cshtml" />
     <Content Include="Areas\AC\Views\Account\Partials\Roles.cshtml" />
     <Content Include="Areas\AC\Views\Account\Partials\Groups.cshtml" />
     <Content Include="Areas\AC\Views\Role\Partials\Accounts.cshtml" />

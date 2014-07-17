@@ -45,18 +45,6 @@
 						<input id="IsEnabledFilter" property="filter" name="IsEnabled" class="mini-combobox" style="width: 100%;"
 							textfield="name" valuefield="code" data="@Html.DicItemJsonArray(Html.GetProperty("IsEnabled", "Account", "AC"))" shownullitem="true" />
 					</div>
-					<div header="用户信息" headeralign="center">
-						<div property="columns">
-							<div field="ContractorCode" width="120" headeralign="center" allowsort="true">
-								用户编码
-								<input id="ContractorCodeFilter" name="ContractorCode" property="filter" class="mini-textbox" style="width: 100%;" />
-							</div>
-							<div field="ContractorName" width="120" headeralign="center" allowsort="true">
-								用户姓名
-								<input id="ContractorNameFilter" name="ContractorName" property="filter" class="mini-textbox" style="width: 100%;" />
-							</div>
-						</div>
-					</div>
 					<div field="CreateOn" width="130" headeralign="center" dateformat="yyyy-MM-dd HH:mm:ss" allowsort="true">
 						创建时间
 					</div>

@@ -30,7 +30,8 @@ namespace Anycmd.Tests
             {
                 Id = entityID,
                 Code = "app1",
-                Name = "测试1"
+                Name = "测试1",
+                PrincipalID = host.SysUsers.GetDevAccounts().First().Id
             }));
             Assert.Equal(2, host.AppSystemSet.Count());
             Assert.True(host.AppSystemSet.TryGetAppSystem(entityID, out appSystemByID));
@@ -41,7 +42,8 @@ namespace Anycmd.Tests
             {
                 Id = entityID,
                 Name = "test2",
-                Code = "app2"
+                Code = "app2",
+                PrincipalID = host.SysUsers.GetDevAccounts().First().Id
             }));
             Assert.Equal(2, host.AppSystemSet.Count());
             Assert.True(host.AppSystemSet.TryGetAppSystem(entityID, out appSystemByID));
@@ -72,7 +74,8 @@ namespace Anycmd.Tests
             {
                 Id = entityID,
                 Code = "app1",
-                Name = "测试1"
+                Name = "测试1",
+                PrincipalID = host.SysUsers.GetDevAccounts().First().Id
             }));
             Assert.Equal(2, host.AppSystemSet.Count());
 
@@ -133,7 +136,8 @@ namespace Anycmd.Tests
                 {
                     Id = entityID1,
                     Code = code,
-                    Name = name
+                    Name = name,
+                    PrincipalID = host.SysUsers.GetDevAccounts().First().Id
                 }));
             }
             catch (Exception e)
@@ -152,7 +156,8 @@ namespace Anycmd.Tests
             {
                 Id = entityID2,
                 Code = code,
-                Name = name
+                Name = name,
+                PrincipalID = host.SysUsers.GetDevAccounts().First().Id
             }));
             Assert.Equal(2, host.AppSystemSet.Count());
 
@@ -163,7 +168,8 @@ namespace Anycmd.Tests
                 {
                     Id = entityID2,
                     Name = "test2",
-                    Code = "app2"
+                    Code = "app2",
+                    PrincipalID = host.SysUsers.GetDevAccounts().First().Id
                 }));
             }
             catch (Exception e)

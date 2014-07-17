@@ -47,6 +47,7 @@
     dgUserAccount.on("drawcell", ondrawcell);
     grid.on("drawcell", ondrawcell);
     grid.on("load", helper.onGridLoad);
+    dgUserAccount.on("load", helper.onGridLoad);
     grid.on("showRowDetail", onShowRowDetail);
     loadData();
 
@@ -140,7 +141,7 @@
         var td = grid.getRowDetailCellEl(row);
         td.appendChild(showRowDetail);
         showRowDetail.style.display = "";
-        dgUserAccount.load({ contractorID: row.ContractorID });
+        dgUserAccount.load({ contractorID: row.AccountID });
         if (!dgUserAccount.sortField) {
             dgUserAccount.sortBy("CreateOn", "desc");
         }
@@ -154,7 +155,6 @@
 
         if (field) {
             switch (field) {
-                case "IsContractorEnabled":
                 case "IsEnabled":
                     if (value == "正常" || value == "1" || value == true) {
                         e.cellHtml = "<span class='icon-enabled width16px'></span>";

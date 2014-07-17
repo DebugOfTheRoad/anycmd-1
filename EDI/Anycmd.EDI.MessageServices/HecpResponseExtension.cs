@@ -1,7 +1,7 @@
 ﻿
 namespace Anycmd.EDI.MessageServices {
-    using Anycmd.Host.EDI.Hecp;
     using DataContracts;
+    using Host.EDI.Hecp;
     using ServiceModel.Operations;
     using System;
 

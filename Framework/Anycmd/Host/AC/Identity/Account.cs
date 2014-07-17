@@ -19,6 +19,8 @@ namespace Anycmd.Host.AC.Identity
         {
             return new Account
             {
+                Id = input.Id.Value,
+                LoginName = input.LoginName,
                 AllowEndTime = input.AllowEndTime,
                 AllowStartTime = input.AllowStartTime,
                 AuditState = input.AuditState,
@@ -26,7 +28,6 @@ namespace Anycmd.Host.AC.Identity
                 IsEnabled = input.IsEnabled,
                 LockEndTime = input.LockEndTime,
                 LockStartTime = input.LockStartTime,
-                ContractorID = input.ContractorID,
                 Code = input.Code,
                 Email = input.Email,
                 Mobile = input.Mobile,
@@ -37,7 +38,8 @@ namespace Anycmd.Host.AC.Identity
                 QuickQuery1 = input.QuickQuery1,
                 QuickQuery2 = input.QuickQuery2,
                 Telephone = input.Telephone,
-                Question = input.QuickQuery                
+                Question = input.QuickQuery      ,
+                Password=input.Password
             };
         }
 
@@ -50,7 +52,6 @@ namespace Anycmd.Host.AC.Identity
             this.IsEnabled = input.IsEnabled;
             this.LockEndTime = input.LockEndTime;
             this.LockStartTime = input.LockStartTime;
-            this.ContractorID = input.ContractorID;
             this.Code = input.Code;
             this.Email = input.Email;
             this.Mobile = input.Mobile;

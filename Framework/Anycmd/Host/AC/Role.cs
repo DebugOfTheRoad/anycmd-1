@@ -29,7 +29,6 @@ namespace Anycmd.Host.AC
                 Id = input.Id.Value,
                 IsEnabled = input.IsEnabled,
                 Name = input.Name,
-                PrivilegeState = null,
                 SortCode = input.SortCode
             };
         }

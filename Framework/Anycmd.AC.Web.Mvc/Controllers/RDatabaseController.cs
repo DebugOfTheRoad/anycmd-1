@@ -37,7 +37,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ViewResultBase DbDoc(Guid databaseID)
         {
             RdbDescriptor rdb;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID, out rdb))
+            if (!Host.Rdbs.TryDb(databaseID, out rdb))
             {
                 throw new ValidationException("意外的关系数据库标识" + databaseID);
             }
@@ -150,12 +150,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetTable(Guid databaseID, string id)
         {
             RdbDescriptor db;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID, out db))
+            if (!Host.Rdbs.TryDb(databaseID, out db))
             {
                 throw new ValidationException("意外的数据库ID");
             }
             DbTable dbTable;
-            if (!AppHostInstance.DbTables.TryGetDbTable(db, id, out dbTable))
+            if (!Host.DbTables.TryGetDbTable(db, id, out dbTable))
             {
                 throw new ValidationException("意外的数据库表标识" + id);
             }
@@ -168,12 +168,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetView(Guid databaseID, string id)
         {
             RdbDescriptor db;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID, out db))
+            if (!Host.Rdbs.TryDb(databaseID, out db))
             {
                 throw new ValidationException("意外的数据库ID");
             }
             DbView dbView;
-            if (!AppHostInstance.DbViews.TryGetDbView(db, id, out dbView))
+            if (!Host.DbViews.TryGetDbView(db, id, out dbView))
             {
                 throw new ValidationException("意外的数据库视图标识" + id);
             }
@@ -185,12 +185,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetViewDefinition(Guid databaseID, string viewID)
         {
             RdbDescriptor db;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID, out db))
+            if (!Host.Rdbs.TryDb(databaseID, out db))
             {
                 throw new ValidationException("意外的数据库ID");
             }
             DbView view;
-            if (!AppHostInstance.DbViews.TryGetDbView(db, viewID, out view))
+            if (!Host.DbViews.TryGetDbView(db, viewID, out view))
             {
                 throw new ValidationException("意外的数据库视图" + viewID);
             }
@@ -202,12 +202,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetTableColumn(Guid databaseID, string id)
         {
             RdbDescriptor db;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID, out db))
+            if (!Host.Rdbs.TryDb(databaseID, out db))
             {
                 throw new ValidationException("意外的数据库ID");
             }
             DbTableColumn colum;
-            if (!AppHostInstance.DbTableColumns.TryGetDbTableColumn(db, id, out colum))
+            if (!Host.DbTableColumns.TryGetDbTableColumn(db, id, out colum))
             {
                 throw new ValidationException("意外的数据库表列标识" + id);
             }
@@ -219,12 +219,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetViewColumn(Guid databaseID, string id)
         {
             RdbDescriptor db;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID, out db))
+            if (!Host.Rdbs.TryDb(databaseID, out db))
             {
                 throw new ValidationException("意外的数据库ID");
             }
             DbViewColumn colum;
-            if (!AppHostInstance.DbViewColumns.TryGetDbViewColumn(db, id, out colum))
+            if (!Host.DbViewColumns.TryGetDbViewColumn(db, id, out colum))
             {
                 throw new ValidationException("意外的数据库视图列标识" + id);
             }
@@ -239,7 +239,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistDatabases(requestModel);
+            var data = Host.GetPlistDatabases(requestModel);
 
             return this.JsonResult(new MiniGrid<IRDatabase> { total = requestModel.total.Value, data = data });
         }
@@ -252,7 +252,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistTables(requestModel);
+            var data = Host.GetPlistTables(requestModel);
 
             return this.JsonResult(new MiniGrid<DbTable> { total = requestModel.total.Value, data = data });
         }
@@ -267,7 +267,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 throw new ValidationException("未传入databaseID");
             }
             RdbDescriptor db;
-            if (!AppHostInstance.Rdbs.TryDb(databaseID.Value, out db))
+            if (!Host.Rdbs.TryDb(databaseID.Value, out db))
             {
                 throw new ValidationException("意外的数据库ID");
             }
@@ -284,7 +284,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistViews(requestModel);
+            var data = Host.GetPlistViews(requestModel);
 
             return this.JsonResult(new MiniGrid<DbView> { total = requestModel.total.Value, data = data });
         }
@@ -297,7 +297,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistTableColumns(requestModel);
+            var data = Host.GetPlistTableColumns(requestModel);
 
             return this.JsonResult(new MiniGrid<DbTableColumn> { total = requestModel.total.Value, data = data });
         }
@@ -310,7 +310,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistViewColumns(requestModel);
+            var data = Host.GetPlistViewColumns(requestModel);
 
             return this.JsonResult(new MiniGrid<DbViewColumn> { total = requestModel.total.Value, data = data });
         }
@@ -325,7 +325,6 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 GetRequiredService<IRdbMetaDataService>().UpdateDatabase(input.Id, input.DataSource, input.Description);
-                AppHostInstance.PublishOperatedEvent(input.Id);
             }
             else
             {
@@ -355,7 +354,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 RdbDescriptor db;
-                if (!AppHostInstance.Rdbs.TryDb(input.DatabaseID, out db))
+                if (!Host.Rdbs.TryDb(input.DatabaseID, out db))
                 {
                     throw new ValidationException("意外的数据库ID");
                 }
@@ -389,7 +388,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 RdbDescriptor db;
-                if (!AppHostInstance.Rdbs.TryDb(input.DatabaseID, out db))
+                if (!Host.Rdbs.TryDb(input.DatabaseID, out db))
                 {
                     throw new ValidationException("意外的数据库ID");
                 }
@@ -423,7 +422,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 RdbDescriptor db;
-                if (!AppHostInstance.Rdbs.TryDb(input.DatabaseID, out db))
+                if (!Host.Rdbs.TryDb(input.DatabaseID, out db))
                 {
                     throw new ValidationException("意外的数据库ID");
                 }
@@ -457,7 +456,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 RdbDescriptor db;
-                if (!AppHostInstance.Rdbs.TryDb(input.DatabaseID, out db))
+                if (!Host.Rdbs.TryDb(input.DatabaseID, out db))
                 {
                     throw new ValidationException("意外的数据库ID");
                 }

@@ -68,12 +68,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            if (!User.Identity.IsAuthenticated)
+            if (!Host.User.Principal.Identity.IsAuthenticated)
             {
                 return this.JsonResult(new MiniGrid<Dictionary<string, object>> { total = 0, data = new List<Dictionary<string, object>> { } });
             }
             var visitingLogs = GetRequiredService<IVisitingLogQuery>().GetPlistVisitingLogTrs(
-                CurrentUser.GetAccountID(), User.Identity.Name, requestData.leftVisitOn, requestData.rightVisitOn
+                Host.User.Worker.Id, Host.User.Principal.Identity.Name, requestData.leftVisitOn, requestData.rightVisitOn
                 , requestData);
             var data = new MiniGrid<VisitingLogTr> { total = requestData.total.Value, data = visitingLogs.Select(a => new VisitingLogTr(a)) };
 

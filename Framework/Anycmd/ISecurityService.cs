@@ -1,8 +1,8 @@
 ﻿
 namespace Anycmd
 {
-    using Anycmd.Host;
-    using Anycmd.Model;
+    using Host;
+    using Model;
 
     /// <summary>
     /// 安全服务接口

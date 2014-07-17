@@ -1,7 +1,7 @@
 ﻿
 namespace Anycmd.EDI.MessageServices {
     using DataContracts;
-    using Anycmd.Host.EDI.Info;
+    using Host.EDI.Info;
 
     /// <summary>
     /// 扩展<see cref="IKeyValue"/>数组对象，提供转成数据传输对象<see cref="KeyValue"/>数组的方法。

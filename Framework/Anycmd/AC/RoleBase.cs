@@ -1,6 +1,7 @@
 ﻿
 namespace Anycmd.AC
 {
+    using Exceptions;
     using Model;
 
     /// <summary>
@@ -8,6 +9,8 @@ namespace Anycmd.AC
     /// </summary>
     public abstract class RoleBase : EntityBase, IRole
     {
+        private string _name;
+
         /// <summary>
         /// 说明
         /// </summary>
@@ -20,8 +23,6 @@ namespace Anycmd.AC
         /// </summary>
         public virtual int IsEnabled { get; set; }
 
-        public virtual int? PrivilegeState { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -30,7 +31,21 @@ namespace Anycmd.AC
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("名称是必须的");
+                }
+                if (value != _name)
+                {
+                    _name = value;
+                }
+            }
+        }
 
         /// <summary>
         /// 

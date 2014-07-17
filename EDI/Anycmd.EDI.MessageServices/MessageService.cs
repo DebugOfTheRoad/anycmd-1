@@ -1,12 +1,12 @@
 ﻿
 namespace Anycmd.EDI.MessageServices {
-    using Anycmd.Host.EDI.Hecp;
+    using Host.EDI;
+    using Host.EDI.Hecp;
     using Logging;
     using ServiceModel.Operations;
     using ServiceStack;
-    using Util;
     using System;
-    using Anycmd.Host.EDI;
+    using Util;
 
     /// <summary>
     /// 命令服务。

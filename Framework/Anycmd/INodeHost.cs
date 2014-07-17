@@ -1,10 +1,10 @@
 ﻿
 namespace Anycmd {
-    using Anycmd.Host.EDI;
-    using Anycmd.Host.EDI.Handlers;
     using EDI;
+    using Host.EDI;
+    using Host.EDI.Handlers;
     using Host.EDI.Hecp;
-    using Host.EDI.Info;
+    using Host.EDI.MemorySets;
     using System;
     using System.Collections.Generic;
 

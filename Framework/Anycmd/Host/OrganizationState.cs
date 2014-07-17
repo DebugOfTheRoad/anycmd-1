@@ -20,7 +20,7 @@ namespace Anycmd.Host
             ShortName = "根",
             ParentCode = null,
             SortCode = 0,
-            PrivilegeState = 0
+            ContractorID = null
         };
 
         public static readonly OrganizationState Empty = new OrganizationState
@@ -35,8 +35,8 @@ namespace Anycmd.Host
             Name = "无",
             ShortName = "无",
             ParentCode = null,
-            SortCode = 0,
-            PrivilegeState = 0
+            ContractorID = null,
+            SortCode = 0
         };
 
         private OrganizationState() { }
@@ -61,7 +61,7 @@ namespace Anycmd.Host
                 ShortName = organization.ShortName,
                 ParentCode = organization.ParentCode,
                 SortCode = organization.SortCode,
-                PrivilegeState = organization.PrivilegeState
+                ContractorID = organization.ContractorID
             };
         }
 
@@ -79,6 +79,8 @@ namespace Anycmd.Host
 
         public string CategoryCode { get; private set; }
 
+        public Guid? ContractorID { get; private set; }
+
         public DateTime? CreateOn { get; private set; }
 
         public DateTime? ModifiedOn { get; private set; }
@@ -86,8 +88,6 @@ namespace Anycmd.Host
         public string Description { get; private set; }
 
         public int IsEnabled { get; private set; }
-
-        public int? PrivilegeState { get; private set; }
 
         public int SortCode { get; private set; }
 
@@ -144,13 +144,13 @@ namespace Anycmd.Host
             var right = (OrganizationState)obj;
 
             return left.Id == right.Id &&
-                left.PrivilegeState == right.PrivilegeState &&
                 left.Code == right.Code &&
                 left.Name == right.Name &&
                 left.ShortName == right.ShortName &&
                 left.ParentCode == right.ParentCode &&
                 left.CategoryCode == right.CategoryCode &&
                 left.IsEnabled == right.IsEnabled &&
+                left.ContractorID == right.ContractorID &&
                 left.SortCode == right.SortCode &&
                 left.Description == right.Description;
         }

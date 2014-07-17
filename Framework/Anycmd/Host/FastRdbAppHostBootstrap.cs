@@ -157,26 +157,15 @@ namespace Anycmd.Host
                     Id = (Guid)row["Id"],
                     ParentCode = row["ParentCode"] == DBNull.Value ? null : row["ParentCode"].ToString(),
                     CategoryCode = row["CategoryCode"] == DBNull.Value ? null : row["CategoryCode"].ToString(),
-                    PrincipalID = row["PrincipalID"] == DBNull.Value ? null : (Guid?)row["PrincipalID"],
                     Code = (string)row["Code"],
                     ShortName = row["ShortName"] == DBNull.Value ? null : row["ShortName"].ToString(),
                     Name = (string)row["Name"],
-                    PrivilegeState = row["PrivilegeState"] == DBNull.Value ? null : (int?)row["PrivilegeState"],
                     OuterPhone = row["OuterPhone"] == DBNull.Value ? null : row["OuterPhone"].ToString(),
                     InnerPhone = row["InnerPhone"] == DBNull.Value ? null : row["InnerPhone"].ToString(),
                     Fax = row["Fax"] == DBNull.Value ? null : row["Fax"].ToString(),
                     Postalcode = row["Postalcode"] == DBNull.Value ? null : row["Postalcode"].ToString(),
                     Address = row["Address"] == DBNull.Value ? null : row["Address"].ToString(),
                     WebPage = row["WebPage"] == DBNull.Value ? null : row["WebPage"].ToString(),
-                    LeadershipID = row["LeadershipID"] == DBNull.Value ? null : (Guid?)row["LeadershipID"],
-                    AssistantLeadershipID = row["AssistantLeadershipID"] == DBNull.Value ? null : (Guid?)row["AssistantLeadershipID"],
-                    ManagerID = row["ManagerID"] == DBNull.Value ? null : (Guid?)row["ManagerID"],
-                    AssistantManagerID = row["AssistantManagerID"] == DBNull.Value ? null : (Guid?)row["AssistantManagerID"],
-                    AccountingID = row["AccountingID"] == DBNull.Value ? null : (Guid?)row["AccountingID"],
-                    CashierID = row["CashierID"] == DBNull.Value ? null : (Guid?)row["CashierID"],
-                    FinancialID = row["FinancialID"] == DBNull.Value ? null : (Guid?)row["FinancialID"],
-                    Bank = row["Bank"] == DBNull.Value ? null : row["Bank"].ToString(),
-                    BankAccount = row["BankAccount"] == DBNull.Value ? null : row["BankAccount"].ToString(),
                     DeletionStateCode = (int)row["DeletionStateCode"],
                     IsEnabled = (int)row["IsEnabled"],
                     Icon = row["Icon"] == DBNull.Value ? null : row["Icon"].ToString(),
@@ -434,8 +423,7 @@ namespace Anycmd.Host
                     SortCode = (int)row["SortCode"],
                     CategoryCode = row["CategoryCode"] == DBNull.Value ? null : row["CategoryCode"].ToString(),
                     OrganizationCode = row["OrganizationCode"] == DBNull.Value ? null : row["OrganizationCode"].ToString(),
-                    TypeCode = (string)row["TypeCode"],
-                    PrivilegeState = row["PrivilegeState"] == DBNull.Value ? null : (int?)row["PrivilegeState"]
+                    TypeCode = (string)row["TypeCode"]
                 };
                 var entity = item as IEntityBase;
                 entity.CreateBy = row["CreateBy"] == DBNull.Value ? null : row["CreateBy"].ToString();
@@ -611,8 +599,7 @@ namespace Anycmd.Host
                     SortCode = (int)row["SortCode"],
                     CategoryCode = row["CategoryCode"] == DBNull.Value ? null : row["CategoryCode"].ToString(),
                     IsEnabled = (int)row["IsEnabled"],
-                    NumberID = (int)row["NumberID"],
-                    PrivilegeState = row["PrivilegeState"] == DBNull.Value ? null : (int?)row["PrivilegeState"]
+                    NumberID = (int)row["NumberID"]
                 };
                 var entity = item as IEntityBase;
                 entity.CreateBy = row["CreateBy"] == DBNull.Value ? null : row["CreateBy"].ToString();

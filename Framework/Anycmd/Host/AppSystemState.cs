@@ -2,6 +2,7 @@
 namespace Anycmd.Host
 {
     using Anycmd.AC.Infra;
+    using Exceptions;
     using System;
     using Util;
 
@@ -22,11 +23,16 @@ namespace Anycmd.Host
 
         private AppSystemState() { }
 
-        public static AppSystemState Create(AppSystemBase appSystem)
+        public static AppSystemState Create(AppHost host, AppSystemBase appSystem)
         {
             if (appSystem == null)
             {
                 throw new ArgumentNullException("appSystem");
+            }
+            AccountState principal;
+            if (!host.SysUsers.TryGetDevAccount(appSystem.PrincipalID, out principal))
+            {
+                throw new CoreException("意外的应用系统负责人标识" + appSystem.PrincipalID);
             }
             return new AppSystemState
             {

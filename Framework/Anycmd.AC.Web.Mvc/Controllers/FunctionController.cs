@@ -4,6 +4,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
+    using Host.AC;
     using Host.AC.Infra;
     using Host.AC.Infra.Messages;
     using Infra.ViewModels.AppSystemViewModels;
@@ -29,7 +30,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public FunctionController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Function", out functionEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Function", out functionEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -79,14 +80,14 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult Refresh()
         {
             var result = new ResponseData { success = true };
-            if (!CurrentUser.IsDeveloper())
+            if (!Host.User.IsDeveloper())
             {
                 result.success = false;
                 result.msg = "对不起，您不是开发人员，不能执行本功能";
             }
             else
             {
-                GetRequiredService<IFunctionListImport>().Import(AppHostInstance, AppHostInstance.Config.SelfAppSystemCode);
+                GetRequiredService<IFunctionListImport>().Import(Host, Host.Config.SelfAppSystemCode);
             }
 
             return this.JsonResult(result);
@@ -122,7 +123,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistFunctions(requestData);
+            var data = Host.GetPlistFunctions(requestData);
 
             return this.JsonResult(new MiniGrid<FunctionTr> { total = requestData.total.Value, data = data });
         }
@@ -136,7 +137,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddFunctionCommand(input));
+            Host.AddFunction(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -150,7 +151,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateFunctionCommand(input));
+            Host.Handle(new UpdateFunctionCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -176,7 +177,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveFunctionCommand(item));
+                Host.Handle(new RemoveFunctionCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });
@@ -214,7 +215,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     SortCode = entity.SortCode
                 };
                 input.IsManaged = true;
-                AppHostInstance.Handle(new UpdateFunctionCommand(input));
+                Host.Handle(new UpdateFunctionCommand(input));
             }
             return this.JsonResult(new ResponseData { id = id, success = true });
         }
@@ -251,7 +252,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     Description = entity.Description
                 };
                 input.IsManaged = false;
-                AppHostInstance.Handle(new UpdateFunctionCommand(input));
+                Host.Handle(new UpdateFunctionCommand(input));
             }
             return this.JsonResult(new ResponseData { id = id, success = true });
         }
@@ -261,14 +262,14 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetManagedFunctions(Guid? appSystemID, string pageController)
         {
             ResourceTypeState resource;
-            if (!AppHostInstance.ResourceSet.TryGetResource(AppHostInstance.AppSystemSet.SelfAppSystem, pageController, out resource))
+            if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, pageController, out resource))
             {
                 throw new ValidationException("意外的资源码" + pageController);
             }
             IEnumerable<FunctionTr> data = null;
             if (appSystemID.HasValue && !string.IsNullOrEmpty(pageController))
             {
-                data = AppHostInstance.FunctionSet.Where(a => a.AppSystem.Id == appSystemID.Value).Select(a => FunctionTr.Create(a)).Where(a => a.IsManaged && a.ResourceTypeID == resource.Id);
+                data = Host.FunctionSet.Where(a => a.AppSystem.Id == appSystemID.Value).Select(a => FunctionTr.Create(a)).Where(a => a.IsManaged && a.ResourceTypeID == resource.Id);
             }
             else
             {
@@ -286,7 +287,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistPrivilegeByRoleID(requestData);
+            var data = Host.GetPlistPrivilegeByRoleID(requestData);
 
             return this.JsonResult(new MiniGrid<RoleAssignFunctionTr> { total = requestData.total.Value, data = data });
         }
@@ -322,7 +323,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                             Id = entity.Id
                         };
                         input.IsManaged = isManaged;
-                        AppHostInstance.Handle(new UpdateFunctionCommand(input));
+                        Host.Handle(new UpdateFunctionCommand(input));
                     }
                 }
             }

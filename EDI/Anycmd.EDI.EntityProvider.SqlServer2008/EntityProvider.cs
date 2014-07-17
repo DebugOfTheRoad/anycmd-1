@@ -1,11 +1,11 @@
 ﻿
 namespace Anycmd.EDI.EntityProvider.SqlServer2008
 {
-	using Anycmd.Host.EDI;
-	using Anycmd.Host.EDI.Handlers;
-	using Anycmd.Host.EDI.Info;
 	using Exceptions;
 	using Host.AC.Infra;
+	using Host.EDI;
+	using Host.EDI.Handlers;
+	using Host.EDI.Info;
 	using Logging;
 	using Query;
 	using Rdb;

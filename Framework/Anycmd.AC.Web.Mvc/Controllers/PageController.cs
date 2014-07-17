@@ -30,11 +30,11 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public PageController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Page", out pageEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Page", out pageEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Function", out functionEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Function", out functionEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -114,7 +114,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 PageState page;
                 IFunction function;
-                if (!AppHostInstance.PageSet.TryGetPage(pageID.Value, out page))
+                if (!Host.PageSet.TryGetPage(pageID.Value, out page))
                 {
                     page = PageState.Empty;
                     function = new Function();
@@ -122,7 +122,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 else
                 {
                     FunctionState FunctionState;
-                    if (!AppHostInstance.FunctionSet.TryGetFunction(page.Id, out FunctionState))
+                    if (!Host.FunctionSet.TryGetFunction(page.Id, out FunctionState))
                     {
                         throw new ValidationException("意外的功能标识" + page.Id);
                     }
@@ -144,7 +144,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 PageState page;
                 IFunction function;
-                if (!AppHostInstance.PageSet.TryGetPage(pageID.Value, out page))
+                if (!Host.PageSet.TryGetPage(pageID.Value, out page))
                 {
                     page = PageState.Empty;
                     function = new Function();
@@ -152,7 +152,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 else
                 {
                     FunctionState FunctionState;
-                    if (!AppHostInstance.FunctionSet.TryGetFunction(page.Id, out FunctionState))
+                    if (!Host.FunctionSet.TryGetFunction(page.Id, out FunctionState))
                     {
                         throw new ValidationException("意外的功能标识" + page.Id);
                     }
@@ -180,7 +180,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 throw new ValidationException("标识为" + pageID + "的页面不存在");
             }
-            AppHostInstance.Handle(new UpdatePageCommand(new PageUpdateInput
+            Host.Handle(new UpdatePageCommand(new PageUpdateInput
             {
                 Icon = entity.Icon,
                 Id = entity.Id,
@@ -197,7 +197,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistPages(requestData);
+            var data = Host.GetPlistPages(requestData);
 
             return this.JsonResult(new MiniGrid<PageTr> { total = requestData.total.Value, data = data });
         }
@@ -212,7 +212,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddPageCommand(input));
+            Host.Handle(new AddPageCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -227,7 +227,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdatePageCommand(input));
+            Host.Handle(new UpdatePageCommand(input));
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -253,7 +253,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     if (functionID.HasValue)
                     {
                         FunctionState function;
-                        if (!AppHostInstance.FunctionSet.TryGetFunction(functionID.Value, out function))
+                        if (!Host.FunctionSet.TryGetFunction(functionID.Value, out function))
                         {
                             throw new ValidationException("意外的托管功能标识" + functionID.Value);
                         }
@@ -269,7 +269,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
                     if (bool.Parse(row["IsAssigned"].ToString()))
                     {
-                        if (AppHostInstance.GetRequiredService<IRepository<PageButton>>().FindAll().Any(a => a.Id == inputModel.Id))
+                        if (Host.GetRequiredService<IRepository<PageButton>>().FindAll().Any(a => a.Id == inputModel.Id))
                         {
                             var updateModel = new PageButtonUpdateInput()
                             {
@@ -277,7 +277,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                                 IsEnabled = inputModel.IsEnabled,
                                 FunctionID = inputModel.FunctionID
                             };
-                            AppHostInstance.Handle(new UpdatePageButtonCommand(updateModel));
+                            Host.Handle(new UpdatePageButtonCommand(updateModel));
                         }
                         else
                         {
@@ -289,18 +289,18 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                                 FunctionID = inputModel.FunctionID,
                                 PageID = inputModel.PageID
                             };
-                            AppHostInstance.Handle(new AddPageButtonCommand(input));
+                            Host.Handle(new AddPageButtonCommand(input));
                         }
                     }
                     else
                     {
-                        AppHostInstance.Handle(new RemovePageButtonCommand(inputModel.Id));
+                        Host.Handle(new RemovePageButtonCommand(inputModel.Id));
                     }
                     if (functionID.HasValue)
                     {
                         int functionIsEnabled = int.Parse(row["FunctionIsEnabled"].ToString());
                         FunctionState function;
-                        if (!AppHostInstance.FunctionSet.TryGetFunction(functionID.Value, out function))
+                        if (!Host.FunctionSet.TryGetFunction(functionID.Value, out function))
                         {
                             throw new CoreException("意外的功能标识" + functionID.Value);
                         }
@@ -315,7 +315,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                             Description = function.Description
                         };
                         input.IsEnabled = functionIsEnabled;
-                        AppHostInstance.Handle(new UpdateFunctionCommand(input));
+                        Host.Handle(new UpdateFunctionCommand(input));
                     }
                 }
             }
@@ -345,7 +345,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemovePageCommand(item));
+                Host.Handle(new RemovePageCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

@@ -22,7 +22,7 @@ namespace Anycmd.Tests
 
             var entityID = Guid.NewGuid();
 
-            GroupState GroupByID;
+            GroupState groupByID;
             host.Handle(new AddGroupCommand(new GroupCreateInput
             {
                 Id = entityID,
@@ -36,7 +36,7 @@ namespace Anycmd.Tests
                 TypeCode = "AC"
             }));
             Assert.Equal(1, host.GroupSet.Count());
-            Assert.True(host.GroupSet.TryGetGroup(entityID, out GroupByID));
+            Assert.True(host.GroupSet.TryGetGroup(entityID, out groupByID));
 
             host.Handle(new UpdateGroupCommand(new GroupUpdateInput
             {
@@ -51,11 +51,11 @@ namespace Anycmd.Tests
                 TypeCode = "AC"
             }));
             Assert.Equal(1, host.GroupSet.Count());
-            Assert.True(host.GroupSet.TryGetGroup(entityID, out GroupByID));
-            Assert.Equal("test2", GroupByID.Name);
+            Assert.True(host.GroupSet.TryGetGroup(entityID, out groupByID));
+            Assert.Equal("test2", groupByID.Name);
 
             host.Handle(new RemoveGroupCommand(entityID));
-            Assert.False(host.GroupSet.TryGetGroup(entityID, out GroupByID));
+            Assert.False(host.GroupSet.TryGetGroup(entityID, out groupByID));
             Assert.Equal(0, host.GroupSet.Count());
         }
         #endregion
@@ -85,7 +85,8 @@ namespace Anycmd.Tests
                 host.Handle(new AddGroupCommand(new GroupCreateInput
                 {
                     Id = entityID1,
-                    Name = name
+                    Name = name,
+                    TypeCode = "AC"
                 }));
             }
             catch (Exception e)
@@ -103,7 +104,8 @@ namespace Anycmd.Tests
             host.Handle(new AddGroupCommand(new GroupCreateInput
             {
                 Id = entityID2,
-                Name = name
+                Name = name,
+                TypeCode = "AC"
             }));
             Assert.Equal(1, host.GroupSet.Count());
 
@@ -113,7 +115,8 @@ namespace Anycmd.Tests
                 host.Handle(new UpdateGroupCommand(new GroupUpdateInput
                 {
                     Id = entityID2,
-                    Name = "test2"
+                    Name = "test2",
+                    TypeCode = "AC"
                 }));
             }
             catch (Exception e)

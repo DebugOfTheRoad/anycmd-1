@@ -2,24 +2,25 @@
 namespace Anycmd.Host
 {
     using Anycmd.AC;
-    using Anycmd.AC.Infra;
     using Exceptions;
-    using Host.AC;
     using Model;
-    using Repositories;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Util;
 
     public static class UserSessionExtension
     {
-        private const string CURRENT_ORGANIZATIONS = "Current_Organizations";
-        private const string CURRENT_ALLROLES = "UserContext_Current_AllRoles";
+        private const string CURRENT_ORGANIZATIONS = "UserContext_Current_Organizations";
         private const string CURRENT_ROLES = "UserContext_Current_Roles";
         private const string CURRENT_GROUPS = "UserContext_Current_Groups";
-        private const string CURRENT_ALLMENUS = "UserContext_Current_AllMenus";
-        private const string CURRENT_ALLPRIVILEGES = "UserContext_Current_AllPrivileges";
+        private const string CURRENT_FUNCTIONS = "UserContext_Current_Functions";
+        private const string CURRENT_MENUS = "UserContext_Current_Menus";
+        private const string CURRENT_APPSYSTEMS = "UserContext_Current_AppSystems";
+        private const string CURRENT_RIVILEGE_INITED = "UserContext_Current_PrivilegeInited";
+
+        private const string CURRENT_ALL_FUNCTIONIDS = "Current_GetAllFunctionIDs";
+        private const string CURRENT_ALL_ROLEIDS = "Current_GetAllRoleIDs";
+        private const string CURRENT_ALL_MENUS = "Current_GetAllMenus";
 
         #region IsDeveloper
         /// <summary>
@@ -29,7 +30,37 @@ namespace Anycmd.Host
         public static bool IsDeveloper(this IUserSession user)
         {
             AccountState account;
-            return user.Principal.Identity.IsAuthenticated && user.AppHost.SysUsers.TryGetDevAccount(user.GetAccountID(), out account);
+            return user.Principal.Identity.IsAuthenticated && user.AppHost.SysUsers.TryGetDevAccount(user.Worker.Id, out account);
+        }
+        #endregion
+
+        #region 用户会话级数据存取接口
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static T GetData<T>(this IUserSession user, string key)
+        {
+            var userSessionStorage = user.AppHost.GetRequiredService<IUserSessionStorage>();
+            var obj = userSessionStorage.GetData(key);
+            if (obj is T)
+            {
+                return (T)obj;
+            }
+            return default(T);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="data"></param>
+        public static void SetData(this IUserSession user, string key, object data)
+        {
+            var userSessionStorage = user.AppHost.GetRequiredService<IUserSessionStorage>();
+            userSessionStorage.SetData(key, data);
         }
         #endregion
 
@@ -38,15 +69,15 @@ namespace Anycmd.Host
         /// 获取当前用户直接担任管理员的组织结构，直接担任管理员的组织结构不包括直接管理的组织结构下属的组织结构。
         /// </summary>
         /// <returns></returns>
-        public static IList<IOrganization> GetOrganizations(this IUserSession user)
+        public static HashSet<OrganizationState> GetOrganizations(this IUserSession user)
         {
             if (!user.Principal.Identity.IsAuthenticated)
             {
-                return new List<IOrganization>();
+                return new HashSet<OrganizationState>();
             }
-            GetAccountPrivileges(user);
+            CalculateOnce(user);
 
-            return user.GetData<IList<IOrganization>>(CURRENT_ORGANIZATIONS);
+            return user.GetData<HashSet<OrganizationState>>(CURRENT_ORGANIZATIONS);
         }
         #endregion
 
@@ -56,61 +87,219 @@ namespace Anycmd.Host
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static IList<IRole> GetRoles(this IUserSession user)
+        public static HashSet<RoleState> GetRoles(this IUserSession user)
         {
             if (!user.Principal.Identity.IsAuthenticated)
             {
-                return new List<IRole>();
+                return new HashSet<RoleState>();
             }
-            GetAccountPrivileges(user);
+            CalculateOnce(user);
 
-            return user.GetData<IList<IRole>>(CURRENT_ROLES);
+            return user.GetData<HashSet<RoleState>>(CURRENT_ROLES);
+        }
+
+        public static HashSet<RoleState> GetAllRoles(this IUserSession user)
+        {
+            var roles = new HashSet<RoleState>();
+            if (!user.Principal.Identity.IsAuthenticated)
+            {
+                return roles;
+            }
+            CalculateOnce(user);
+            foreach (var roleID in GetAllRoleIDs(user))
+            {
+                RoleState role;
+                if (user.AppHost.RoleSet.TryGetRole(roleID, out role))
+                {
+                    roles.Add(role);
+                }
+            }
+            return roles;
         }
         #endregion
 
         #region GetGroups
         /// <summary>
-        /// 从账户工作二元关系直接得到的工作组，不包括从组织结构得到的工作组。
+        /// 从账户工作组二元关系直接得到的工作组，不包括从组织结构得到的工作组。
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static IList<IGroup> GetGroups(this IUserSession user)
+        public static HashSet<GroupState> GetGroups(this IUserSession user)
         {
             if (!user.Principal.Identity.IsAuthenticated)
             {
-                return new List<IGroup>();
+                return new HashSet<GroupState>();
             }
-            GetAccountPrivileges(user);
+            CalculateOnce(user);
 
-            return user.GetData<IList<IGroup>>(CURRENT_GROUPS);
+            return user.GetData<HashSet<GroupState>>(CURRENT_GROUPS);
         }
         #endregion
+
+        #region GetFunctions
+        /// <summary>
+        /// 从账户功能关系直接得到的功能，不包括从组角色得到的功能。
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static HashSet<FunctionState> GetFunctions(this IUserSession user)
+        {
+            if (!user.Principal.Identity.IsAuthenticated)
+            {
+                return new HashSet<FunctionState>();
+            }
+            CalculateOnce(user);
+
+            return user.GetData<HashSet<FunctionState>>(CURRENT_FUNCTIONS);
+        }
+        #endregion
+
+        public static HashSet<FunctionState> GetAllFunctions(this IUserSession user)
+        {
+            var functions = new HashSet<FunctionState>();
+            if (!user.Principal.Identity.IsAuthenticated)
+            {
+                return functions;
+            }
+            CalculateOnce(user);
+            foreach (var functionID in GetAllFunctionIDs(user))
+            {
+                FunctionState function;
+                if (user.AppHost.FunctionSet.TryGetFunction(functionID, out function))
+                {
+                    functions.Add(function);
+                }
+            }
+            return functions;
+        }
+
+        /// <summary>
+        /// 当前用户的直接菜单。
+        /// <remarks>
+        /// 直接菜单是通过账户与菜单建立的直接关系得到的菜单，不包括从账户所在的角色得到的菜单。
+        /// </remarks>
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static HashSet<MenuState> GetMenus(this IUserSession user)
+        {
+            if (!user.Principal.Identity.IsAuthenticated)
+            {
+                return new HashSet<MenuState>();
+            }
+            CalculateOnce(user);
+
+            return user.GetData<HashSet<MenuState>>(CURRENT_MENUS);
+        }
+
+        /// <summary>
+        /// 当前账户所关联的应用系统集。用户集应是被作为用户中心节点运行的权限中心系统维护的，权限中心系统将具体的用户与具体的应用系统建立起关联并将用户“投放”到相关应用系统。
+        /// 应用系统的用户集隶属于中心节点，是中心节点用户集的投影、子集。
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static HashSet<AppSystemState> GetAppSystems(this IUserSession user)
+        {
+            if (!user.Principal.Identity.IsAuthenticated)
+            {
+                return new HashSet<AppSystemState>();
+            }
+            CalculateOnce(user);
+
+            return user.GetData<HashSet<AppSystemState>>(CURRENT_APPSYSTEMS);
+        }
 
         #region GetAllMenus
-        /// <summary>
-        /// 获取当前用户的菜单列表
-        /// </summary>
-        /// <returns></returns>
-        public static HashSet<IMenu> GetAllMenus(this IUserSession user)
-        {
-            if (!user.Principal.Identity.IsAuthenticated)
-            {
-                return new HashSet<IMenu>();
-            }
-            GetAccountPrivileges(user);
 
-            return user.GetData<HashSet<IMenu>>(CURRENT_ALLMENUS);
+        /// <summary>
+        /// 当前账户得到的所有菜单。
+        /// <remarks>
+        /// 它是当前账户从账户菜单二元关系直接得到的菜单和从当前账户的全部角色中得到的菜单的并集。
+        /// </remarks>
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static HashSet<MenuState> GetAllMenus(this IUserSession user)
+        {
+            var menus = user.GetData<HashSet<MenuState>>(CURRENT_ALL_MENUS);
+            if (menus == null)
+            {
+                menus = new HashSet<MenuState>();
+                List<MenuState> menuList = new List<MenuState>();
+                if (user.IsDeveloper())
+                {
+                    foreach (var menu in user.AppHost.MenuSet)
+                    {
+                        menuList.Add(menu);
+                    }
+                }
+                else
+                {
+                    var roleIDs = new HashSet<Guid>();
+                    foreach (var roleID in user.GetAllRoleIDs())
+                    {
+                        roleIDs.Add(roleID);
+                    }
+                    foreach (var roleMenu in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Menu && roleIDs.Contains(a.SubjectInstanceID)))
+                    {
+                        MenuState menu;
+                        if (user.AppHost.MenuSet.TryGetMenu(roleMenu.ObjectInstanceID, out menu))
+                        {
+                            menuList.Add(menu);
+                        }
+                    }
+                    foreach (var menu in user.GetMenus())
+                    {
+                        menuList.Add(menu);
+                    }
+                }
+                foreach (var menu in menuList.OrderBy(a => a.SortCode))
+                {
+                    menus.Add(menu);
+                }
+                user.SetData(CURRENT_ALL_MENUS, menus);
+            }
+            return menus;
         }
+
         #endregion
 
+        /// <summary>
+        /// 添加激活角色。
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="role"></param>
         public static void AddActiveRole(this IUserSession user, RoleState role)
         {
-            throw new NotImplementedException();
+            var roles = user.GetData<HashSet<RoleState>>(CURRENT_ROLES);
+            var allRoleIDs = user.GetData<HashSet<Guid>>(CURRENT_ALL_ROLEIDS);
+            if (roles != null)
+            {
+                roles.Add(role);
+            }
+            if (allRoleIDs != null)
+            {
+                allRoleIDs.Add(role.Id);
+            }
         }
 
+        /// <summary>
+        /// 删除激活角色。
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="role"></param>
         public static void DropActiveRole(this IUserSession user, RoleState role)
         {
-            throw new NotImplementedException();
+            var roles = user.GetData<HashSet<RoleState>>(CURRENT_ROLES);
+            var allRoleIDs = user.GetData<HashSet<Guid>>(CURRENT_ALL_ROLEIDS);
+            if (roles != null)
+            {
+                roles.Remove(role);
+            }
+            if (allRoleIDs != null)
+            {
+                allRoleIDs.Remove(role.Id);
+            }
         }
 
         #region Permit
@@ -262,50 +451,27 @@ namespace Anycmd.Host
         #endregion
 
         #region internal Methods
-        #region GetAllRoles
+        #region CalculateOnce
         /// <summary>
-        /// <remarks>
-        /// 这些角色是以下角色集合的并集：
-        /// 1，当前账户直接得到的角色；
-        /// 2，当前账户所在的工作组的角色；
-        /// 3，当前账户所在的组织结构的角色；
-        /// 4，当前账户所在的组织结构加入的工作组的角色。
-        /// </remarks>
+        /// 计算当前UserSession的权限，对于一个Session实例来说只会计算一次。
         /// </summary>
         /// <param name="user"></param>
-        /// <returns></returns>
-        internal static HashSet<IRole> GetAllRoles(this IUserSession user)
+        private static void CalculateOnce(this IUserSession user)
         {
             if (!user.Principal.Identity.IsAuthenticated)
             {
-                return new HashSet<IRole>();
+                return;
             }
-            GetAccountPrivileges(user);
-
-            return user.GetData<HashSet<IRole>>(CURRENT_ALLROLES);
-        }
-        #endregion
-
-        #region GetAccountPrivileges
-        internal static IList<PrivilegeBigramState> GetAccountPrivileges(this IUserSession user)
-        {
-            if (!user.Principal.Identity.IsAuthenticated)
+            var inited = user.GetData<object>(CURRENT_RIVILEGE_INITED);
+            if (inited == null)
             {
-                return new List<PrivilegeBigramState>();
-            }
-            var accountPrivileges = user.GetData<IList<PrivilegeBigramState>>(CURRENT_ALLPRIVILEGES);
-            if (accountPrivileges == null)
-            {
-                var accountID = user.GetAccountID();
-                var subjectType = ACSubjectType.Account.ToName();
-                accountPrivileges = user.AppHost.GetRequiredService<IRepository<PrivilegeBigram>>().FindAll().Where(a => a.SubjectType == subjectType && a.SubjectInstanceID == accountID).ToList().Select(a => PrivilegeBigramState.Create(a)).ToList();
-                var organizations = new List<IOrganization>();
-                var roles = new List<IRole>();
-                var allRoles = new HashSet<IRole>();
-                var groups = new List<IGroup>();
-                var menus = new HashSet<IMenu>();
-                var menuList = new List<IMenu>();
-                foreach (var accountPrivilege in accountPrivileges)
+                var organizations = new HashSet<OrganizationState>();
+                var roles = new HashSet<RoleState>();
+                var groups = new HashSet<GroupState>();
+                var functions = new HashSet<FunctionState>();
+                var menus = new HashSet<MenuState>();
+                var appSystems = new HashSet<AppSystemState>();
+                foreach (var accountPrivilege in user.AccountPrivileges)
                 {
                     switch (accountPrivilege.ObjectType)
                     {
@@ -320,25 +486,6 @@ namespace Anycmd.Host
                                 if (user.AppHost.OrganizationSet.TryGetOrganization(organizationID, out organization))
                                 {
                                     organizations.Add(organization);
-                                    foreach (var orgRole in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.SubjectInstanceID == organization.Id && a.ObjectType == ACObjectType.Role))
-                                    {
-                                        RoleState role;
-                                        if (user.AppHost.RoleSet.TryGetRole(orgRole.ObjectInstanceID, out role))
-                                        {
-                                            allRoles.Add(role);
-                                        }
-                                    }
-                                    foreach (var groupID in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.SubjectInstanceID == organization.Id && a.ObjectType == ACObjectType.Group).Select(a => a.ObjectInstanceID))
-                                    {
-                                        foreach (var roleGroup in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == groupID))
-                                        {
-                                            RoleState role;
-                                            if (user.AppHost.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
-                                            {
-                                                allRoles.Add(role);
-                                            }
-                                        }
-                                    }
                                 }
                                 break;
                             }
@@ -349,7 +496,6 @@ namespace Anycmd.Host
                                 if (user.AppHost.RoleSet.TryGetRole(roleID, out role))
                                 {
                                     roles.Add(role);
-                                    allRoles.Add(role);
                                 }
                                 break;
                             }
@@ -360,30 +506,39 @@ namespace Anycmd.Host
                                 if (user.AppHost.GroupSet.TryGetGroup(groupID, out group))
                                 {
                                     groups.Add(group);
-                                    foreach (var roleGroup in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == group.Id))
-                                    {
-                                        RoleState role;
-                                        if (user.AppHost.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
-                                        {
-                                            allRoles.Add(role);
-                                        }
-                                    }
                                 }
                                 break;
                             }
                         case ACObjectType.Function:
-                            break;
+                            {
+                                Guid functionID = accountPrivilege.ObjectInstanceID;
+                                FunctionState function;
+                                if (user.AppHost.FunctionSet.TryGetFunction(functionID, out function))
+                                {
+                                    functions.Add(function);
+                                }
+                                break;
+                            }
                         case ACObjectType.Menu:
                             {
+                                Guid menuID = accountPrivilege.ObjectInstanceID;
                                 MenuState menu;
-                                if (user.AppHost.MenuSet.TryGetMenu(accountPrivilege.ObjectInstanceID, out menu))
+                                if (user.AppHost.MenuSet.TryGetMenu(menuID, out menu))
                                 {
-                                    menuList.Add(menu);
+                                    menus.Add(menu);
                                 }
                                 break;
                             }
                         case ACObjectType.AppSystem:
-                            break;
+                            {
+                                Guid appSystemID = accountPrivilege.ObjectInstanceID;
+                                AppSystemState appSystem;
+                                if (user.AppHost.AppSystemSet.TryGetAppSystem(appSystemID, out appSystem))
+                                {
+                                    appSystems.Add(appSystem);
+                                }
+                                break;
+                            }
                         case ACObjectType.ResourceType:
                             break;
                         case ACObjectType.Privilege:
@@ -392,44 +547,114 @@ namespace Anycmd.Host
                             break;
                     }
                 }
+                user.SetData(CURRENT_RIVILEGE_INITED, new object());
                 user.SetData(CURRENT_ORGANIZATIONS, organizations);
                 user.SetData(CURRENT_ROLES, roles);
-                user.SetData(CURRENT_ALLROLES, allRoles);
                 user.SetData(CURRENT_GROUPS, groups);
-                user.SetData(CURRENT_ALLPRIVILEGES, accountPrivileges);
-                if (user.IsDeveloper())
+                user.SetData(CURRENT_FUNCTIONS, functions);
+                user.SetData(CURRENT_MENUS, menus);
+                user.SetData(CURRENT_APPSYSTEMS, appSystems);
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// 账户的角色授权
+        /// 这些角色是以下角色集合的并集：
+        /// 1，当前账户直接得到的角色；
+        /// 2，当前账户所在的工作组的角色；
+        /// 3，当前账户所在的组织结构的角色；
+        /// 4，当前账户所在的组织结构加入的工作组的角色。
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        internal static HashSet<Guid> GetAllRoleIDs(this IUserSession user)
+        {
+            var allRoles = user.GetData<HashSet<Guid>>(CURRENT_ALL_ROLEIDS);
+            if (allRoles == null)
+            {
+                allRoles = new HashSet<Guid>();
+                foreach (var role in user.GetRoles())
                 {
-                    foreach (var menu in user.AppHost.MenuSet)
-                    {
-                        menuList.Add(menu);
-                    }
+                    allRoles.Add(role.Id);
                 }
-                else
+                foreach (var organization in user.GetOrganizations())
                 {
-                    var roleIDs = new HashSet<Guid>();
-                    foreach (var role in allRoles)
+                    foreach (var item in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.SubjectInstanceID == organization.Id))
                     {
-                        roleIDs.Add(role.Id);
-                    }
-                    foreach (var roleMenu in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Menu && roleIDs.Contains(a.SubjectInstanceID)))
-                    {
-                        MenuState menu;
-                        if (user.AppHost.MenuSet.TryGetMenu(roleMenu.ObjectInstanceID, out menu))
+                        if (item.ObjectType == ACObjectType.Role)
                         {
-                            menuList.Add(menu);
+                            RoleState role;
+                            if (user.AppHost.RoleSet.TryGetRole(item.ObjectInstanceID, out role))
+                            {
+                                allRoles.Add(role.Id);
+                            }
+                        }
+                        else if (item.ObjectType == ACObjectType.Group)
+                        {
+                            foreach (var roleGroup in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == item.ObjectInstanceID))
+                            {
+                                RoleState role;
+                                if (user.AppHost.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
+                                {
+                                    allRoles.Add(role.Id);
+                                }
+                            }
                         }
                     }
                 }
-                foreach (var menu in menuList.OrderBy(a => a.SortCode))
+                foreach (var group in user.GetGroups())
                 {
-                    menus.Add(menu);
+                    foreach (var roleGroup in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == group.Id))
+                    {
+                        RoleState role;
+                        if (user.AppHost.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
+                        {
+                            allRoles.Add(role.Id);
+                        }
+                    }
                 }
-                user.SetData(CURRENT_ALLMENUS, menus);
+                user.SetData(CURRENT_ALL_ROLEIDS, allRoles);
             }
 
-            return accountPrivileges;
+            return allRoles;
         }
-        #endregion
+
+        /// <summary>
+        /// 该方法只返回功能标识。功能审计方法基于这个方法返回功能集。
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        internal static HashSet<Guid> GetAllFunctionIDs(this IUserSession user)
+        {
+            var functionIDs = user.GetData<HashSet<Guid>>(CURRENT_ALL_FUNCTIONIDS);
+            if (functionIDs == null)
+            {
+                functionIDs = new HashSet<Guid>();
+                // TODO:考虑在PrivilegeSet集合中计算好缓存起来，从而可以直接根据角色索引而
+                var roleIDs = user.GetAllRoleIDs();
+                foreach (var privilegeBigram in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Function && roleIDs.Contains(a.SubjectInstanceID)))
+                {
+                    functionIDs.Add(privilegeBigram.ObjectInstanceID);
+                }
+                // 追加账户所在组织结构的直接功能授权
+                foreach (var organization in user.GetOrganizations())
+                {
+                    foreach (var item in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.ObjectType == ACObjectType.Function && a.SubjectInstanceID == organization.Id))
+                    {
+                        Guid functionID = item.ObjectInstanceID;
+                        functionIDs.Add(functionID);
+                    }
+                }
+                // 追加账户的直接功能授权
+                foreach (var fun in user.GetFunctions())
+                {
+                    functionIDs.Add(fun.Id);
+                }
+                user.SetData(CURRENT_ALL_FUNCTIONIDS, functionIDs);
+            }
+            return functionIDs;
+        }
         #endregion
     }
 }

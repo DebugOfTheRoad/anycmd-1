@@ -6,7 +6,7 @@ namespace Anycmd {
     using Host.EDI;
     using Host.EDI.Handlers;
     using Host.EDI.Hecp;
-    using Host.EDI.Info;
+    using Host.EDI.MemorySets;
     using Logging;
     using System;
     using System.Collections.Generic;

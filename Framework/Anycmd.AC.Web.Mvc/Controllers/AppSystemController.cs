@@ -4,7 +4,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
-    using Host.AC.Infra.Messages;
+    using Host.AC;
     using Infra.ViewModels.AppSystemViewModels;
     using MiniUI;
     using System;
@@ -22,7 +22,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public AppSystemController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "AppSystem", out appSystemEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "AppSystem", out appSystemEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -96,7 +96,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistAppSystems(requestModel);
+            var data = Host.GetPlistAppSystems(requestModel);
 
             return this.JsonResult(new MiniGrid<AppSystemTr> { total = requestModel.total.Value, data = data });
         }
@@ -111,7 +111,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddAppSystemCommand(requestModel));
+            Host.AddAppSystem(requestModel);
 
             return this.JsonResult(new ResponseData { id = requestModel.Id, success = true });
         }
@@ -126,7 +126,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateAppSystemCommand(requestModel));
+            Host.UpdateAppSystem(requestModel);
 
             return this.JsonResult(new ResponseData { id = requestModel.Id, success = true });
         }
@@ -153,7 +153,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveAppSystemCommand(item));
+                Host.RemoveAppSystem(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

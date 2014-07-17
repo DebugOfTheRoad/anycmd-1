@@ -19,13 +19,13 @@
     <Position X="0.5" Y="2.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAACA=</HashCode>
-      <FileName>Logging\AnycmdLogMessage.cs</FileName>
+      <FileName>Logging\AnyCmdLogMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Anycmd.Logging.LoggingService">
     <Position X="8.75" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>IAAAAKAAAAAAAbAAAEAAAAAAQCkAQAEAIAAAAEAEAAA=</HashCode>
+      <HashCode>IAAAAKAAAAAAAbAAAAAAAAAAQCkAQAEAIAAAAEAEAAA=</HashCode>
       <FileName>Logging\LoggingService.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -43,17 +43,10 @@
       <FileName>Logging\ExceptionLogBase.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Anycmd.Logging.FunctionDescriptor">
-    <Position X="0.5" Y="6.25" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AEggAAgAAAAAAgEACoAAAAAAAAAABAAAAwAAAAACAAA=</HashCode>
-      <FileName>Logging\FunctionDescriptor.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Anycmd.Logging.OperationLog">
     <Position X="14.75" Y="2.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AkggACgAAAAgAgEACoAAAAAAAAAABEAAAQAAAAACAAA=</HashCode>
+      <HashCode>AkggACgAAAAgAgEACgAAAAAAAAACBEAAAQAAAAACAAA=</HashCode>
       <FileName>Logging\OperationLog.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -72,13 +65,6 @@
       <FileName>Logging\VisitingLogBase.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Anycmd.Logging.IOperationLogStorage">
-    <Position X="0.5" Y="4.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABABAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Logging\IOperationLogStorage.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="Anycmd.Logging.IAnyLog">
     <Position X="3" Y="0.5" Width="2" />
     <TypeIdentifier>

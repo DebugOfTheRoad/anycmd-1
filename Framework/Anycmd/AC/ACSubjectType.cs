@@ -3,6 +3,7 @@ namespace Anycmd.AC
 {
     /// <summary>
     /// 定义用户类别的合法AC主体取值。
+    /// <see cref="IPrivilegeBigram"/>
     /// </summary>
     public enum ACSubjectType
     {

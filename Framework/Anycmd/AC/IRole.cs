@@ -22,8 +22,6 @@ namespace Anycmd.AC
 
         int IsEnabled { get; }
 
-        int? PrivilegeState { get; }
-
         string Icon { get; }
 
         int SortCode { get; }

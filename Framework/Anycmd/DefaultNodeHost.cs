@@ -6,7 +6,7 @@ namespace Anycmd
     using Host.EDI;
     using Host.EDI.Entities;
     using Host.EDI.Handlers;
-    using Host.EDI.MemorySets;
+    using Host.EDI.MemorySets.Impl;
     using Host.EDI.MessageHandlers;
 
     /// <summary>

@@ -25,7 +25,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static ArchiveController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Archive", out archiveEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Archive", out archiveEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -130,14 +130,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("意外的本体码" + input.ontologyCode);
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Archive", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Archive", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.Archive");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Archive实体类型属性" + filter.field);
                 }
@@ -169,7 +169,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddArchive(input);
+            Host.AddArchive(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -188,7 +188,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateArchive(input);
+            Host.UpdateArchive(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -219,7 +219,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveArchive(item);
+                Host.RemoveArchive(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

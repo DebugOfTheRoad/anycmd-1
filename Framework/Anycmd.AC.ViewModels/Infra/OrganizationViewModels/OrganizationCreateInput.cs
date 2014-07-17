@@ -71,45 +71,9 @@ namespace Anycmd.AC.Infra.ViewModels.OrganizationViewModels
         /// </summary>
         public string WebPage { get; set; }
         /// <summary>
-        /// 
+        /// 包工头
         /// </summary>
-        public Guid? LeadershipID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? AssistantLeadershipID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? ManagerID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? AssistantManagerID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? FinancialID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? AccountingID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? CashierID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? PrincipalID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Bank { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string BankAccount { get; set; }
+        public Guid? ContractorID { get; set; }
         /// <summary>
         /// 
         /// </summary>

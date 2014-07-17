@@ -1,13 +1,13 @@
 ﻿
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
-    using Anycmd.Repositories;
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
-    using Host.EDI.Messages;
+    using Host.EDI;
     using Host.EDI.Entities;
     using MiniUI;
+    using Repositories;
     using System;
     using System.ComponentModel;
     using System.Linq;
@@ -25,7 +25,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static ProcessController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Process", out processEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Process", out processEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -125,14 +125,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Process", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Process", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.Process");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Process实体类型属性" + filter.field);
                 }
@@ -163,7 +163,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddProcessCommand(input));
+            Host.AddProcess(input);
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id.Value });
         }
@@ -182,7 +182,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateProcessCommand(input));
+            Host.UpdateProcess(input);
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }

@@ -63,7 +63,7 @@
     <Compile Include="Identity\AccountViewModels\IAccountQuery.cs" />
     <Compile Include="Identity\AccountViewModels\IVisitingLogQuery.cs" />
     <Compile Include="Identity\AccountViewModels\PasswordChangeInput.cs" />
-    <Compile Include="Identity\AccountViewModels\PasswordSetInput.cs" />
+    <Compile Include="Identity\AccountViewModels\PasswordAssignInput.cs" />
     <Compile Include="Identity\AccountViewModels\VisitingLogTr.cs" />
     <Compile Include="Identity\AccountViewModels\GetPlistContractors.cs" />
     <Compile Include="Infra\AppSystemViewModels\AppSystemCreateInput.cs" />

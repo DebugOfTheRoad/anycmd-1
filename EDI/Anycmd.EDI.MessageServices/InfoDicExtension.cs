@@ -1,6 +1,6 @@
 ﻿
 namespace Anycmd.EDI.MessageServices {
-    using Anycmd.Host.EDI;
+    using Host.EDI;
     using ServiceModel.Types;
     using System.Linq;
 

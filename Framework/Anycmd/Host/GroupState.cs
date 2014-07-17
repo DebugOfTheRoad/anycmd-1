@@ -22,8 +22,7 @@ namespace Anycmd.Host
                 CategoryCode = group.CategoryCode,
                 SortCode = group.SortCode,
                 IsEnabled = group.IsEnabled,
-                CreateOn = group.CreateOn,
-                PrivilegeState = group.PrivilegeState
+                CreateOn = group.CreateOn
             };
         }
 
@@ -38,8 +37,6 @@ namespace Anycmd.Host
         public int SortCode { get; private set; }
 
         public int IsEnabled { get; private set; }
-
-        public int? PrivilegeState { get; private set; }
 
         public DateTime? CreateOn { get; private set; }
 
@@ -66,7 +63,6 @@ namespace Anycmd.Host
             var right = (GroupState)obj;
 
             return left.Id == right.Id &&
-                left.PrivilegeState == right.PrivilegeState &&
                 left.Name == right.Name &&
                 left.OrganizationCode == right.OrganizationCode &&
                 left.CategoryCode == right.CategoryCode &&

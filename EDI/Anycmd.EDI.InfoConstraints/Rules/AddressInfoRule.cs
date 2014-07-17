@@ -1,7 +1,7 @@
 ﻿
 namespace Anycmd.EDI.InfoConstraints
 {
-    using Anycmd.Host.EDI;
+    using Host.EDI;
     using System;
     using System.ComponentModel.Composition;
 

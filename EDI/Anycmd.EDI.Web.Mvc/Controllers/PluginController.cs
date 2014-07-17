@@ -27,7 +27,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static PluginController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Plugin", out pluginEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Plugin", out pluginEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -62,7 +62,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 Guid id;
                 if (Guid.TryParse(Request["id"], out id))
                 {
-                    var data = new PluginInfo(AppHostInstance, pluginEntityType.GetData(id));
+                    var data = new PluginInfo(Host, pluginEntityType.GetData(id));
                     return new PartialViewResult { ViewName = "Partials/Details", ViewData = new ViewDataDictionary(data) };
                 }
                 else
@@ -111,7 +111,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 throw new ValidationException("未传入标识");
             }
-            return this.JsonResult(new PluginInfo(AppHostInstance, pluginEntityType.GetData(id.Value)));
+            return this.JsonResult(new PluginInfo(Host, pluginEntityType.GetData(id.Value)));
         }
 
         /// <summary>

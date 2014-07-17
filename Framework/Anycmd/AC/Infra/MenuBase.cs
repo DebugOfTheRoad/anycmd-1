@@ -11,6 +11,7 @@ namespace Anycmd.AC.Infra
     public abstract class MenuBase : EntityBase, IMenu
     {
         private Guid _appsystemID;
+        private string _name;
 
         public virtual Guid AppSystemID
         {
@@ -40,7 +41,21 @@ namespace Anycmd.AC.Infra
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ValidationException("名称是必须的");
+                }
+                if (value != _name)
+                {
+                    _name = value;
+                }
+            }
+        }
         /// <summary>
         /// 
         /// </summary>

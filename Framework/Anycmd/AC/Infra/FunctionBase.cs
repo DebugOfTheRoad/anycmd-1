@@ -6,7 +6,7 @@ namespace Anycmd.AC.Infra
     using System;
 
     /// <summary>
-    /// 操作基类。<see cref="IFunction"/>
+    /// 函数、功能、操作、逻辑单元，基类。<see cref="IFunction"/>
     /// </summary>
     public abstract class FunctionBase : EntityBase, IFunction
     {

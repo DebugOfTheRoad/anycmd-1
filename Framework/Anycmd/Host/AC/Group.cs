@@ -27,8 +27,7 @@ namespace Anycmd.Host.AC
                 Name = input.Name,
                 ShortName = input.ShortName,
                 SortCode = input.SortCode,
-                TypeCode = input.TypeCode,
-                PrivilegeState = null
+                TypeCode = input.TypeCode
             };
         }
 

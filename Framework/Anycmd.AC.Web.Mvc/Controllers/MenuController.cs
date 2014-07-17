@@ -29,7 +29,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public MenuController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Menu", out menuEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Menu", out menuEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -145,14 +145,14 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 parentID = null;
             }
-            var nodes = AppHostInstance.MenuSet.Where(a => a.ParentID == parentID).Select(a => MenuMiniNode.Create(AppHostInstance, a)).ToList();
+            var nodes = Host.MenuSet.Where(a => a.ParentID == parentID).Select(a => MenuMiniNode.Create(Host, a)).ToList();
             if (string.IsNullOrEmpty(rootNodeName))
             {
                 rootNodeName = "全部";
             }
             if (!parentID.HasValue)
             {
-                var rootNode = new MenuMiniNode(AppHostInstance)
+                var rootNode = new MenuMiniNode(Host)
                 {
                     Id = Guid.Empty,
                     Name = rootNodeName,
@@ -179,12 +179,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetNodesByRoleID(Guid roleID)
         {
             RoleState role;
-            if (!AppHostInstance.RoleSet.TryGetRole(roleID, out role))
+            if (!Host.RoleSet.TryGetRole(roleID, out role))
             {
                 throw new ValidationException("意外的角色标识" + roleID);
             }
-            var roleMenus = AppHostInstance.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Menu && a.SubjectInstanceID == roleID);
-            var menus = AppHostInstance.MenuSet;
+            var roleMenus = Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Menu && a.SubjectInstanceID == roleID);
+            var menus = Host.MenuSet;
             var data = (from m in menus
                         let @checked = roleMenus.Any(a => a.ObjectInstanceID == m.Id)
                         let isLeaf = !menus.Any(a => a.ParentID == m.Id)
@@ -228,7 +228,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             int pageIndex = requestModel.pageIndex ?? 0;
             int pageSize = requestModel.pageSize ?? 10;
-            var queryable = AppHostInstance.MenuSet.Where(a => a.ParentID == requestModel.parentID).Select(a => MenuTr.Create(a)).AsQueryable();
+            var queryable = Host.MenuSet.Where(a => a.ParentID == requestModel.parentID).Select(a => MenuTr.Create(a)).AsQueryable();
             foreach (var filter in requestModel.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);
@@ -247,7 +247,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddMenuCommand(input));
+            Host.Handle(new AddMenuCommand(input));
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -261,7 +261,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return this.ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateMenuCommand(input));
+            Host.Handle(new UpdateMenuCommand(input));
 
             return this.JsonResult(new ResponseData { success = true, id = input.Id });
         }
@@ -289,13 +289,13 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.Handle(new RemovePrivilegeBigramCommand(id));
+                            Host.Handle(new RemovePrivilegeBigramCommand(id));
                         }
                         else
                         {
                             if (row.ContainsKey("PrivilegeConstraint"))
                             {
-                                AppHostInstance.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
+                                Host.Handle(new UpdatePrivilegeBigramCommand(new PrivilegeBigramUpdateInput
                                 {
                                     Id = entity.Id,
                                     PrivilegeConstraint = row["PrivilegeConstraint"].ToString()
@@ -319,7 +319,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                         {
                             createInput.PrivilegeConstraint = row["PrivilegeConstraint"].ToString();
                         }
-                        AppHostInstance.Handle(new AddPrivilegeBigramCommand(createInput));
+                        Host.Handle(new AddPrivilegeBigramCommand(createInput));
                     }
                 }
             }
@@ -349,7 +349,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveMenuCommand(item));
+                Host.Handle(new RemoveMenuCommand(item));
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

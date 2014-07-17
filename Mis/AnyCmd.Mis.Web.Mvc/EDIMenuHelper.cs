@@ -29,7 +29,7 @@ namespace Anycmd.Mis.Web.Mvc
                 if (ontology.Ontology.IsEnabled == 1)
                 {
                     if (!ontology.Ontology.IsSystem
-                        || (ontology.Ontology.IsSystem && NodeHost.Instance.AppHost.UserSession.IsDeveloper()))
+                        || (ontology.Ontology.IsSystem && NodeHost.Instance.AppHost.User.IsDeveloper()))
                     {
                         menus.Add(new Menu
                         {

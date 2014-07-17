@@ -284,7 +284,7 @@ namespace Anycmd.Web.Mvc
             {
                 return result;
             }
-            if (property != null && (!string.IsNullOrEmpty(property.Tooltip) || property.AppHost.UserSession.IsDeveloper()))
+            if (property != null && (!string.IsNullOrEmpty(property.Tooltip) || property.AppHost.User.IsDeveloper()))
             {
                 var urlHelper = new UrlHelper(html.ViewContext.RequestContext, html.RouteCollection);
                 var href = urlHelper.Action("Tooltip", "Property", new { area = "AC", propertyID = property.Id });
@@ -309,7 +309,7 @@ namespace Anycmd.Web.Mvc
             {
                 return result;
             }
-            if (page != null && (!string.IsNullOrEmpty(page.Tooltip) || page.AppHost.UserSession.IsDeveloper()))
+            if (page != null && (!string.IsNullOrEmpty(page.Tooltip) || page.AppHost.User.IsDeveloper()))
             {
                 var urlHelper = new UrlHelper(html.ViewContext.RequestContext, html.RouteCollection);
                 var href = urlHelper.Action("Tooltip", "Page", new { area = "AC", pageID = page.Id });
@@ -414,7 +414,7 @@ namespace Anycmd.Web.Mvc
         public static IHtmlString IsEnabled(this HtmlHelper html, string resourceCode, string functionCode)
         {
             var htmlEnabled = string.Empty;
-            if (!html.GetHost().UserSession.Permit(resourceCode, functionCode))
+            if (!html.GetHost().User.Permit(resourceCode, functionCode))
             {
                 htmlEnabled = "enabled='false'";
             }
@@ -552,12 +552,12 @@ namespace Anycmd.Web.Mvc
         #region Permit
         public static bool Permit(this PageState page)
         {
-            return page.AppHost.UserSession.Permit(page);
+            return page.AppHost.User.Permit(page);
         }
 
         public static bool Permit(this PageViewModel page)
         {
-            return page.Page.AppHost.UserSession.Permit(page.Page);
+            return page.Page.AppHost.User.Permit(page.Page);
         }
         #endregion
 
@@ -568,7 +568,7 @@ namespace Anycmd.Web.Mvc
 
         public static IUserSession GetUser(this WebViewPage page)
         {
-            return page.Html.GetHost().UserSession;
+            return page.Html.GetHost().User;
         }
 
         #region GetOperationLogEntityType
@@ -982,7 +982,7 @@ namespace Anycmd.Web.Mvc
         public static IHtmlString Qtip(this HtmlHelper html, IElement element)
         {
             IHtmlString result = MvcHtmlString.Empty;
-            if (element != null && (!string.IsNullOrEmpty(element.Tooltip) || NodeHost.Instance.AppHost.UserSession.IsDeveloper()))
+            if (element != null && (!string.IsNullOrEmpty(element.Tooltip) || NodeHost.Instance.AppHost.User.IsDeveloper()))
             {
                 var urlHelper = new UrlHelper(html.ViewContext.RequestContext, html.RouteCollection);
                 var href = urlHelper.Action("Tooltip", "Element", new { area = "EDI", elementID = element.Id });

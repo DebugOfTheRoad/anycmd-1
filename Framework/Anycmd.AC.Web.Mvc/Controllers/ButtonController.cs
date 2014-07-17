@@ -4,7 +4,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
-    using Host.AC.Infra.Messages;
+    using Host.AC;
     using Infra.ViewModels.ButtonViewModels;
     using MiniUI;
     using System;
@@ -22,7 +22,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
 
         public ButtonController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("AC", "Button", out buttonEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("AC", "Button", out buttonEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -101,7 +101,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistButtons(requestModel);
+            var data = Host.GetPlistButtons(requestModel);
 
             return this.JsonResult(new MiniGrid<ButtonTr> { total = requestModel.total.Value, data = data });
         }
@@ -116,7 +116,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            var data = AppHostInstance.GetPlistPageButtons(requestData);
+            var data = Host.GetPlistPageButtons(requestData);
 
             return this.JsonResult(new MiniGrid<PageAssignButtonTr> { total = requestData.total.Value, data = data });
         }
@@ -133,7 +133,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new AddButtonCommand(input));
+            Host.AddButton(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -150,7 +150,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.Handle(new UpdateButtonCommand(input));
+            Host.UpdateButton(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -179,7 +179,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.Handle(new RemoveButtonCommand(item));
+                Host.RemoveButton(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

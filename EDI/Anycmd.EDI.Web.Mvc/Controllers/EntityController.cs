@@ -271,7 +271,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 					throw new ValidationException("没有选中组织结构");
 				}
 				OrganizationState org;
-				if (!AppHostInstance.OrganizationSet.TryGetOrganization(requestModel.organizationCode, out org))
+				if (!Host.OrganizationSet.TryGetOrganization(requestModel.organizationCode, out org))
 				{
 					throw new ValidationException("非法的组织结构码" + requestModel.organizationCode);
 				}
@@ -396,7 +396,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 			{
 				throw new ValidationException("非法的本体码" + ontologyCode);
 			}
-			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + AppHostInstance.UserSession.GetAccountID());
+			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + Host.User.Worker.Id);
 			string fullName = Path.Combine(dirPath, fileName);
 			if (!System.IO.File.Exists(fullName))
 			{
@@ -732,13 +732,13 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 				throw new ValidationException("非法的本体码" + ontologyCode);
 			}
 			var files = new FileInfo[0];
-			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + AppHostInstance.UserSession.GetAccountID());
+			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + Host.User.Worker.Id);
 			if (Directory.Exists(dirPath))
 			{
 				var dirInfo = new DirectoryInfo(dirPath);
 				files = dirInfo.GetFiles();
 			}
-			string userName = AppHostInstance.UserSession.GetAccount().Name;
+			string userName = Host.User.Worker.Name;
 
 			return this.JsonResult(new MiniGrid
 			{
@@ -775,7 +775,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 			{
 				throw new ValidationException("非法的本体码" + ontologyCode);
 			}
-			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + AppHostInstance.UserSession.GetAccountID());
+			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + Host.User.Worker.Id);
 			string fullName = Path.Combine(dirPath, fileName);
 			if (System.IO.File.Exists(fullName))
 			{
@@ -829,7 +829,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 			{
 				throw new ValidationException("非法的本体码" + ontologyCode);
 			}
-			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + AppHostInstance.UserSession.GetAccountID());
+			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + Host.User.Worker.Id);
 			string fullName = Path.Combine(dirPath, fileName);
 			if (!System.IO.File.Exists(fullName))
 			{
@@ -916,7 +916,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 				}
 				if (isSave)
 				{
-					string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + AppHostInstance.UserSession.GetAccountID());
+					string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + Host.User.Worker.Id);
 					DirectoryInfo dirInfo;
 					dirInfo = !Directory.Exists(dirPath) ? Directory.CreateDirectory(dirPath) : new DirectoryInfo(dirPath);
 					string fullName = Path.Combine(dirPath, fileName + Guid.NewGuid().ToString() + fileType);
@@ -1243,7 +1243,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 									CredentialType = CredentialType.Token.ToName(),
 									ClientID = NodeHost.Instance.Nodes.ThisNode.Node.Id.ToString(),
 									Ticks = ticks,
-									UserName = AppHostInstance.UserSession.GetAccount().Id.ToString()
+									UserName = Host.User.Worker.Id.ToString()
 								};
 								command.Credential = credential;
 								commands.Add(i, command);
@@ -1339,7 +1339,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 			{
 				throw new ValidationException("非法的本体码" + ontologyCode);
 			}
-			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + AppHostInstance.UserSession.GetAccountID());
+			string dirPath = Server.MapPath("~/Content/Import/Excel/" + ontology.Ontology.Code + "/" + Host.User.Worker.Id);
 			string[] files = fileNames.Split('/');
 			foreach (var fileName in files)
 			{
@@ -1380,7 +1380,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 				throw new ValidationException("没有选中组织结构");
 			}
 			OrganizationState org;
-			if (!AppHostInstance.OrganizationSet.TryGetOrganization(requestModel.organizationCode, out org))
+			if (!Host.OrganizationSet.TryGetOrganization(requestModel.organizationCode, out org))
 			{
 				throw new ValidationException("非法的组织结构码" + requestModel.organizationCode);
 			}
@@ -1558,9 +1558,9 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 				cell.CellStyle = helderStyle;
 				i++;
 			}
-			if (AppHostInstance.UserSession.IsDeveloper())
+			if (Host.User.IsDeveloper())
 			{
-				foreach (var item in AppHostInstance.OrganizationSet)
+				foreach (var item in Host.OrganizationSet)
 				{
 					var parentOrg = item.Parent;
 					var row = orgSheet.CreateRow(rowIndex);
@@ -1610,9 +1610,9 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 			}
 			else
 			{
-				foreach (var myOrg in AppHostInstance.UserSession.GetOrganizations())
+				foreach (var myOrg in Host.User.GetOrganizations())
 				{
-					foreach (var item in AppHostInstance.OrganizationSet)
+					foreach (var item in Host.OrganizationSet)
 					{
 						if (item.Code.StartsWith(myOrg.Code, StringComparison.OrdinalIgnoreCase))
 						{
@@ -1868,7 +1868,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 			}
 			requestModel.includedescendants = requestModel.includedescendants ?? false;
 			IDataTuples infoValues = null;
-			if (string.IsNullOrEmpty(requestModel.organizationCode) && !AppHostInstance.UserSession.IsDeveloper())
+			if (string.IsNullOrEmpty(requestModel.organizationCode) && !Host.User.IsDeveloper())
 			{
 				throw new ValidationException("对不起，您没有查看全部数据的权限");
 			}
@@ -1915,7 +1915,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 					selectElements.Add(element);
 				}
 			}
-			if (string.IsNullOrEmpty(requestModel.organizationCode) && !AppHostInstance.UserSession.IsDeveloper())
+			if (string.IsNullOrEmpty(requestModel.organizationCode) && !Host.User.IsDeveloper())
 			{
 				throw new ValidationException("对不起，您没有查看全部数据的权限");
 			}
@@ -2009,7 +2009,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 					UserType = UserType.None.ToName(),
 					CredentialType = CredentialType.Token.ToName(),
 					ClientID = node.Node.Id.ToString(),
-					UserName = AppHostInstance.UserSession.GetAccountID().ToString(),// UserName
+					UserName = Host.User.Worker.Id.ToString(),// UserName
 					Password = TokenObject.Token(node.Node.Id.ToString(), ticks, node.Node.SecretKey),
 					Ticks = ticks
 				},
@@ -2080,7 +2080,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 					UserType = UserType.None.ToName(),
 					CredentialType = CredentialType.Token.ToName(),
 					ClientID = node.Node.Id.ToString(),
-					UserName = AppHostInstance.UserSession.GetAccountID().ToString(),// UserName
+					UserName = Host.User.Worker.Id.ToString(),// UserName
 					Password = TokenObject.Token(node.Node.Id.ToString(), ticks, node.Node.SecretKey),
 					Ticks = ticks
 				},

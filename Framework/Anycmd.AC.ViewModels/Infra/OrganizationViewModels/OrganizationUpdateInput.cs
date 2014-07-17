@@ -45,6 +45,10 @@ namespace Anycmd.AC.Infra.ViewModels.OrganizationViewModels
         /// <summary>
         /// 
         /// </summary>
+        public string Postalcode { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [DisplayName("外线电话")]
         [RegularExpression(@"^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$", ErrorMessage = "外线电话格式错误")]
         public string OuterPhone { get; set; }
@@ -61,10 +65,6 @@ namespace Anycmd.AC.Infra.ViewModels.OrganizationViewModels
         /// <summary>
         /// 
         /// </summary>
-        public string PostalCode { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
         [StringLength(200)]
         [DisplayName("地址")]
         public string Address { get; set; }
@@ -73,45 +73,9 @@ namespace Anycmd.AC.Infra.ViewModels.OrganizationViewModels
         /// </summary>
         public string WebPage { get; set; }
         /// <summary>
-        /// 
+        /// 包工头
         /// </summary>
-        public Guid? LeadershipID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? AssistantLeadershipID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? ManagerID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? AssistantManagerID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? FinancialID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? AccountingID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? CashierID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid? PrincipalID { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Bank { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string BankAccount { get; set; }
+        public Guid? ContractorID { get; set; }
         /// <summary>
         /// 
         /// </summary>

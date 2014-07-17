@@ -29,7 +29,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static NodeController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Node", out nodeEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Node", out nodeEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -64,7 +64,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 Guid id;
                 if (Guid.TryParse(Request["id"], out id))
                 {
-                    var data = new NodeInfo(AppHostInstance, nodeEntityType.GetData(id));
+                    var data = new NodeInfo(Host, nodeEntityType.GetData(id));
                     return new PartialViewResult { ViewName = "Partials/Details", ViewData = new ViewDataDictionary(data) };
                 }
                 else
@@ -168,7 +168,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 throw new ValidationException("未传入标识");
             }
-            return this.JsonResult(new NodeInfo(AppHostInstance, nodeEntityType.GetData(id.Value)));
+            return this.JsonResult(new NodeInfo(Host, nodeEntityType.GetData(id.Value)));
         }
 
         /// <summary>
@@ -400,14 +400,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Node", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Node", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.Node");
             }
             foreach (var filter in requestModel.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Node实体类型属性" + filter.field);
                 }
@@ -457,14 +457,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             if (parentID.HasValue)
             {
                 OrganizationState org;
-                if (!AppHostInstance.OrganizationSet.TryGetOrganization(parentID.Value, out org))
+                if (!Host.OrganizationSet.TryGetOrganization(parentID.Value, out org))
                 {
                     throw new ValidationException("意外的组织结构标识" + parentID);
                 }
                 parentCode = org.Code;
             }
             var ontologyOrgs = ontology.Organizations;
-            var orgs = AppHostInstance.OrganizationSet.Where(a => ontologyOrgs.ContainsKey(a));
+            var orgs = Host.OrganizationSet.Where(a => ontologyOrgs.ContainsKey(a));
             var noos = GetRequiredService<IRepository<NodeOntologyOrganization>>().FindAll().Where(a => a.OntologyID == ontologyID.Value && a.NodeID == nodeID.Value).ToList<NodeOntologyOrganization>();
             return this.JsonResult(orgs.Where(a => string.Equals(a.ParentCode, parentCode, StringComparison.OrdinalIgnoreCase)).OrderBy(a => a.Code)
                 .Select(a =>
@@ -486,7 +486,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         a.Code,
                         a.Name,
                         ParentID = a.ParentCode,
-                        isLeaf = AppHostInstance.OrganizationSet.All(b => !a.Code.Equals(b.ParentCode, StringComparison.OrdinalIgnoreCase)),
+                        isLeaf = Host.OrganizationSet.All(b => !a.Code.Equals(b.ParentCode, StringComparison.OrdinalIgnoreCase)),
                         expanded = false,
                         @checked = @checked,
                         NodeID = nodeID,
@@ -564,7 +564,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddNode(input);
+            Host.AddNode(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -583,7 +583,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateNode(input);
+            Host.UpdateNode(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -622,7 +622,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         entity.IsDistributeEnabled = isTransferEnabled;
                         GetRequiredService<IRepository<Node>>().Update(entity);
                         GetRequiredService<IRepository<Node>>().Context.Commit();
-                        AppHostInstance.PublishEvent(new NodeUpdatedEvent(entity, new NodeUpdateInput
+                        Host.PublishEvent(new NodeUpdatedEvent(entity, new NodeUpdateInput
                         {
                             Abstract = entity.Abstract,
                             AnycmdApiAddress = entity.AnycmdApiAddress,
@@ -645,7 +645,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                             Telephone = entity.Telephone,
                             TransferID = entity.TransferID
                         }));
-                        AppHostInstance.CommitEventBus();
+                        Host.CommitEventBus();
                     }
                     else
                     {
@@ -683,12 +683,12 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.RemoveNodeOntologyCare(id);
+                            Host.RemoveNodeOntologyCare(id);
                         }
                     }
                     else if (isAssigned)
                     {
-                        AppHostInstance.AddNodeOntologyCare(new NodeOntologyCareCreateInput
+                        Host.AddNodeOntologyCare(new NodeOntologyCareCreateInput
                         {
                             Id = id,
                             NodeID = new Guid(row["NodeID"].ToString()),
@@ -728,7 +728,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     {
                         if (!isAssigned)
                         {
-                            AppHostInstance.RemoveNodeElementCare(id);
+                            Host.RemoveNodeElementCare(id);
                         }
                         else
                         {
@@ -737,7 +737,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     }
                     else if (isAssigned)
                     {
-                        AppHostInstance.AddNodeElementCare(new NodeElementCareCreateInput
+                        Host.AddNodeElementCare(new NodeElementCareCreateInput
                         {
                             Id = id,
                             NodeID = new Guid(row["NodeID"].ToString()),
@@ -797,7 +797,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                             IsAudit = inputModel.IsAudit,
                             NodeID = inputModel.NodeID
                         };
-                        AppHostInstance.PublishEvent(new NodeActionUpdatedEvent(entity));
+                        Host.PublishEvent(new NodeActionUpdatedEvent(entity));
                     }
                     else
                     {
@@ -807,9 +807,9 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         entity.ActionID = inputModel.ActionID;
                         entity.IsAudit = inputModel.IsAudit;
                         entity.IsAllowed = inputModel.IsAllowed;
-                        AppHostInstance.PublishEvent(new NodeActionAddedEvent(entity));
+                        Host.PublishEvent(new NodeActionAddedEvent(entity));
                     }
-                    AppHostInstance.CommitEventBus();
+                    Host.CommitEventBus();
                 }
             }
 
@@ -874,7 +874,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         GetRequiredService<IRepository<NodeElementAction>>().Add(entity);
                     }
                     GetRequiredService<IRepository<NodeElementAction>>().Context.Commit();
-                    AppHostInstance.CommitEventBus();
+                    Host.CommitEventBus();
                 }
             }
 
@@ -908,7 +908,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveNode(item);
+                Host.RemoveNode(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

@@ -1,6 +1,6 @@
 ﻿
 namespace Anycmd.EDI.Application {
-    using Anycmd.Host.EDI;
+    using Host.EDI;
     using ServiceStack.Text;
     using System.Collections.Generic;
 

@@ -29,7 +29,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
 
         static ElementController()
         {
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Element", out elementEntityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Element", out elementEntityType))
             {
                 throw new CoreException("意外的实体类型");
             }
@@ -129,7 +129,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     var entity = OntologyDescriptor.SingleElement(elementID.Value).Element;
                     if (entity != null)
                     {
-                        AppHostInstance.UpdateElement(
+                        Host.UpdateElement(
                             new ElementUpdateInput
                             {
                                 AllowFilter = entity.AllowFilter,
@@ -227,14 +227,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("意外的本体标识" + input.ontologyID);
             }
             EntityTypeState entityType;
-            if (!AppHostInstance.EntityTypeSet.TryGetEntityType("EDI", "Element", out entityType))
+            if (!Host.EntityTypeSet.TryGetEntityType("EDI", "Element", out entityType))
             {
                 throw new CoreException("意外的实体类型EDI.Element");
             }
             foreach (var filter in input.filters)
             {
                 PropertyState property;
-                if (!AppHostInstance.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
+                if (!Host.EntityTypeSet.TryGetProperty(entityType, filter.field, out property))
                 {
                     throw new ValidationException("意外的Element实体类型属性" + filter.field);
                 }
@@ -390,7 +390,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.AddElement(input);
+            Host.AddElement(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -409,7 +409,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            AppHostInstance.UpdateElement(input);
+            Host.UpdateElement(input);
 
             return this.JsonResult(new ResponseData { id = input.Id, success = true });
         }
@@ -456,7 +456,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                             ElementID = element.Element.Id,
                             Id = inputModel.Id
                         };
-                        AppHostInstance.PublishEvent(new ElementActionUpdatedEvent(entity));
+                        Host.PublishEvent(new ElementActionUpdatedEvent(entity));
                     }
                     else
                     {
@@ -466,9 +466,9 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         entity.ActionID = inputModel.ActionID;
                         entity.IsAudit = inputModel.IsAudit;
                         entity.IsAllowed = inputModel.IsAllowed;
-                        AppHostInstance.PublishEvent(new ElementActionAddedEvent(entity));
+                        Host.PublishEvent(new ElementActionAddedEvent(entity));
                     }
-                    AppHostInstance.CommitEventBus();
+                    Host.CommitEventBus();
                 }
             }
 
@@ -579,7 +579,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             foreach (var item in idArray)
             {
-                AppHostInstance.RemoveElement(item);
+                Host.RemoveElement(item);
             }
 
             return this.JsonResult(new ResponseData { id = id, success = true });

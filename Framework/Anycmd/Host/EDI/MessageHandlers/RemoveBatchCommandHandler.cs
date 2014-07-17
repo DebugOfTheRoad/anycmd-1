@@ -26,7 +26,6 @@ namespace Anycmd.Host.EDI.MessageHandlers
             batchRepository.Remove(entity);
             batchRepository.Context.Commit();
 
-            host.PublishOperatedEvent(command.EntityID);
             host.PublishEvent(new BatchRemovedEvent(entity));
             host.CommitEventBus();
         }
