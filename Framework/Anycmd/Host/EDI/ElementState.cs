@@ -18,7 +18,7 @@ namespace Anycmd.Host.EDI
 
         private ElementState() { }
 
-        public static ElementState Create(ElementBase element)
+        public static ElementState Create(IAppHost host, ElementBase element)
         {
             if (element == null)
             {
@@ -26,6 +26,7 @@ namespace Anycmd.Host.EDI
             }
             var data = new ElementState
             {
+                Host = host,
                 Actions = element.Actions,
                 AllowFilter = element.AllowFilter,
                 AllowSort = element.AllowSort,
@@ -74,17 +75,17 @@ namespace Anycmd.Host.EDI
             data._elementActionDic = elementActionDic;
             if (data.Actions != null)
             {
-                var elementActions = NodeHost.Instance.AppHost.DeserializeFromString<ElementAction[]>(data.Actions);
+                var elementActions = host.DeserializeFromString<ElementAction[]>(data.Actions);
                 if (elementActions != null)
                 {
                     foreach (var elementAction in elementActions)
                     {
                         OntologyDescriptor ontology;
-                        if (!NodeHost.Instance.Ontologies.TryGetOntology(data.OntologyID, out ontology))
+                        if (!host.Ontologies.TryGetOntology(data.OntologyID, out ontology))
                         {
                             throw new CoreException("意外的本体元素本体标识" + data.OntologyID);
                         }
-                        var actionDic = NodeHost.Instance.Ontologies.GetActons(ontology);
+                        var actionDic = host.Ontologies.GetActons(ontology);
                         var verb = actionDic.Where(a => a.Value.Id == elementAction.ActionID).Select(a => a.Key).FirstOrDefault();
                         if (verb != null)
                         {
@@ -103,15 +104,15 @@ namespace Anycmd.Host.EDI
             data._infoRules = infoRules;
             if (data.InfoRules != null)
             {
-                var elementInfoRules = NodeHost.Instance.AppHost.DeserializeFromString<ElementInfoRule[]>(data.InfoRules);
+                var elementInfoRules = host.DeserializeFromString<ElementInfoRule[]>(data.InfoRules);
                 if (elementInfoRules != null)
                 {
                     foreach (var elementInfoRule in elementInfoRules)
                     {
                         InfoRuleState infoRule;
-                        if (NodeHost.Instance.InfoRules.TryGetInfoRule(elementInfoRule.InfoRuleID, out infoRule))
+                        if (host.InfoRules.TryGetInfoRule(elementInfoRule.InfoRuleID, out infoRule))
                         {
-                            elementInfoRuleList.Add(ElementInfoRuleState.Create(elementInfoRule));
+                            elementInfoRuleList.Add(ElementInfoRuleState.Create(host, elementInfoRule));
                             infoRules.Add(infoRule);
                         }
                     }
@@ -127,13 +128,15 @@ namespace Anycmd.Host.EDI
         #region IElement 成员
         public Guid Id { get; private set; }
 
+        public IAppHost Host { get; private set; }
+
         public Guid OntologyID
         {
             get { return _ontologyID; }
             private set
             {
                 OntologyDescriptor ontology;
-                if (!NodeHost.Instance.Ontologies.TryGetOntology(value, out ontology))
+                if (!Host.Ontologies.TryGetOntology(value, out ontology))
                 {
                     throw new ValidationException("意外的本体标识" + value);
                 }
@@ -196,7 +199,7 @@ namespace Anycmd.Host.EDI
                 if (value.HasValue)
                 {
                     InfoDicState infoDic;
-                    if (!NodeHost.Instance.InfoDics.TryGetInfoDic(value.Value, out infoDic))
+                    if (!Host.InfoDics.TryGetInfoDic(value.Value, out infoDic))
                     {
                         throw new ValidationException("意外的信息字典标识" + value);
                     }

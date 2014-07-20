@@ -1,15 +1,15 @@
 ﻿
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
-    using Anycmd.Host;
-    using Anycmd.Host.AC;
-    using Anycmd.Host.EDI;
-    using Anycmd.Host.EDI.Messages;
-    using Anycmd.Repositories;
     using Anycmd.Web.Mvc;
     using Exceptions;
+    using Host;
+    using Host.AC;
+    using Host.EDI;
     using Host.EDI.Entities;
+    using Host.EDI.Messages;
     using MiniUI;
+    using Repositories;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -101,7 +101,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 return this.PartialView(
                     "Partials/Tooltip",
-                    OntologyDescriptor.SingleElement(elementID.Value).Element);
+                    Host.Ontologies.GetElement(elementID.Value).Element);
             }
             else
             {
@@ -123,10 +123,10 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         {
             if (elementID.HasValue)
             {
-                var element = OntologyDescriptor.SingleElement(elementID.Value);
+                var element = Host.Ontologies.GetElement(elementID.Value);
                 if (Request.HttpMethod == "POST")
                 {
-                    var entity = OntologyDescriptor.SingleElement(elementID.Value).Element;
+                    var entity = Host.Ontologies.GetElement(elementID.Value).Element;
                     if (entity != null)
                     {
                         Host.UpdateElement(
@@ -222,7 +222,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("必须传入本体标识");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(input.ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(input.ontologyID.Value, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + input.ontologyID);
             }
@@ -266,7 +266,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         public ActionResult GetElementActions(GetElementActions input)
         {
             ElementDescriptor element;
-            if (!NodeHost.Instance.Ontologies.TryGetElement(input.elementID, out element))
+            if (!Host.Ontologies.TryGetElement(input.elementID, out element))
             {
                 throw new ValidationException("意外的本体元素标识" + input.elementID);
             }
@@ -324,17 +324,17 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             NodeDescriptor node;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(input.nodeID.ToString(), out node))
+            if (!Host.Nodes.TryGetNodeByID(input.nodeID.ToString(), out node))
             {
                 throw new ValidationException("意外的节点标识" + input.nodeID);
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(input.ontologyID, out ontology))
+            if (!Host.Ontologies.TryGetOntology(input.ontologyID, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + input.ontologyID);
             }
             List<NodeAssignElementTr> data = new List<NodeAssignElementTr>();
-            var nodeElementCares = NodeHost.Instance.Nodes.GetNodeElementCares(node);
+            var nodeElementCares = Host.Nodes.GetNodeElementCares(node);
             foreach (var element in ontology.Elements.Values)
             {
                 var id = Guid.NewGuid();
@@ -444,7 +444,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         IsAllowed = row["IsAllowed"].ToString()
                     };
                     ElementDescriptor element;
-                    NodeHost.Instance.Ontologies.TryGetElement(inputModel.ElementID, out element);
+                    Host.Ontologies.TryGetElement(inputModel.ElementID, out element);
                     ElementAction entity = null;
                     if (element != null)
                     {

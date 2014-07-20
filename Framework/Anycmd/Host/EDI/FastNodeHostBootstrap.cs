@@ -11,16 +11,11 @@ namespace Anycmd.Host.EDI
 
     public class FastNodeHostBootstrap : INodeHostBootstrap
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
         private readonly Guid dbID = new Guid("A6FDCDC1-E12B-4D92-938F-59FC7D86DF49");
         private RdbDescriptor _db;
 
-        public FastNodeHostBootstrap()
-        {
-            this.host = AppHost.Instance;
-        }
-
-        public FastNodeHostBootstrap(AppHost host)
+        public FastNodeHostBootstrap(IAppHost host)
         {
             this.host = host;
         }

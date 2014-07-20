@@ -1,11 +1,11 @@
 ﻿
 namespace Anycmd.AC.Infra.ViewModels.AppSystemViewModels
 {
-    using Anycmd.Host;
     using Exceptions;
+    using Host;
+    using Model;
     using System;
     using System.Collections.Generic;
-    using Util;
 
     public class AppSystemInfo : Dictionary<string, object>
     {
@@ -23,7 +23,7 @@ namespace Anycmd.AC.Infra.ViewModels.AppSystemViewModels
                 data.Add(item.Key, item.Value);
             }
             AccountState principal;
-            if (!dic.AppHost.SysUsers.TryGetDevAccount((Guid)data["PrincipalID"], out principal))
+            if (!dic.Host.SysUsers.TryGetDevAccount((Guid)data["PrincipalID"], out principal))
             {
                 throw new CoreException("意外的开发人员标识" + data["PrincipalID"]);
             }
@@ -33,7 +33,7 @@ namespace Anycmd.AC.Infra.ViewModels.AppSystemViewModels
             }
             if (!data.ContainsKey("IsEnabledName"))
             {
-                data.Add("IsEnabledName", dic.AppHost.Translate("AC", "AppSystem", "IsEnabledName", data["IsEnabled"].ToString()));
+                data.Add("IsEnabledName", dic.Host.Translate("AC", "AppSystem", "IsEnabledName", data["IsEnabled"].ToString()));
             }
 
             return data;

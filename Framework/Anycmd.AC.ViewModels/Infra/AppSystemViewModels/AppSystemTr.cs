@@ -12,14 +12,14 @@ namespace Anycmd.AC.Infra.ViewModels.AppSystemViewModels
     public class AppSystemTr
     {
         private AccountState principal;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        private AppSystemTr(AppHost host)
+        private AppSystemTr(IAppHost host)
         {
             this.host = host;
         }
 
-        public static AppSystemTr Create(AppHost host, AppSystemState appSystem)
+        public static AppSystemTr Create(IAppHost host, AppSystemState appSystem)
         {
             return new AppSystemTr(host)
             {

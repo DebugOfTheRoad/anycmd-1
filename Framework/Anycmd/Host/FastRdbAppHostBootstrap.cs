@@ -26,16 +26,11 @@ namespace Anycmd.Host
         /// </summary>
         public string BootConnString { get { return _bootConnString; } }
 
-        private readonly AppHost host;
+        private readonly IAppHost host;
         private DataSet ds = null;
         private List<string> tableNames = new List<string>();
 
-        public FastRdbAppHostBootstrap()
-        {
-            this.host = AppHost.Instance;
-        }
-
-        public FastRdbAppHostBootstrap(AppHost host)
+        public FastRdbAppHostBootstrap(IAppHost host)
         {
             this.host = host;
         }

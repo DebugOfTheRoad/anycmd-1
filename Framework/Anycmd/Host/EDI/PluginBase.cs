@@ -73,6 +73,6 @@ namespace Anycmd.Host.EDI {
             }
         }
 
-        public abstract void Register(INodeHost nodeHost);
+        public abstract void Register(IAppHost nodeHost);
     }
 }

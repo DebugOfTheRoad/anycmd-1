@@ -22,36 +22,29 @@
       <FileName>Logging\AnyCmdLogMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Anycmd.Logging.LoggingService">
-    <Position X="8.75" Y="0.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>IAAAAKAAAAAAAbAAAAAAAAAAQCkAQAEAIAAAAEAEAAA=</HashCode>
-      <FileName>Logging\LoggingService.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Anycmd.Logging.ExceptionLog">
-    <Position X="12.25" Y="3.5" Width="1.5" />
+    <Position X="8.75" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
       <FileName>Logging\ExceptionLog.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Anycmd.Logging.ExceptionLogBase">
-    <Position X="12.25" Y="0.5" Width="1.5" />
+    <Position X="8.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQIAAAAEAgAAAAAAAAAAAAAFAABAIACAAAA=</HashCode>
       <FileName>Logging\ExceptionLogBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Anycmd.Logging.OperationLog">
-    <Position X="14.75" Y="2.25" Width="1.75" />
+    <Position X="10.5" Y="2.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AkggACgAAAAgAgEACgAAAAAAAAACBEAAAQAAAAACAAA=</HashCode>
       <FileName>Logging\OperationLog.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Anycmd.Logging.OperationLogBase">
-    <Position X="14.75" Y="0.5" Width="1.5" />
+    <Position X="10.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Logging\OperationLogBase.cs</FileName>
@@ -59,7 +52,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Anycmd.Logging.VisitingLogBase">
-    <Position X="10.75" Y="0.5" Width="1.5" />
+    <Position X="8.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEACAAAQAAAgAAAAigAAAAAAAAAAAAAAAAAAAAACAAA=</HashCode>
       <FileName>Logging\VisitingLogBase.cs</FileName>
@@ -80,7 +73,7 @@
     </TypeIdentifier>
   </Interface>
   <Enum Name="Anycmd.Logging.VisitState">
-    <Position X="8.75" Y="5" Width="1.5" />
+    <Position X="7.25" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAAAAAAgAAIAAAAAAAAAIAAAAAAAAAAAE=</HashCode>
       <FileName>Logging\VisitState.cs</FileName>

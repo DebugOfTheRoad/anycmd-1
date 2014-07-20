@@ -1,13 +1,13 @@
 ﻿
 namespace Anycmd
 {
-    using Anycmd.Host.EDI;
-    using Anycmd.Host.EDI.Handlers;
-    using Anycmd.Host.EDI.Handlers.Distribute;
-    using Anycmd.Host.EDI.Info;
     using DataContracts;
     using Exceptions;
+    using Host.EDI;
+    using Host.EDI.Handlers;
+    using Host.EDI.Handlers.Distribute;
     using Host.EDI.Hecp;
+    using Host.EDI.Info;
     using System;
     using Util;
 
@@ -60,6 +60,7 @@ namespace Anycmd
             {
                 throw new ArgumentNullException("responseNode");
             }
+            var host = responseNode.Host;
             string clientID = string.Empty;
             var credential = request.Credential;
             if (credential != null)
@@ -70,7 +71,7 @@ namespace Anycmd
                         break;
                     case ClientType.Node:
                         NodeDescriptor requester;
-                        if (NodeHost.Instance.Nodes.TryGetNodeByPublicKey(credential.ClientID, out requester))
+                        if (host.Nodes.TryGetNodeByPublicKey(credential.ClientID, out requester))
                         {
                             clientID = requester.Id.ToString();
                         }
@@ -84,8 +85,9 @@ namespace Anycmd
                 }
             }
             var dataTuple = DataItemsTuple.Create(
+                host,
                 request.InfoID,
-                request.InfoValue, request.QueryList, HostConfig.Instance.InfoFormat);
+                request.InfoValue, request.QueryList, host.Config.InfoFormat);
             MessageType requestType;
             request.MessageType.TryParse(out requestType);
             return new AnyMessage(MessageTypeKind.AnyCommand, Guid.NewGuid(), dataTuple, responseNode)
@@ -123,11 +125,11 @@ namespace Anycmd
         /// <returns></returns>
         public IMessageDto Response()
         {
-            if (responseNode != NodeHost.Instance.Nodes.ThisNode)
+            if (responseNode != responseNode.Host.Nodes.ThisNode)
             {
                 throw new CoreException("当前命令的响应节点不是本节点，不支持调用本方法。该方法设计用于绕过网络通信供服务节点调试使用。");
             }
-            var context = new MessageContext(this);
+            var context = new MessageContext(responseNode.Host, this);
             MessageHandler.Instance.Response(context);
 
             return context.Result;

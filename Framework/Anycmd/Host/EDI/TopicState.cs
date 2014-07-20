@@ -8,16 +8,20 @@ namespace Anycmd.Host.EDI
     public sealed class TopicState : ITopic
     {
         private Guid _ontologyID;
+        private readonly IAppHost host;
 
-        private TopicState() { }
+        private TopicState(IAppHost host)
+        {
+            this.host = host;
+        }
 
-        public static TopicState Create(ITopic topic)
+        public static TopicState Create(IAppHost host, ITopic topic)
         {
             if (topic == null)
             {
                 throw new ArgumentNullException("topic");
             }
-            return new TopicState
+            return new TopicState(host)
             {
                 Code = topic.Code,
                 CreateOn = topic.CreateOn,
@@ -37,7 +41,7 @@ namespace Anycmd.Host.EDI
             private set
             {
                 OntologyDescriptor ontology;
-                if (!NodeHost.Instance.Ontologies.TryGetOntology(value, out ontology))
+                if (!host.Ontologies.TryGetOntology(value, out ontology))
                 {
                     throw new ValidationException("意外的本体标识" + value);
                 }

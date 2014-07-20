@@ -9,11 +9,6 @@ namespace Anycmd.EDI.Queries.Ef
     /// </summary>
     public class BatchQuery : QueryBase, IBatchQuery
     {
-        public BatchQuery()
-            : base("EDIEntities")
-        {
-        }
-
         public BatchQuery(AppHost host)
             : base(host, "EDIEntities")
         {

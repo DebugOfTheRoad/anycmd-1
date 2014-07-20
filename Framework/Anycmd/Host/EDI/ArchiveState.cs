@@ -30,7 +30,7 @@ namespace Anycmd.Host.EDI
 
         private ArchiveState() { }
 
-        public static ArchiveState Create(IArchive archive)
+        public static ArchiveState Create(IAppHost host, ArchiveBase archive)
         {
             if (archive == null)
             {
@@ -38,6 +38,7 @@ namespace Anycmd.Host.EDI
             }
             var data = new ArchiveState
             {
+                Host = host,
                 ArchiveOn = archive.ArchiveOn,
                 CreateBy = archive.CreateBy,
                 CreateOn = archive.CreateOn,
@@ -57,6 +58,8 @@ namespace Anycmd.Host.EDI
         }
 
         public Guid Id { get; private set; }
+
+        public IAppHost Host { get; private set; }
 
         public string RdbmsType
         {
@@ -94,7 +97,7 @@ namespace Anycmd.Host.EDI
             private set
             {
                 OntologyDescriptor ontology;
-                if (!NodeHost.Instance.Ontologies.TryGetOntology(value, out ontology))
+                if (!Host.Ontologies.TryGetOntology(value, out ontology))
                 {
                     throw new ValidationException("意外的本体标识" + value);
                 }
@@ -119,7 +122,7 @@ namespace Anycmd.Host.EDI
             {
                 if (_ontology == null)
                 {
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.OntologyID, out _ontology))
+                    if (!Host.Ontologies.TryGetOntology(this.OntologyID, out _ontology))
                     {
                         throw new CoreException("意外的本体ID" + this.OntologyID);
                     }
@@ -138,7 +141,7 @@ namespace Anycmd.Host.EDI
         public void Archive(int numberID)
         {
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(this.OntologyID, out ontology))
+            if (!Host.Ontologies.TryGetOntology(this.OntologyID, out ontology))
             {
                 throw new CoreException("非法的本体" + this.OntologyID.ToString());
             }
@@ -148,7 +151,7 @@ namespace Anycmd.Host.EDI
             }
             this.ArchiveOn = DateTime.Now;
             this.NumberID = numberID;
-            this.FilePath = HostConfig.Instance.EntityArchivePath;
+            this.FilePath = Host.Config.EntityArchivePath;
             ontology.EntityProvider.Archive(ontology, this);
         }
 

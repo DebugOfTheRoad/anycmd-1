@@ -37,7 +37,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Boot.cs" />
     <Compile Include="CommandExetension.cs" />
     <Compile Include="ApiTest.cs" />
     <Compile Include="EnumTest.cs" />

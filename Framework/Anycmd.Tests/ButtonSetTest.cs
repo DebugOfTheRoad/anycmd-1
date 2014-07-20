@@ -96,7 +96,7 @@ namespace Anycmd.Tests
             host.Handle(new AddFunctionCommand(new FunctionCreateInput
             {
                 Id = functionID,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 Description = string.Empty,
                 Code = "function1",
@@ -154,13 +154,13 @@ namespace Anycmd.Tests
             var entityID2 = Guid.NewGuid();
             var code = "btn1";
             var name = "测试1";
-            host.Container.RemoveService(typeof(IRepository<Button>));
+            host.RemoveService(typeof(IRepository<Button>));
             moButtonRepository.Setup(a => a.Add(It.Is<Button>(b => b.Id == entityID1))).Throws(new DbException(entityID1.ToString()));
             moButtonRepository.Setup(a => a.Update(It.Is<Button>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moButtonRepository.Setup(a => a.Remove(It.Is<Button>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moButtonRepository.Setup<Button>(a => a.GetByKey(entityID1)).Returns(new Button { Id = entityID1, Code = code, Name = name });
             moButtonRepository.Setup<Button>(a => a.GetByKey(entityID2)).Returns(new Button { Id = entityID2, Code = code, Name = name });
-            host.Container.AddService(typeof(IRepository<Button>), moButtonRepository.Object);
+            host.AddService(typeof(IRepository<Button>), moButtonRepository.Object);
 
 
             bool catched = false;

@@ -1,8 +1,9 @@
 ﻿
 namespace Anycmd.Util
 {
-    using Anycmd.Host;
     using Exceptions;
+    using Host;
+    using Model;
     using Rdb;
     using System;
     using System.Data.SqlClient;

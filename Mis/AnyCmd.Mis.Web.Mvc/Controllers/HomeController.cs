@@ -4,7 +4,6 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
     using AC.Infra;
     using Anycmd.Web.Mvc;
     using Host;
-    using Host.AC.Identity.Messages;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
@@ -41,7 +40,7 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
         [CacheFilter]
         public ActionResult LogOn()
         {
-            if (Host.User.Principal.Identity.IsAuthenticated)
+            if (Host.UserSession.Principal.Identity.IsAuthenticated)
             {
                 return this.RedirectToAction("Index");
             }
@@ -53,11 +52,11 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
         [Description("获取登录信息")]
         public ActionResult GetAccountInfo()
         {
-            if (Host.User.Principal.Identity.IsAuthenticated)
+            if (Host.UserSession.Principal.Identity.IsAuthenticated)
             {
-                var account = Host.User.Worker;
+                var account = Host.UserSession.Worker;
                 var menuList = new List<IMenu>();
-                foreach (var item in Host.User.GetAllMenus())
+                foreach (var item in Host.UserSession.GetAllMenus())
                 {
                     menuList.Add(item);
                 }
@@ -75,13 +74,13 @@ namespace Anycmd.Mis.Web.Mvc.Controllers
                 });
                 return this.JsonResult(new
                 {
-                    isLogined = Host.User.Principal.Identity.IsAuthenticated,
-                    loginName = Host.User.IsDeveloper() ? string.Format("{0}(开发人员)", account.LoginName) : account.LoginName,
+                    isLogined = Host.UserSession.Principal.Identity.IsAuthenticated,
+                    loginName = Host.UserSession.IsDeveloper() ? string.Format("{0}(开发人员)", account.LoginName) : account.LoginName,
                     wallpaper = account.Wallpaper ?? string.Empty,
                     backColor = account.BackColor ?? string.Empty,
                     menus = menus,
-                    roles = Host.User.GetRoles(),
-                    groups = Host.User.GetGroups()
+                    roles = Host.UserSession.GetRoles(),
+                    groups = Host.UserSession.GetGroups()
                 });
             }
             else

@@ -1,23 +1,35 @@
 ﻿
-namespace Anycmd.Host.EDI {
+namespace Anycmd.Host.EDI
+{
     using System;
     using Util;
 
     /// <summary>
     /// 一个资源的一次表演。<see cref="BuiltInResourceKind"/>
     /// </summary>
-    public sealed class WfAct : IDisposable {
+    public sealed class WfAct : IDisposable
+    {
+        private readonly IAppHost host;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="acts"></param>
         /// <param name="actor"></param>
         /// <param name="name"></param>
-        public WfAct(IStackTrace acts, IWfResource actor, string name) {
-            if (actor == null) {
+        public WfAct(IAppHost host, IStackTrace acts, IWfResource actor, string name)
+        {
+            if (actor == null)
+            {
                 throw new ArgumentNullException("actor");
             }
-            if (HostConfig.Instance.TraceIsEnabled) {
+            if (host == null)
+            {
+                throw new ArgumentNullException("host");
+            }
+            this.host = host;
+            if (host.Config.TraceIsEnabled)
+            {
                 this.ActorID = actor.Id;
                 this.ActorName = actor.Name;
                 this.ActorType = actor.BuiltInResourceKind.ToName();
@@ -60,8 +72,10 @@ namespace Anycmd.Host.EDI {
         /// <summary>
         /// 
         /// </summary>
-        public void Dispose() {
-            if (HostConfig.Instance.TraceIsEnabled) {
+        public void Dispose()
+        {
+            if (host.Config.TraceIsEnabled)
+            {
                 this.ActedOn = DateTime.Now;
             }
         }

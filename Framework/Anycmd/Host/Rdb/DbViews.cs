@@ -10,11 +10,13 @@ namespace Anycmd.Host.Rdb
     /// </summary>
     public sealed class DbViews : IDbViews
     {
+        public static readonly IDbViews Empty = new DbViews(AppHost.Empty);
+
         private readonly Dictionary<RdbDescriptor, Dictionary<string, DbView>> _dicByID = new Dictionary<RdbDescriptor, Dictionary<string, DbView>>();
         private bool _initialized = false;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public DbViews(AppHost host)
+        public DbViews(IAppHost host)
         {
             this.host = host;
         }

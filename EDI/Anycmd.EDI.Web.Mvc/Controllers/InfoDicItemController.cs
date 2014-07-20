@@ -121,11 +121,11 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         public ActionResult GetDicItemsByDicID(Guid dicID)
         {
             InfoDicState infoDic;
-            if (!NodeHost.Instance.InfoDics.TryGetInfoDic(dicID, out infoDic))
+            if (!Host.InfoDics.TryGetInfoDic(dicID, out infoDic))
             {
                 return this.JsonResult(null);
             }
-            var data = NodeHost.Instance.InfoDics.GetInfoDicItems(infoDic).Select(d => new { code = d.Code, name = d.Name });
+            var data = Host.InfoDics.GetInfoDicItems(infoDic).Select(d => new { code = d.Code, name = d.Name });
 
             return this.JsonResult(data);
         }
@@ -148,7 +148,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("infoDicID参数是必须的");
             }
             InfoDicState infoDic;
-            if (!NodeHost.Instance.InfoDics.TryGetInfoDic(dicID.Value, out infoDic))
+            if (!Host.InfoDics.TryGetInfoDic(dicID.Value, out infoDic))
             {
                 throw new ValidationException("意外的信息字典标识" + dicID);
             }
@@ -167,7 +167,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             int pageIndex = input.pageIndex ?? 0;
             int pageSize = input.pageSize ?? 10;
-            var queryable = NodeHost.Instance.InfoDics.GetInfoDicItems(infoDic).Select(a => InfoDicItemTr.Create(a)).AsQueryable();
+            var queryable = Host.InfoDics.GetInfoDicItems(infoDic).Select(a => InfoDicItemTr.Create(a)).AsQueryable();
             foreach (var filter in input.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);

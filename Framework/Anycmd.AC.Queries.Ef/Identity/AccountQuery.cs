@@ -2,6 +2,7 @@
 namespace Anycmd.AC.Identity.Queries.Ef
 {
 	using Anycmd.Ef;
+	using Model;
 	using Query;
 	using System;
 	using System.Collections.Generic;
@@ -13,18 +14,13 @@ namespace Anycmd.AC.Identity.Queries.Ef
 	/// </summary>
 	public sealed class AccountQuery : QueryBase, IAccountQuery
 	{
-		public AccountQuery()
-			: base("IdentityEntities")
-		{
-		}
-
 		public AccountQuery(AppHost host)
 			: base(host, "IdentityEntities")
 		{
 		}
 
 		#region GetPlistAccountTrs
-		public List<Dictionary<string, object>> GetPlistAccountTrs(List<FilterData> filters, string organizationCode, bool includeDescendants, PagingInput paging)
+		public List<DicReader> GetPlistAccountTrs(List<FilterData> filters, string organizationCode, bool includeDescendants, PagingInput paging)
 		{
 			paging.Valid();
 			bool byOrgCode = !string.IsNullOrEmpty(organizationCode);
@@ -69,7 +65,7 @@ namespace Anycmd.AC.Identity.Queries.Ef
 		#endregion
 
 		#region GetPlistRoleAccountTrs
-		public List<Dictionary<string, object>> GetPlistRoleAccountTrs(string key, Guid roleID, PagingInput paging)
+		public List<DicReader> GetPlistRoleAccountTrs(string key, Guid roleID, PagingInput paging)
 		{
 			paging.Valid();
 			Func<SqlFilter> filter = () =>
@@ -88,7 +84,7 @@ namespace Anycmd.AC.Identity.Queries.Ef
 		#endregion
 
 		#region GetPlistGroupAccountTrs
-		public List<Dictionary<string, object>> GetPlistGroupAccountTrs(string key, Guid groupID, PagingInput paging)
+		public List<DicReader> GetPlistGroupAccountTrs(string key, Guid groupID, PagingInput paging)
 		{
 			paging.Valid();
 			Func<SqlFilter> filter = () =>
@@ -106,7 +102,7 @@ namespace Anycmd.AC.Identity.Queries.Ef
 		}
 		#endregion
 
-		public List<Dictionary<string, object>> GetPlistContractorTrs(List<FilterData> filters, string organizationCode, bool includeOrgChild, PagingInput paging)
+		public List<DicReader> GetPlistContractorTrs(List<FilterData> filters, string organizationCode, bool includeOrgChild, PagingInput paging)
 		{
 			paging.Valid();
 			bool byOrgCode = !string.IsNullOrEmpty(organizationCode);

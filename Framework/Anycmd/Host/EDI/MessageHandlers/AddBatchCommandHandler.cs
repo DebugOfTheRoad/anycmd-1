@@ -19,18 +19,18 @@ namespace Anycmd.Host.EDI.MessageHandlers
 
     public class AddBatchCommandHandler : CommandHandler<AddBatchCommand>
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public AddBatchCommandHandler(AppHost host)
+        public AddBatchCommandHandler(IAppHost host)
         {
             this.host = host;
         }
 
         public override void Handle(AddBatchCommand command)
         {
-            var batchRepository = NodeHost.Instance.GetRequiredService<IRepository<Batch>>();
+            var batchRepository = host.GetRequiredService<IRepository<Batch>>();
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(command.Input.OntologyID, out ontology))
+            if (!host.Ontologies.TryGetOntology(command.Input.OntologyID, out ontology))
             {
                 throw new ValidationException("非法的本体标识" + command.Input.OntologyID);
             }
@@ -42,7 +42,7 @@ namespace Anycmd.Host.EDI.MessageHandlers
             
             var entity = Batch.Create(command.Input);
 
-            BatchDescriptor descriptor = new BatchDescriptor(entity);
+            BatchDescriptor descriptor = new BatchDescriptor(host, entity);
             int pageSize = 1000;
             int pageIndex = 0;
             bool includeDescendants;
@@ -55,12 +55,12 @@ namespace Anycmd.Host.EDI.MessageHandlers
                 includeDescendants = false;
             }
             NodeDescriptor toNode = null;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(entity.NodeID.ToString(), out toNode))
+            if (!host.Nodes.TryGetNodeByID(entity.NodeID.ToString(), out toNode))
             {
                 throw new CoreException("意外的节点标识" + entity.NodeID);
             }
 
-            string thisNodeID = NodeHost.Instance.Nodes.ThisNode.Node.Id.ToString();
+            string thisNodeID = host.Nodes.ThisNode.Node.Id.ToString();
             Verb actionCode;
             switch (descriptor.Type)
             {
@@ -76,7 +76,7 @@ namespace Anycmd.Host.EDI.MessageHandlers
                 default:
                     throw new CoreException("意外的批类型" + entity.Type);
             }
-            var commandFactory = NodeHost.Instance.MessageProducer;
+            var commandFactory = host.MessageProducer;
             IDataTuples entities = null;
             bool goOn = true;
             int count = 0;
@@ -140,11 +140,11 @@ namespace Anycmd.Host.EDI.MessageHandlers
                                 valueItems[i - 1] = InfoItem.Create(entities.Columns[i], item[i].ToString());
                             }
                         }
-                        var commandContext = new MessageContext(
+                        var commandContext = new MessageContext(host,
                                 new MessageRecord(
                                     MessageTypeKind.Received,
                                     Guid.NewGuid(),
-                                    DataItemsTuple.Create(idItems, valueItems, null, "json"))
+                                    DataItemsTuple.Create(host, idItems, valueItems, null, "json"))
                                     {
                                         Verb = actionCode,
                                         ClientID = thisNodeID,
@@ -161,7 +161,7 @@ namespace Anycmd.Host.EDI.MessageHandlers
                                         Status = 200,
                                         EventSourceType = string.Empty,
                                         EventSubjectCode = string.Empty,
-                                        UserName = NodeHost.Instance.AppHost.User.Worker.Id.ToString(),
+                                        UserName = host.UserSession.Worker.Id.ToString(),
                                         IsDumb = false,
                                         ReceivedOn = DateTime.Now,
                                         Version = ApiVersion.V1.ToName()

@@ -2,9 +2,9 @@
 namespace Anycmd.Host.EDI
 {
     using Anycmd.EDI;
-    using Anycmd.Host;
     using Exceptions;
     using Hecp;
+    using Host;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -12,16 +12,20 @@ namespace Anycmd.Host.EDI
     public sealed class NodeOntologyOrganizationState : INodeOntologyOrganization
     {
         private Dictionary<Verb, INodeOrganizationAction> _nodeOrgActionDic;
+        private readonly IAppHost host;
 
-        private NodeOntologyOrganizationState() { }
+        private NodeOntologyOrganizationState(IAppHost host)
+        {
+            this.host = host;
+        }
 
-        public static NodeOntologyOrganizationState Create(INodeOntologyOrganization nodeOntologyOrg)
+        public static NodeOntologyOrganizationState Create(IAppHost host, INodeOntologyOrganization nodeOntologyOrg)
         {
             if (nodeOntologyOrg == null)
             {
                 throw new ArgumentNullException("nodeOntologyOrg");
             }
-            var data = new NodeOntologyOrganizationState
+            var data = new NodeOntologyOrganizationState(host)
             {
                 Actions = nodeOntologyOrg.Actions,
                 Id = nodeOntologyOrg.Id,
@@ -33,27 +37,27 @@ namespace Anycmd.Host.EDI
             data._nodeOrgActionDic = nodeOrgActionDic;
             if (data.Actions != null)
             {
-                var nodeOrgActions = NodeHost.Instance.AppHost.DeserializeFromString<NodeOrganizationAction[]>(data.Actions);
+                var nodeOrgActions = host.DeserializeFromString<NodeOrganizationAction[]>(data.Actions);
                 if (nodeOrgActions != null)
                 {
                     foreach (var orgAction in nodeOrgActions)
                     {
-                        var action = NodeHost.Instance.Ontologies.GetAction(orgAction.ActionID);
+                        var action = host.Ontologies.GetAction(orgAction.ActionID);
                         if (action == null)
                         {
                             throw new CoreException("意外的组织结构动作标识" + orgAction.ActionID);
                         }
                         OntologyDescriptor ontology;
-                        if (!NodeHost.Instance.Ontologies.TryGetOntology(action.OntologyID, out ontology))
+                        if (!host.Ontologies.TryGetOntology(action.OntologyID, out ontology))
                         {
                             throw new CoreException("意外的本体元素本体标识" + action.OntologyID);
                         }
                         OrganizationState org;
-                        if (!NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(orgAction.OrganizationID, out org))
+                        if (!host.OrganizationSet.TryGetOrganization(orgAction.OrganizationID, out org))
                         {
                             throw new CoreException("意外的组织结构动作组织结构标识" + orgAction.OrganizationID);
                         }
-                        var actionDic = NodeHost.Instance.Ontologies.GetActons(ontology);
+                        var actionDic = host.Ontologies.GetActons(ontology);
                         var verb = actionDic.Where(a => a.Value.Id == orgAction.ActionID).Select(a => a.Key).FirstOrDefault();
                         if (verb == null)
                         {

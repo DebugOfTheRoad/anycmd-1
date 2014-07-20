@@ -1,31 +1,39 @@
 
-namespace Anycmd.EDI.ViewModels.ElementViewModels {
-    using Anycmd.Host.EDI;
+namespace Anycmd.EDI.ViewModels.ElementViewModels
+{
     using Exceptions;
     using Host.AC.Infra;
+    using Host.EDI;
+    using Model;
     using System;
     using System.Collections.Generic;
-    using Util;
 
     /// <summary>
     /// 
     /// </summary>
-    public partial class ElementInfo : Dictionary<string, object> {
-        private ElementInfo() { }
+    public partial class ElementInfo : Dictionary<string, object>
+    {
+        private readonly IAppHost host;
 
-        public static ElementInfo Create(DicReader dic) {
+        private ElementInfo(IAppHost host)
+        {
+            this.host = host;
+        }
+
+        public static ElementInfo Create(DicReader dic)
+        {
             if (dic == null)
             {
                 return null;
             }
-            var data = new ElementInfo();
+            var data = new ElementInfo(dic.Host);
             foreach (var item in dic)
             {
                 data.Add(item.Key, item.Value);
             }
             data.Id = (Guid)dic["Id"];
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology((Guid)data["OntologyID"], out ontology))
+            if (!dic.Host.Ontologies.TryGetOntology((Guid)data["OntologyID"], out ontology))
             {
                 throw new CoreException("意外的本体标识" + data["OntologyID"]);
             }
@@ -47,11 +55,11 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
             }
             if (!data.ContainsKey("DeletionStateName"))
             {
-                data.Add("DeletionStateName", dic.AppHost.Translate("EDI", "Element", "DeletionStateName", data["DeletionStateCode"].ToString()));
+                data.Add("DeletionStateName", dic.Host.Translate("EDI", "Element", "DeletionStateName", data["DeletionStateCode"].ToString()));
             }
             if (!data.ContainsKey("IsEnabledName"))
             {
-                data.Add("IsEnabledName", dic.AppHost.Translate("EDI", "Element", "IsEnabledName", data["IsEnabled"].ToString()));
+                data.Add("IsEnabledName", dic.Host.Translate("EDI", "Element", "IsEnabledName", data["IsEnabled"].ToString()));
             }
             if (data["InfoDicID"] == DBNull.Value)
             {
@@ -64,7 +72,7 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
             if (data.InfoDicID.HasValue && !data.ContainsKey("InfoDicName"))
             {
                 InfoDicState infoDic;
-                if (!NodeHost.Instance.InfoDics.TryGetInfoDic(data.InfoDicID.Value, out infoDic))
+                if (!dic.Host.InfoDics.TryGetInfoDic(data.InfoDicID.Value, out infoDic))
                 {
                     throw new CoreException("意外的信息字典标识" + data.InfoDicID.Value);
                 }
@@ -101,13 +109,17 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        private bool IsConfigValid {
-            get {
+        private bool IsConfigValid
+        {
+            get
+            {
                 bool isValid = true;
-                if (DataSchema == null) {
+                if (DataSchema == null)
+                {
                     isValid = false;
                 }
-                else if (DataSchema.MaxLength.HasValue && DataSchema.MaxLength > 0 && this.MaxLength > DataSchema.MaxLength) {
+                else if (DataSchema.MaxLength.HasValue && DataSchema.MaxLength > 0 && this.MaxLength > DataSchema.MaxLength)
+                {
                     isValid = false;
                 }
 
@@ -118,9 +130,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        private bool DbIsNullable {
-            get {
-                if (DataSchema == null) {
+        private bool DbIsNullable
+        {
+            get
+            {
+                if (DataSchema == null)
+                {
                     return false;
                 }
                 return DataSchema.IsNullable;
@@ -129,9 +144,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        private string DbTypeName {
-            get {
-                if (DataSchema == null) {
+        private string DbTypeName
+        {
+            get
+            {
+                if (DataSchema == null)
+                {
                     return string.Empty;
                 }
                 return DataSchema.TypeName;
@@ -140,9 +158,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        private int? DbMaxLength {
-            get {
-                if (DataSchema == null) {
+        private int? DbMaxLength
+        {
+            get
+            {
+                if (DataSchema == null)
+                {
                     return null;
                 }
                 return DataSchema.MaxLength;
@@ -150,10 +171,13 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         }
 
         private ElementDataSchema _dataSchema;
-        private ElementDataSchema DataSchema {
-            get {
-                if (_dataSchema == null) {
-                    _dataSchema = OntologyDescriptor.SingleElement(this.Id).DataSchema;
+        private ElementDataSchema DataSchema
+        {
+            get
+            {
+                if (_dataSchema == null)
+                {
+                    _dataSchema = host.Ontologies.GetElement(this.Id).DataSchema;
                 }
 
                 return _dataSchema;

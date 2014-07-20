@@ -6,7 +6,7 @@ namespace Anycmd.AC.ViewModels.GroupViewModels
 
     public class GroupInfo : Dictionary<string, object>
     {
-        public GroupInfo(AppHost host, Dictionary<string, object> dic)
+        public GroupInfo(IAppHost host, Dictionary<string, object> dic)
         {
             if (dic == null)
             {

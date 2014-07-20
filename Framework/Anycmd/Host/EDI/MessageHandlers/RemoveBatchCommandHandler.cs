@@ -1,23 +1,23 @@
 ﻿
 namespace Anycmd.Host.EDI.MessageHandlers
 {
-    using Anycmd.Repositories;
     using Commands;
     using Entities;
     using Messages;
+    using Repositories;
 
     public class RemoveBatchCommandHandler : CommandHandler<RemoveBatchCommand>
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public RemoveBatchCommandHandler(AppHost host)
+        public RemoveBatchCommandHandler(IAppHost host)
         {
             this.host = host;
         }
 
         public override void Handle(RemoveBatchCommand command)
         {
-            var batchRepository = NodeHost.Instance.GetRequiredService<IRepository<Batch>>();
+            var batchRepository = host.GetRequiredService<IRepository<Batch>>();
             var entity = batchRepository.GetByKey(command.EntityID);
             if (entity == null)
             {

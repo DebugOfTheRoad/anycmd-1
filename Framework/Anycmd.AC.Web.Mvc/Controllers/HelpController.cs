@@ -31,7 +31,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     throw new ValidationException("意外的应用系统码" + appSystemCode);
                 }
                 ResourceTypeState resource;
-                if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+                if (!Host.ResourceTypeSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
                 {
                     throw new ValidationException("意外的资源码" + resourceCode);
                 }
@@ -83,7 +83,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     throw new ValidationException("意外的应用系统码" + appSystemCode);
                 }
                 ResourceTypeState resource;
-                if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+                if (!Host.ResourceTypeSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
                 {
                     throw new ValidationException("意外的资源码" + resourceCode);
                 }
@@ -120,7 +120,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                     throw new ValidationException("意外的应用系统码" + appSystemCode);
                 }
                 ResourceTypeState resource;
-                if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+                if (!Host.ResourceTypeSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
                 {
                     throw new ValidationException("意外的资源码" + resourceCode);
                 }

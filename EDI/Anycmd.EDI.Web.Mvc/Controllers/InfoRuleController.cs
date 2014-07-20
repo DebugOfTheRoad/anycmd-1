@@ -1,24 +1,22 @@
 ﻿
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
-    using AC.Infra;
-    using Anycmd.Repositories;
     using Anycmd.Web.Mvc;
-    using Anycmd.Host.EDI.Info;
-    using MiniUI;
-    using Host.EDI.Entities;
     using Exceptions;
-    using Util;
+    using Host;
+    using Host.EDI;
+    using Host.EDI.Entities;
+    using MiniUI;
+    using Repositories;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Web.Mvc;
     using Transactions;
+    using Util;
     using ViewModel;
     using ViewModels.InfoConstraintViewModels;
-    using Anycmd.Host;
-    using Anycmd.Host.EDI;
 
     /// <summary>
     /// 信息验证器模型视图控制器<see cref="InfoRule"/>
@@ -160,7 +158,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             int pageIndex = requestData.pageIndex ?? 0;
             int pageSize = requestData.pageSize ?? 10;
-            var queryable = NodeHost.Instance.InfoRules.Select(a => InfoRuleTr.Create(Host, a)).AsQueryable();
+            var queryable = Host.InfoRules.Select(a => InfoRuleTr.Create(Host, a)).AsQueryable();
             foreach (var filter in requestData.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);
@@ -181,7 +179,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         public ActionResult GetPlistElementInfoRules(GetPlistElementInfoRules requestModel)
         {
             ElementDescriptor element;
-            if (!NodeHost.Instance.Ontologies.TryGetElement(requestModel.elementID, out element))
+            if (!Host.Ontologies.TryGetElement(requestModel.elementID, out element))
             {
                 throw new ValidationException("意外的本体元素标识" + requestModel.elementID);
             }
@@ -189,7 +187,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             foreach (var item in element.Element.ElementInfoRules)
             {
                 InfoRuleState infoRule;
-                if (NodeHost.Instance.InfoRules.TryGetInfoRule(item.InfoRuleID, out infoRule))
+                if (Host.InfoRules.TryGetInfoRule(item.InfoRuleID, out infoRule))
                 {
                     list.Add(new ElementInfoRuleTr
                     {

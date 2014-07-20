@@ -80,7 +80,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult Refresh()
         {
             var result = new ResponseData { success = true };
-            if (!Host.User.IsDeveloper())
+            if (!Host.UserSession.IsDeveloper())
             {
                 result.success = false;
                 result.msg = "对不起，您不是开发人员，不能执行本功能";
@@ -262,7 +262,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         public ActionResult GetManagedFunctions(Guid? appSystemID, string pageController)
         {
             ResourceTypeState resource;
-            if (!Host.ResourceSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, pageController, out resource))
+            if (!Host.ResourceTypeSet.TryGetResource(Host.AppSystemSet.SelfAppSystem, pageController, out resource))
             {
                 throw new ValidationException("意外的资源码" + pageController);
             }

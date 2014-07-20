@@ -70,12 +70,12 @@
     <Compile Include="AC\SSDSetBase.cs" />
     <Compile Include="AC\UserSessionBase.cs" />
     <Compile Include="AnyMessage.cs" />
+    <Compile Include="AppHostExtension.cs" />
     <Compile Include="Host\AC\AppHostExtension.cs" />
     <Compile Include="Host\AC\DSDSet.cs" />
     <Compile Include="Host\AC\Messages\RoleRolePrivilegeAddedEvent.cs" />
     <Compile Include="Host\AC\UserSession.cs" />
     <Compile Include="Host\EDI\AppHostExtension.cs" />
-    <Compile Include="DefaultNodeHost.cs" />
     <Compile Include="Host\AC\Identity\Messages\AddDeveloperCommand.cs" />
     <Compile Include="Host\AC\Identity\Messages\AddVisitingLogCommand.cs" />
     <Compile Include="Host\AC\Identity\Messages\DeveloperUpdatedEvent.cs" />
@@ -85,8 +85,11 @@
     <Compile Include="Host\AC\MessageHandlers\AddVisitingLogCommandHandler.cs" />
     <Compile Include="Host\AnycmdIdentity.cs" />
     <Compile Include="Host\AnycmdPrincipal.cs" />
+    <Compile Include="Host\EDI\StateCodes.cs" />
     <Compile Include="Host\SimpleUserSessionStorage.cs" />
+    <Compile Include="Host\UnauthenticatedIdentity.cs" />
     <Compile Include="Host\UserSessionState.cs" />
+    <Compile Include="IAppHost.cs" />
     <Compile Include="Model\AddEntityCommand`1.cs" />
     <Compile Include="Model\EntityAddedEvent`1.cs" />
     <Compile Include="Model\RemoveEntityCommand.cs" />
@@ -222,7 +225,6 @@
     <Compile Include="Host\EDI\Hecp\SignatureMethod.cs" />
     <Compile Include="Host\EDI\Hecp\UserType.cs" />
     <Compile Include="Host\EDI\Hecp\Verb.cs" />
-    <Compile Include="Host\EDI\HostConfig.cs" />
     <Compile Include="Host\EDI\IAuthenticator.cs" />
     <Compile Include="Host\EDI\InfoDicItemState.cs" />
     <Compile Include="Host\EDI\InfoDicState.cs" />
@@ -573,7 +575,6 @@
     <Compile Include="Host\AC\NAcl\Providers\RouterProvider.cs" />
     <Compile Include="Host\AC\NAcl\Providers\SqlAclProvider.cs" />
     <Compile Include="Host\AC\NAcl\ReverseComparer.cs" />
-    <Compile Include="INodeHost.cs" />
     <Compile Include="ISecurityService.cs" />
     <Compile Include="AC\IPrivilegeBigram.cs" />
     <Compile Include="AC\PrivilegeBigramBase.cs" />
@@ -695,7 +696,6 @@
     <Compile Include="Host\ITracer.cs" />
     <Compile Include="Host\JITMode.cs" />
     <Compile Include="Model\IManagedPropertyValues.cs" />
-    <Compile Include="NodeHost.cs" />
     <Compile Include="Properties\IdentityEntities.Designer.cs">
       <DependentUpon>IdentityEntities.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -706,7 +706,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Util\DicReader.cs" />
+    <Compile Include="Model\DicReader.cs" />
     <Compile Include="Util\EntityTypeExtension.cs" />
     <Compile Include="Model\IManagedEntityData.cs" />
     <Compile Include="Model\ManagedEntityData.cs" />
@@ -726,7 +726,7 @@
     <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
-    <Compile Include="Host\Constants.cs" />
+    <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\DynamicQueryable.cs" />
     <Compile Include="Events\ActionDelegatedEventHandler.cs" />
     <Compile Include="Events\DomainEvent.cs" />
@@ -771,7 +771,6 @@
     <Compile Include="Model\ISourcedAggregateRoot.cs" />
     <Compile Include="IUserSession.cs" />
     <Compile Include="Logging\ExceptionLog.cs" />
-    <Compile Include="Logging\LoggingService.cs" />
     <Compile Include="Logging\OperationLogBase.cs" />
     <Compile Include="Model\ManagedEntityData`2.cs" />
     <Compile Include="Model\ManagedPropertyValue.cs" />
@@ -812,7 +811,7 @@
     <Compile Include="Serialization\ObjectJsonSerializer.cs" />
     <Compile Include="Serialization\ObjectXmlSerializer.cs" />
     <Compile Include="Serialization\SerializationException.cs" />
-    <Compile Include="Host\ConstKeys.cs" />
+    <Compile Include="Util\ConstKeys.cs" />
     <Compile Include="Snapshots\ISnapshot.cs" />
     <Compile Include="Snapshots\ISnapshotOrignator.cs" />
     <Compile Include="Snapshots\Providers\EventNumberSnapshotProvider.cs" />
@@ -899,7 +898,7 @@
     <Compile Include="Host\AC\MemorySets\IFunctionSet.cs" />
     <Compile Include="Host\AC\MemorySets\IOrganizationSet.cs" />
     <Compile Include="Host\AC\MemorySets\IPageSet.cs" />
-    <Compile Include="Host\AC\MemorySets\IResourceSet.cs" />
+    <Compile Include="Host\AC\MemorySets\IResourceTypeSet.cs" />
     <Compile Include="AC\Identity\AccountBase.cs" />
     <Compile Include="AC\Infra\AppSystemBase.cs" />
     <Compile Include="AC\Infra\ButtonBase.cs" />
@@ -962,7 +961,7 @@
     <Compile Include="AC\Infra\IPageButton.cs" />
     <Compile Include="Util\SystemTime.cs" />
     <Compile Include="Util\TokenObject.cs" />
-    <Compile Include="Host\AppSettingsHelper.cs" />
+    <Compile Include="Util\AppSettingsHelper.cs" />
     <Compile Include="Query\FilterData.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
     <Compile Include="Util\EncryptionHelper.cs" />

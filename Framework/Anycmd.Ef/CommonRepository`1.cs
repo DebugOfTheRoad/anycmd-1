@@ -11,19 +11,14 @@ namespace Anycmd.Ef
         where TAggregateRoot : class, IAggregateRoot
     {
         private readonly string efDbContextName;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public CommonRepository(string efDbContextName)
-        {
-            host = AppHost.Instance;
-            this.efDbContextName = efDbContextName;
-        }
-
-        public CommonRepository(AppHost host, string efDbContextName)
+        public CommonRepository(IAppHost host, string efDbContextName)
         {
             this.host = host;
             this.efDbContextName = efDbContextName;
         }
+
         private EfRepositoryContext EFContext
         {
             get
@@ -31,7 +26,7 @@ namespace Anycmd.Ef
                 var repositoryContext = EfContext.Storage.GetRepositoryContext(this.efDbContextName);
                 if (repositoryContext == null)
                 {
-                    repositoryContext = new EfRepositoryContext(this.efDbContextName);
+                    repositoryContext = new EfRepositoryContext(host, this.efDbContextName);
                     EfContext.Storage.SetRepositoryContext(repositoryContext);
                 }
                 return repositoryContext;

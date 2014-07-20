@@ -1,8 +1,8 @@
 ﻿
 namespace Anycmd.Host.EDI.Hecp {
-    using System.Collections;
-    using System.Collections.Generic;
-    using Util;
+	using System.Collections;
+	using System.Collections.Generic;
+	using Util;
 
 	/// <summary>
 	/// Hecp上下文。
@@ -14,14 +14,16 @@ namespace Anycmd.Host.EDI.Hecp {
 		private int _actsCount = 0;
 		private string _stackTrace = null;
 		private IStackTraceFormater _stackTraceFormater = null;
+		private readonly IAppHost host;
 
 		#region Ctor
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="request"></param>
-		public HecpContext(HecpRequest request) {
+		public HecpContext(IAppHost host, HecpRequest request) {
 			this.Request = request;
+			this.host = host;
 			if (request == null) {
 				_isValidated = true;
 				_isValid = false;
@@ -112,7 +114,7 @@ namespace Anycmd.Host.EDI.Hecp {
 		public string StackTrace {
 			get {
 				if (_stackTraceFormater == null) {
-					_stackTraceFormater = NodeHost.Instance.AppHost.GetRequiredService<IStackTraceFormater>();
+					_stackTraceFormater = host.GetRequiredService<IStackTraceFormater>();
 				}
 				if (_actsCount != _acts.Count) {
 					_actsCount = _acts.Count;

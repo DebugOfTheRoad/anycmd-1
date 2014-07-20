@@ -1,7 +1,7 @@
 ﻿@model Anycmd.Host.AC.Infra.OperationHelp
 @{
     FunctionState function = null;
-    if (!AppHost.Instance.FunctionSet.TryGetFunction(Model.Id, out function))
+    if (!Html.GetHost().FunctionSet.TryGetFunction(Model.Id, out function))
     {
         throw new Anycmd.Exceptions.CoreException();
     }

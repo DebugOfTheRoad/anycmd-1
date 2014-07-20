@@ -25,14 +25,9 @@ namespace Anycmd.Host
         /// </summary>
         public string BootConnString { get { return _bootConnString; } }
 
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public DefaultAppHostBootstrap()
-        {
-            this.host = AppHost.Instance;
-        }
-
-        public DefaultAppHostBootstrap(AppHost host)
+        public DefaultAppHostBootstrap(IAppHost host)
         {
             this.host = host;
         }

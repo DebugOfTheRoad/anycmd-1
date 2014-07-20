@@ -10,7 +10,8 @@ namespace Anycmd.EDI.ViewModels.OntologyViewModels {
     public partial class OntologyInfo : Dictionary<string, object> {
         public OntologyInfo() { }
 
-        public OntologyInfo(AppHost host, Dictionary<string, object> dic) {
+        public OntologyInfo(IAppHost host, Dictionary<string, object> dic)
+        {
             if (dic == null) {
                 throw new ArgumentNullException("dic");
             }

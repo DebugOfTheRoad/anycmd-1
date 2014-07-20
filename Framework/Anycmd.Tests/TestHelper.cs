@@ -21,9 +21,8 @@ namespace Anycmd.Tests
         {
             var host = new MoqAppHost();
             host.RegisterRepository(typeof(AppHost).Assembly);
-            var container = host.Container;
-            container.AddService(typeof(ILoggingService), new log4netLoggingService(host));
-            container.AddService(typeof(IUserSessionStorage), new SimpleUserSessionStorage());
+            host.AddService(typeof(ILoggingService), new log4netLoggingService(host));
+            host.AddService(typeof(IUserSessionStorage), new SimpleUserSessionStorage());
             Guid accountID = Guid.NewGuid();
             host.GetRequiredService<IRepository<Account>>().Add(new Account
             {
@@ -90,7 +89,7 @@ namespace Anycmd.Tests
                     AppSystemID = appSystemID
                 });
             host.GetRequiredService<IRepository<ResourceType>>().Context.Commit();
-            container.RemoveService(typeof(IAppHostBootstrap));
+            host.RemoveService(typeof(IAppHostBootstrap));
             var moAppHostBootstrap = new Mock<IAppHostBootstrap>();
             moAppHostBootstrap.Setup<IList<RDatabase>>(a => a.GetAllRDatabases()).Returns(new List<RDatabase>
             {
@@ -117,8 +116,7 @@ namespace Anycmd.Tests
                 new Parameter{GroupCode = "EDICore",Code="EntityLogonLevel",Value="Level5OrganizationAction"},
                 new Parameter{GroupCode = "EDICore",Code="CenterNodeID",Value="e16ef438-0f95-4605-8556-2ae6e10f1240"},
                 new Parameter{GroupCode = "EDICore",Code="BeatPeriod",Value="5"},
-                new Parameter{GroupCode = "EDICore",Code="ImplicitEntityLogon",Value="ExplicitAllow"},
-                new Parameter{GroupCode = "EDICore",Code="ImplicitAllow",Value="ExplicitLogon"},
+                new Parameter{GroupCode = "EDICore",Code="ImplicitEntityLogon",Value="ExplicitLogon"},
                 new Parameter{GroupCode = "Framework",Code="EnableClientCache",Value="false"},
                 new Parameter{GroupCode = "Framework",Code="SelfAppSystemCode",Value="AnyCmd"},
                 new Parameter{GroupCode = "EDICore",Code="ImplicitAudit",Value="NotAudit"},
@@ -154,7 +152,7 @@ namespace Anycmd.Tests
             moAppHostBootstrap.Setup<IList<ResourceType>>(a => a.GetAllResources()).Returns(host.GetRequiredService<IRepository<ResourceType>>().FindAll().ToList());
             moAppHostBootstrap.Setup<IList<Role>>(a => a.GetAllRoles()).Returns(host.GetRequiredService<IRepository<Role>>().FindAll().ToList());
             moAppHostBootstrap.Setup<IList<Account>>(a => a.GetAllDevAccounts()).Returns(host.GetRequiredService<IRepository<Account>>().FindAll().ToList());
-            host.Container.AddService(typeof(IAppHostBootstrap), moAppHostBootstrap.Object);
+            host.AddService(typeof(IAppHostBootstrap), moAppHostBootstrap.Object);
             host.Init();
 
             return host;
@@ -200,7 +198,7 @@ namespace Anycmd.Tests
                         repositoryType = repositoryType.MakeGenericType(type);
                         genericInterface = genericInterface.MakeGenericType(type);
                         var repository = Activator.CreateInstance(repositoryType, host);
-                        host.Container.AddService(genericInterface, repository);
+                        host.AddService(genericInterface, repository);
                     }
                 }
             }

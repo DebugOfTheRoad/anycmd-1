@@ -1,14 +1,13 @@
 ﻿
 namespace Anycmd.Host.EDI
 {
-    using Anycmd.EDI;
-    using Anycmd.Host;
-    using Anycmd.Host.EDI.Handlers;
-    using Exceptions;
-    using Hecp;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+	using Anycmd.EDI;
+	using Exceptions;
+	using Hecp;
+	using Host;
+	using Host.EDI.Handlers;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	/// <summary>
 	/// 本体描述器。内部的不可变的。描述对象往往长久贮存在内存中。
@@ -42,14 +41,22 @@ namespace Anycmd.Host.EDI
 		private ElementDescriptor _modifiedCommandID = null;
 		#endregion
 
+		private readonly IAppHost host;
+
 		#region Ctor
-		public OntologyDescriptor(OntologyState ontology)
+		public OntologyDescriptor(IAppHost host, OntologyState ontology)
 		{
+			this.host = host;
 			this.Ontology = ontology;
 		}
 		#endregion
 
 		#region public Properties
+		public IAppHost Host
+		{
+			get { return host; }
+		}
+
 		/// <summary>
 		/// 本体
 		/// </summary>
@@ -65,7 +72,7 @@ namespace Anycmd.Host.EDI
 			{
 				if (_messageProvider == null)
 				{
-					if (!NodeHost.Instance.MessageProviders.TryGetMessageProvider(
+					if (!Host.MessageProviders.TryGetMessageProvider(
 						this.Ontology.MessageProviderID, out _messageProvider))
 					{
 						throw new CoreException("意外的命令提供程序ID" + this.Ontology.MessageProviderID);
@@ -86,7 +93,7 @@ namespace Anycmd.Host.EDI
 			{
 				if (_entityProvider == null)
 				{
-					if (!NodeHost.Instance.EntityProviders.TryGetEntityProvider(
+					if (!Host.EntityProviders.TryGetEntityProvider(
 						this.Ontology.EntityProviderID, out _entityProvider))
 					{
 						throw new CoreException("意外的数据提供程序ID" + this.Ontology.EntityProviderID);
@@ -104,7 +111,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Ontologies.GetElements(this);
+				return Host.Ontologies.GetElements(this);
 			}
 		}
 
@@ -115,7 +122,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Ontologies.GetInfoGroups(this);
+				return Host.Ontologies.GetInfoGroups(this);
 			}
 		}
 
@@ -126,7 +133,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Ontologies.GetActons(this);
+				return Host.Ontologies.GetActons(this);
 			}
 		}
 
@@ -137,7 +144,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Ontologies.GetEventSubjects(this);
+				return Host.Ontologies.GetEventSubjects(this);
 			}
 		}
 
@@ -145,7 +152,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Processs.Where(a => a.Process.OntologyID == this.Ontology.Id);
+				return Host.Processs.Where(a => a.Process.OntologyID == this.Ontology.Id);
 			}
 		}
 
@@ -156,7 +163,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Ontologies.GetOntologyOrganizations(this);
+				return Host.Ontologies.GetOntologyOrganizations(this);
 			}
 		}
 
@@ -382,42 +389,8 @@ namespace Anycmd.Host.EDI
 
 		public IReadOnlyCollection<ArchiveState> GetArchives()
 		{
-			return NodeHost.Instance.Ontologies.GetArchives(this);
+			return Host.Ontologies.GetArchives(this);
 		}
-
-		// 静态方法/类方法
-		#region static methods
-		/// <summary>
-		/// 根据ID获取本体元素，不包括禁用的本体元素
-		/// </summary>
-		/// <param name="elementID"></param>
-		/// <returns></returns>
-		public static ElementDescriptor GetElement(Guid elementID)
-		{
-			return NodeHost.Instance.Ontologies.GetElement(elementID);
-		}
-
-		/// <summary>
-		/// 尝试根据本体元素标识获取本地元素
-		/// </summary>
-		/// <param name="elementID"></param>
-		/// <param name="element"></param>
-		/// <returns></returns>
-		public static bool TryGetElement(Guid elementID, out ElementDescriptor element)
-		{
-			return NodeHost.Instance.Ontologies.TryGetElement(elementID, out element);
-		}
-
-		/// <summary>
-		/// 根据ID获取本体元素，包括启用和禁用的本体元素
-		/// </summary>
-		/// <param name="elementID"></param>
-		/// <returns></returns>
-		public static ElementDescriptor SingleElement(Guid elementID)
-		{
-			return NodeHost.Instance.Ontologies.GetElement(elementID);
-		}
-		#endregion
 
 		public override int GetHashCode()
 		{

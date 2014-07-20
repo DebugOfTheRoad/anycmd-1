@@ -206,7 +206,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             int pageIndex = input.pageIndex ?? 0;
             int pageSize = input.pageSize ?? 10;
-            var queryable = NodeHost.Instance.Ontologies.Select(a => OntologyTr.Create(a)).AsQueryable();
+            var queryable = Host.Ontologies.Select(a => OntologyTr.Create(a)).AsQueryable();
             foreach (var filter in input.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);
@@ -310,7 +310,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("必须传入本体标识");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
@@ -333,7 +333,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("必须传入本体标识");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
@@ -376,7 +376,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("必须传入本体标识");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
@@ -419,7 +419,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return this.JsonResult(new MiniGrid<Topic> { total = 0, data = new List<Topic>() });
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
             {
                 throw new ValidationException("非法的本体标识" + ontologyID);
             }
@@ -452,7 +452,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return this.JsonResult(null);
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
@@ -499,7 +499,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(input.ontologyID, out ontology))
+            if (!Host.Ontologies.TryGetOntology(input.ontologyID, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + input.ontologyID);
             }
@@ -515,7 +515,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return this.JsonResult(new MiniGrid<OrganizationAssignActionTr> { total = 0, data = data });
             }
             IReadOnlyDictionary<Verb, IOrganizationAction> actions = ontologyOrg.OrganizationActions;
-            foreach (var item in NodeHost.Instance.Ontologies.GetActons(ontology))
+            foreach (var item in Host.Ontologies.GetActons(ontology))
             {
                 var action = item.Value;
                 Guid id;
@@ -625,13 +625,13 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         IsAudit = row["IsAudit"].ToString(),
                         IsAllowed = row["IsAllowed"].ToString()
                     };
-                    var action = NodeHost.Instance.Ontologies.GetAction(inputModel.ActionID);
+                    var action = Host.Ontologies.GetAction(inputModel.ActionID);
                     if (action == null)
                     {
                         throw new ValidationException("意外的本体动作标识" + action.Id);
                     }
                     OntologyDescriptor ontology;
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(action.Id, out ontology))
+                    if (!Host.Ontologies.TryGetOntology(action.Id, out ontology))
                     {
                         throw new ValidationException("意外的动作本体标识" + action.OntologyID);
                     }
@@ -640,7 +640,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     {
                         throw new ValidationException("意外的组织结构标识");
                     }
-                    var ontologyOrgDic = NodeHost.Instance.Ontologies.GetOntologyOrganizations(ontology);
+                    var ontologyOrgDic = Host.Ontologies.GetOntologyOrganizations(ontology);
                     OrganizationAction entity = null;
                     if (ontologyOrgDic.ContainsKey(organization))
                     {
@@ -692,13 +692,13 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             NodeDescriptor node;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(nodeID.ToString(), out node))
+            if (!Host.Nodes.TryGetNodeByID(nodeID.ToString(), out node))
             {
                 throw new ValidationException("意外的节点标识" + nodeID);
             }
             List<NodeAssignOntologyTr> data = new List<NodeAssignOntologyTr>();
-            var nodeOntologyCares = NodeHost.Instance.Nodes.GetNodeOntologyCares(node);
-            foreach (var ontology in NodeHost.Instance.Ontologies)
+            var nodeOntologyCares = Host.Nodes.GetNodeOntologyCares(node);
+            foreach (var ontology in Host.Ontologies)
             {
                 var id = Guid.NewGuid();
                 var isAssigned = false;

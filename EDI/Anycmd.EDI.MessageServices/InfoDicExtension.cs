@@ -18,7 +18,7 @@ namespace Anycmd.EDI.MessageServices {
                 Name = infoDic.Name,
                 Code = infoDic.Code
             };
-            foreach (var item in NodeHost.Instance.InfoDics.GetInfoDicItems(infoDic).OrderBy(a => a.SortCode)) {
+            foreach (var item in infoDic.Host.InfoDics.GetInfoDicItems(infoDic).OrderBy(a => a.SortCode)) {
                 infoDicData.InfoDicItems.Add(new InfoDicItemData {
                     Code = item.Code,
                     Description = item.Description,

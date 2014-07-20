@@ -139,7 +139,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             int pageIndex = input.pageIndex ?? 0;
             int pageSize = input.pageSize ?? 10;
-            var queryable = NodeHost.Instance.InfoDics.Select(a => InfoDicTr.Create(a)).AsQueryable();
+            var queryable = Host.InfoDics.Select(a => InfoDicTr.Create(a)).AsQueryable();
             foreach (var filter in input.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);

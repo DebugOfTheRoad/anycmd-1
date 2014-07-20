@@ -1,10 +1,10 @@
-﻿
-namespace Anycmd.EDI.MessageServices {
+﻿using ServiceStack;
+    
+namespace Anycmd.EDI.MessageServices
+{
     using Host.EDI;
     using Host.EDI.Hecp;
-    using Logging;
     using ServiceModel.Operations;
-    using ServiceStack;
     using System;
     using Util;
 
@@ -12,14 +12,24 @@ namespace Anycmd.EDI.MessageServices {
     /// 命令服务。
     /// 操作只有两种：命令和查询。所以该服务只有两个操作方法就功能完备了。
     /// </summary>
-    public sealed class MessageService : Service {
+    public sealed class MessageService : Service
+    {
         #region Ctor
         /// <summary>
         /// 默认构造函数。默认从数据交换上下文中获取IHecpHandlerFactory（Hecp处理器工厂）
         /// </summary>
-        public MessageService() {
+        public MessageService()
+        {
         }
         #endregion
+
+        private IAppHost host
+        {
+            get
+            {
+                return System.Web.HttpContext.Current.Application["AppHostInstance"] as IAppHost;
+            }
+        }
 
         #region AnyIsAlive
         /// <summary>
@@ -27,9 +37,12 @@ namespace Anycmd.EDI.MessageServices {
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public IsAliveResponse Any(IsAlive request) {
-            if (request == null) {
-                return new IsAliveResponse {
+        public IsAliveResponse Any(IsAlive request)
+        {
+            if (request == null)
+            {
+                return new IsAliveResponse
+                {
                     Description = "传入的参数错误",
                     Status = (int)Status.InvalidArgument,
                     ReasonPhrase = Status.InvalidArgument.ToName(),
@@ -37,8 +50,10 @@ namespace Anycmd.EDI.MessageServices {
                 };
             }
             ApiVersion apiVersion;
-            if (string.IsNullOrEmpty(request.Version) || !request.Version.TryParse(out apiVersion)) {
-                return new IsAliveResponse {
+            if (string.IsNullOrEmpty(request.Version) || !request.Version.TryParse(out apiVersion))
+            {
+                return new IsAliveResponse
+                {
                     Description = "非法的api版本号",
                     Status = (int)Status.InvalidApiVersion,
                     ReasonPhrase = Status.InvalidApiVersion.ToName(),
@@ -46,7 +61,8 @@ namespace Anycmd.EDI.MessageServices {
                 };
             }
 
-            return new IsAliveResponse {
+            return new IsAliveResponse
+            {
                 IsAlive = true,
                 Status = (int)Status.Ok,
                 ReasonPhrase = Status.Ok.ToName(),
@@ -61,16 +77,20 @@ namespace Anycmd.EDI.MessageServices {
         /// </summary>
         /// <param name="request">请求</param>
         /// <returns></returns>
-        public Message Any(Message request) {
-            try {
-                var context = new HecpContext(HecpRequest.Create(request));
-                HecpHandler.Instance.Process(context);
+        public Message Any(Message request)
+        {
+            try
+            {
+                var context = new HecpContext(host, HecpRequest.Create(request));
+                host.HecpHandler.Process(context);
 
                 return context.Response.ToMessage();
             }
-            catch (Exception ex) {
-                LoggingService.Error(ex);
-                var r = new Message {
+            catch (Exception ex)
+            {
+                host.LoggingService.Error(ex);
+                var r = new Message
+                {
                     MessageType = MessageType.Event.ToName(),
                     MessageID = string.Empty
                 };

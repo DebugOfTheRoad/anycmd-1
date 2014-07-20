@@ -5,12 +5,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Exceptions;
     using MiniUI;
     using Rdb;
-    using RdbViewModel;
     using System;
     using System.ComponentModel;
     using System.Web.Mvc;
     using Util;
     using ViewModel;
+    using ViewModels.RdbViewModel;
 
     /// <summary>
     /// 数据库模型视图控制器<see cref="Anycmd.Rdb.RDatabase"/>

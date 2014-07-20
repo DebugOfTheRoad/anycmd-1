@@ -10,11 +10,11 @@ namespace Anycmd.Host
         private Guid _pageID;
         private Guid _buttonID;
         private Guid? _functionID;
-        private AppHost AppHost { get; set; }
+        private IAppHost AppHost { get; set; }
 
         private PageButtonState() { }
 
-        public static PageButtonState Create(AppHost host, PageButtonBase pageButton)
+        public static PageButtonState Create(IAppHost host, PageButtonBase pageButton)
         {
             if (pageButton == null)
             {

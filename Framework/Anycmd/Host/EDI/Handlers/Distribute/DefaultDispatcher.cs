@@ -1,13 +1,13 @@
 ﻿
 namespace Anycmd.Host.EDI.Handlers.Distribute {
-    using Exceptions;
-    using Host;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
+	using Exceptions;
+	using Host;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading;
 
-    /// <summary>
+	/// <summary>
 	/// 命令分发器。一个分发器对应一个系统线程。
 	/// <remarks>
 	/// 数据交换进程与系统进程不同，数据交换进程分四类：分发器、执行器、Mis系统、Web服务系统
@@ -17,6 +17,7 @@ namespace Anycmd.Host.EDI.Handlers.Distribute {
 		#region private fields
 		private Guid id = Guid.NewGuid();
 		private Thread workThread = null;
+		private readonly IAppHost host;
 		#endregion
 
 		#region 事件
@@ -63,6 +64,7 @@ namespace Anycmd.Host.EDI.Handlers.Distribute {
 			if (process == null) {
 				throw new ArgumentNullException("process");
 			}
+			this.host = process.Host;
 			this.Process = process;
 			this.Ontology = process.Ontology;
 		}
@@ -190,7 +192,7 @@ namespace Anycmd.Host.EDI.Handlers.Distribute {
 							foreach (var g in commandGroups) {
 								foreach (var item in g) {
 									NodeDescriptor responder;
-									NodeHost.Instance.Nodes.TryGetNodeByID(item.ClientID, out responder);
+									host.Nodes.TryGetNodeByID(item.ClientID, out responder);
 									var eArg = new DistributedEventArgs(new DistributeContext(item, responder));
 									OnSending(eArg);
 									MessageRequester.Instance.Request(eArg.Context);

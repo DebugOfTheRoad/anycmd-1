@@ -12,13 +12,15 @@ namespace Anycmd.Host.Rdb
     /// </summary>
     public sealed class DbTableColumns : IDbTableColumns
     {
+        public static readonly IDbTableColumns Empty = new DbTableColumns(AppHost.Empty);
+
         private readonly Dictionary<RdbDescriptor, Dictionary<DbTable, Dictionary<string, DbTableColumn>>>
             _dic = new Dictionary<RdbDescriptor, Dictionary<DbTable, Dictionary<string, DbTableColumn>>>();
         private readonly Dictionary<RdbDescriptor, Dictionary<string, DbTableColumn>> _dicByID = new Dictionary<RdbDescriptor, Dictionary<string, DbTableColumn>>();
         private bool _initialized = false;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public DbTableColumns(AppHost host)
+        public DbTableColumns(IAppHost host)
         {
             this.host = host;
             // TODO:接入总线

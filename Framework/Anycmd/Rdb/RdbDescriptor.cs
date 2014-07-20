@@ -27,14 +27,14 @@ namespace Anycmd.Rdb
         private bool isLocalhost = false;
         private bool isLocalhostDetected = false;
         private object thisLocker = new object();
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
         #region Ctor
         /// <summary>
         /// 
         /// </summary>
         /// <param name="database"></param>
-        public RdbDescriptor(AppHost host, IRDatabase database)
+        public RdbDescriptor(IAppHost host, IRDatabase database)
         {
             if (database == null)
             {
@@ -55,7 +55,7 @@ namespace Anycmd.Rdb
         #endregion
 
         #region Public Properties
-        public AppHost AppHost { get { return host; } }
+        public IAppHost AppHost { get { return host; } }
 
         /// <summary>
         /// 

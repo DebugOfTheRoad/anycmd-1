@@ -26,6 +26,13 @@ namespace Anycmd.Rdb
         /// </summary>
         public string BootConnString { get { return _bootConnString; } }
 
+        private readonly IAppHost host;
+
+        public SQLServerMetaDataService(IAppHost host)
+        {
+            this.host = host;
+        }
+
         #region GetTableSpaces
         /// <summary>
         /// 
@@ -190,7 +197,7 @@ ORDER BY " + sortField + " " + sortOrder +
         /// <returns></returns>
         public IList<DbTable> GetDbTables(RdbDescriptor db)
         {
-            var sql = AppHost.Instance.Config.SqlServerTablesSelect;
+            var sql = host.Config.SqlServerTablesSelect;
             var tables = new List<DbTable>();
             using (var reader = db.ExecuteReader(sql, null))
             {
@@ -213,7 +220,7 @@ ORDER BY " + sortField + " " + sortOrder +
         /// <returns></returns>
         public IList<DbView> GetDbViews(RdbDescriptor db)
         {
-            var queryString = AppHost.Instance.Config.SqlServerViewsSelect;
+            var queryString = host.Config.SqlServerViewsSelect;
             var views = new List<DbView>();
             using (var reader = db.ExecuteReader(queryString, null))
             {
@@ -236,7 +243,7 @@ ORDER BY " + sortField + " " + sortOrder +
         /// <returns></returns>
         public IList<DbTableColumn> GetTableColumns(RdbDescriptor db)
         {
-            var sql = AppHost.Instance.Config.SqlServerTableColumnsSelect;
+            var sql = host.Config.SqlServerTableColumnsSelect;
             IList<DbTableColumn> list = new List<DbTableColumn>();
             using (var reader = db.ExecuteReader(sql, null))
             {
@@ -259,7 +266,7 @@ ORDER BY " + sortField + " " + sortOrder +
         /// <returns></returns>
         public IList<DbViewColumn> GetViewColumns(RdbDescriptor db)
         {
-            var sql = AppHost.Instance.Config.SqlServerViewColumnsSelect;
+            var sql = host.Config.SqlServerViewColumnsSelect;
             IList<DbViewColumn> list = new List<DbViewColumn>();
             using (var reader = db.ExecuteReader(sql, null))
             {

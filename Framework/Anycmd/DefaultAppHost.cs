@@ -3,13 +3,18 @@ namespace Anycmd
 {
     using Bus;
     using Bus.DirectBus;
-    using Container;
     using Host;
     using Host.AC;
     using Host.AC.Identity;
     using Host.AC.Infra;
     using Host.AC.MemorySets.Impl;
     using Host.AC.MessageHandlers;
+    using Host.EDI;
+    using Host.EDI.Entities;
+    using Host.EDI.Handlers;
+    using Host.EDI.Hecp;
+    using Host.EDI.MemorySets.Impl;
+    using Host.EDI.MessageHandlers;
     using Host.Rdb;
     using Logging;
     using Query;
@@ -18,7 +23,7 @@ namespace Anycmd
     /// <summary>
     /// 系统实体宿主。
     /// </summary>
-    public partial class DefaultAppHost : AppHost
+    public class DefaultAppHost : AppHost
     {
         public DefaultAppHost()
         {
@@ -39,20 +44,32 @@ namespace Anycmd
             base.FunctionSet = new FunctionSet(this);
             base.OrganizationSet = new OrganizationSet(this);
             base.PageSet = new PageSet(this);
-            base.ResourceSet = new ResourceTypeSet(this);
+            base.ResourceTypeSet = new ResourceTypeSet(this);
             base.PrivilegeSet = new PrivilegeSet(this);
             base.MenuSet = new MenuSet(this);
             base.RoleSet = new RoleSet(this);
             base.GroupSet = new GroupSet(this);
+
+            this.HecpHandler = new HecpHandler(this);
+            this.MessageProducer = new DefaultMessageProducer(this);
+            this.Ontologies = new OntologySet(this);
+            this.Processs = new ProcesseSet(this);
+            this.Nodes = new NodeSet(this);
+            this.InfoDics = new InfoDicSet(this);
+            this.InfoStringConverters = new InfoStringConverterSet(this);
+            this.InfoRules = new InfoRuleSet(this);
+            this.MessageProviders = new MessageProviderSet(this);
+            this.EntityProviders = new EntityProviderSet(this);
+            this.Transfers = new MessageTransferSet(this);
         }
 
-        public override void Configure(AnycmdServiceContainer container)
+        public override void Configure()
         {
-            this.AddDefaultService<IAppHostBootstrap>(container, new FastRdbAppHostBootstrap(this));
-            this.AddDefaultService<IRdbMetaDataService>(container, new SQLServerMetaDataService());
-            this.AddDefaultService<ISqlFilterStringBuilder>(container, new SqlFilterStringBuilder());
-            this.AddDefaultService<ISecurityService>(container, new DefaultSecurityService());
-            this.AddDefaultService<IPasswordEncryptionService>(container, new PasswordEncryptionService(this));
+            this.AddDefaultService<IAppHostBootstrap>(new FastRdbAppHostBootstrap(this));
+            this.AddDefaultService<IRdbMetaDataService>(new SQLServerMetaDataService(this));
+            this.AddDefaultService<ISqlFilterStringBuilder>(new SqlFilterStringBuilder());
+            this.AddDefaultService<ISecurityService>(new DefaultSecurityService());
+            this.AddDefaultService<IPasswordEncryptionService>(new PasswordEncryptionService(this));
 
             base.MessageDispatcher.Register(new AccountLoginedEventHandler(this));
             base.MessageDispatcher.Register(new AccountLogoutedEventHandler(this));
@@ -66,46 +83,82 @@ namespace Anycmd
 
             this.MessageDispatcher.Register(new OperatedEventHandler(this));
 
-            base.Map(EntityTypeMap.Create<RDatabase>("AC"));
-            base.Map(EntityTypeMap.Create<DbTable>("AC"));
-            base.Map(EntityTypeMap.Create<DbView>("AC"));
-            base.Map(EntityTypeMap.Create<DbTableColumn>("AC"));
-            base.Map(EntityTypeMap.Create<DbViewColumn>("AC"));
-            base.Map(EntityTypeMap.Create<DbTableSpace>("AC", "TableSpace"));
-            base.Map(EntityTypeMap.Create<ExceptionLog>("AC"));
-            base.Map(EntityTypeMap.Create<Parameter>("AC"));
-            base.Map(EntityTypeMap.Create<OperationLog>("AC"));
-            base.Map(EntityTypeMap.Create<OperationHelp>("AC", "Help"));
-            base.Map(EntityTypeMap.Create<AnyLog>("AC"));
+            this.AddService(typeof(INodeHostBootstrap), new FastNodeHostBootstrap(this));
+            this.MessageDispatcher.Register(new AddBatchCommandHandler(this));
+            this.MessageDispatcher.Register(new UpdateBatchCommandHandler(this));
+            this.MessageDispatcher.Register(new RemoveBatchCommandHandler(this));
 
-            base.Map(EntityTypeMap.Create<AppSystem>("AC"));
-            base.Map(EntityTypeMap.Create<Button>("AC"));
-            base.Map(EntityTypeMap.Create<Dic>("AC"));
-            base.Map(EntityTypeMap.Create<DicItem>("AC"));
-            base.Map(EntityTypeMap.Create<EntityType>("AC"));
-            base.Map(EntityTypeMap.Create<Function>("AC"));
-            base.Map(EntityTypeMap.Create<Menu>("AC"));
-            base.Map(EntityTypeMap.Create<OperationHelp>("AC"));
-            base.Map(EntityTypeMap.Create<Organization>("AC"));
-            base.Map(EntityTypeMap.Create<Page>("AC"));
-            base.Map(EntityTypeMap.Create<PageButton>("AC"));
-            base.Map(EntityTypeMap.Create<Property>("AC"));
-            base.Map(EntityTypeMap.Create<ResourceType>("AC"));
+            this.Map(EntityTypeMap.Create<Action>("EDI"));
+            this.Map(EntityTypeMap.Create<Archive>("EDI"));
+            this.Map(EntityTypeMap.Create<Batch>("EDI"));
+            this.Map(EntityTypeMap.Create<Element>("EDI"));
+            this.Map(EntityTypeMap.Create<InfoDic>("EDI"));
+            this.Map(EntityTypeMap.Create<InfoDicItem>("EDI"));
+            this.Map(EntityTypeMap.Create<InfoGroup>("EDI"));
+            this.Map(EntityTypeMap.Create<InfoRule>("EDI"));
+            this.Map(EntityTypeMap.Create<Node>("EDI"));
+            this.Map(EntityTypeMap.Create<NodeElementAction>("EDI"));
+            this.Map(EntityTypeMap.Create<NodeElementCare>("EDI"));
+            this.Map(EntityTypeMap.Create<NodeTopic>("EDI"));
+            this.Map(EntityTypeMap.Create<NodeOntologyCare>("EDI"));
+            this.Map(EntityTypeMap.Create<NodeOntologyOrganization>("EDI"));
+            this.Map(EntityTypeMap.Create<Ontology>("EDI"));
+            this.Map(EntityTypeMap.Create<OntologyOrganization>("EDI"));
+            this.Map(EntityTypeMap.Create<Plugin>("EDI"));
+            this.Map(EntityTypeMap.Create<Process>("EDI"));
+            this.Map(EntityTypeMap.Create<StateCode>("EDI"));
+            this.Map(EntityTypeMap.Create<Topic>("EDI"));
+            this.Map(EntityTypeMap.Create<MessageEntity>("EDI", "Command"));
 
-            base.Map(EntityTypeMap.Create<Account>("AC"));
-            base.Map(EntityTypeMap.Create<DeveloperID>("AC"));
-            base.Map(EntityTypeMap.Create<VisitingLog>("AC"));
+            // TODO:实现一个良好的插件架构
+            // TODO:参考InfoRule模块完成命令插件模块的配置
+            //var plugins = Resolver.Resolve<IPluginImporter>().GetPlugins();
+            //if (plugins != null) {
+            //    foreach (var item in plugins) {
+            //        this.Plugins.Add(item);
+            //    }
+            //}
 
-            base.Map(EntityTypeMap.Create<Group>("AC"));
-            base.Map(EntityTypeMap.Create<Role>("AC"));
-            base.Map(EntityTypeMap.Create<PrivilegeBigram>("AC"));
+            this.Map(EntityTypeMap.Create<RDatabase>("AC"));
+            this.Map(EntityTypeMap.Create<DbTable>("AC"));
+            this.Map(EntityTypeMap.Create<DbView>("AC"));
+            this.Map(EntityTypeMap.Create<DbTableColumn>("AC"));
+            this.Map(EntityTypeMap.Create<DbViewColumn>("AC"));
+            this.Map(EntityTypeMap.Create<DbTableSpace>("AC", "TableSpace"));
+            this.Map(EntityTypeMap.Create<ExceptionLog>("AC"));
+            this.Map(EntityTypeMap.Create<Parameter>("AC"));
+            this.Map(EntityTypeMap.Create<OperationLog>("AC"));
+            this.Map(EntityTypeMap.Create<OperationHelp>("AC", "Help"));
+            this.Map(EntityTypeMap.Create<AnyLog>("AC"));
+
+            this.Map(EntityTypeMap.Create<AppSystem>("AC"));
+            this.Map(EntityTypeMap.Create<Button>("AC"));
+            this.Map(EntityTypeMap.Create<Dic>("AC"));
+            this.Map(EntityTypeMap.Create<DicItem>("AC"));
+            this.Map(EntityTypeMap.Create<EntityType>("AC"));
+            this.Map(EntityTypeMap.Create<Function>("AC"));
+            this.Map(EntityTypeMap.Create<Menu>("AC"));
+            this.Map(EntityTypeMap.Create<OperationHelp>("AC"));
+            this.Map(EntityTypeMap.Create<Organization>("AC"));
+            this.Map(EntityTypeMap.Create<Page>("AC"));
+            this.Map(EntityTypeMap.Create<PageButton>("AC"));
+            this.Map(EntityTypeMap.Create<Property>("AC"));
+            this.Map(EntityTypeMap.Create<ResourceType>("AC"));
+
+            this.Map(EntityTypeMap.Create<Account>("AC"));
+            this.Map(EntityTypeMap.Create<DeveloperID>("AC"));
+            this.Map(EntityTypeMap.Create<VisitingLog>("AC"));
+
+            this.Map(EntityTypeMap.Create<Group>("AC"));
+            this.Map(EntityTypeMap.Create<Role>("AC"));
+            this.Map(EntityTypeMap.Create<PrivilegeBigram>("AC"));
         }
 
-        private void AddDefaultService<T>(AnycmdServiceContainer container, object service)
+        private void AddDefaultService<T>(object service)
         {
-            if (container.GetService(typeof(T)) == null)
+            if (this.GetService(typeof(T)) == null)
             {
-                container.AddService(typeof(T), service);
+                this.AddService(typeof(T), service);
             }
         }
     }

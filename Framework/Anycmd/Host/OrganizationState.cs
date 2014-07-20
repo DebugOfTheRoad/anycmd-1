@@ -41,7 +41,7 @@ namespace Anycmd.Host
 
         private OrganizationState() { }
 
-        public static OrganizationState Create(AppHost host, OrganizationBase organization)
+        public static OrganizationState Create(IAppHost host, OrganizationBase organization)
         {
             if (organization == null)
             {
@@ -65,7 +65,7 @@ namespace Anycmd.Host
             };
         }
 
-        public AppHost AppHost { get; private set; }
+        public IAppHost AppHost { get; private set; }
 
         public Guid Id { get; private set; }
 

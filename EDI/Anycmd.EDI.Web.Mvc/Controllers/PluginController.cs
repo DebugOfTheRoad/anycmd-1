@@ -2,7 +2,7 @@
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
     using AC.Infra;
-    using Anycmd.Repositories;
+    using Repositories;
     using Anycmd.Web.Mvc;
     using MiniUI;
     using Host.EDI.Entities;
@@ -16,7 +16,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
     using ViewModel;
     using ViewModels.PluginViewModels;
     using Exceptions;
-    using Anycmd.Host;
+    using Host;
 
     /// <summary>
     /// 插件模型视图控制器<see cref="Plugin"/>

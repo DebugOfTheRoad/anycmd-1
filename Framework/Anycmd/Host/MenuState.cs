@@ -7,12 +7,12 @@ namespace Anycmd.Host
 
     public sealed class MenuState : IMenu
     {
-        private AppHost AppHost { get; set; }
+        private IAppHost AppHost { get; set; }
         private Guid _appSystemID;
 
         private MenuState() { }
 
-        public static MenuState Create(AppHost host, IMenu menu)
+        public static MenuState Create(IAppHost host, IMenu menu)
         {
             if (menu == null)
             {

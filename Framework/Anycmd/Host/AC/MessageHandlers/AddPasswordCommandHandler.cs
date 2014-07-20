@@ -44,11 +44,11 @@ namespace Anycmd.Host.AC.MessageHandlers
             }
             bool loginNameChanged = !string.Equals(command.Input.LoginName, entity.LoginName);
             AccountState developer;
-            if (host.SysUsers.TryGetDevAccount(command.Input.Id, out developer) && !host.User.IsDeveloper())
+            if (host.SysUsers.TryGetDevAccount(command.Input.Id, out developer) && !host.UserSession.IsDeveloper())
             {
                 throw new ValidationException("对不起，您不能修改开发人员的密码。");
             }
-            if (!host.User.IsDeveloper() && "admin".Equals(entity.LoginName, StringComparison.OrdinalIgnoreCase))
+            if (!host.UserSession.IsDeveloper() && "admin".Equals(entity.LoginName, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ValidationException("对不起，您无权修改admin账户的密码");
             }

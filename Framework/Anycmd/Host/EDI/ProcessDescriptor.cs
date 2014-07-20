@@ -2,7 +2,6 @@
 namespace Anycmd.Host.EDI
 {
     using Anycmd.EDI;
-    using Anycmd.Host;
     using Exceptions;
     using System;
     using System.Net;
@@ -22,12 +21,13 @@ namespace Anycmd.Host.EDI
         /// 
         /// </summary>
         /// <param name="process"></param>
-        public ProcessDescriptor(ProcessState process)
+        public ProcessDescriptor(IAppHost host, ProcessState process)
         {
             if (process == null)
             {
                 throw new ArgumentNullException("process");
             }
+            this.Host = host;
             this.Process = process;
             if (!process.Type.TryParse(out _type))
             {
@@ -36,12 +36,14 @@ namespace Anycmd.Host.EDI
             if (!string.IsNullOrEmpty(process.OrganizationCode))
             {
                 OrganizationState org;
-                if (!NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(process.OrganizationCode, out org))
+                if (!Host.OrganizationSet.TryGetOrganization(process.OrganizationCode, out org))
                 {
                     throw new CoreException("意外的组织结构码" + process.OrganizationCode);
                 }
             }
         }
+
+        public IAppHost Host { get; private set; }
 
         /// <summary>
         /// 
@@ -64,7 +66,7 @@ namespace Anycmd.Host.EDI
         {
             get
             {
-                return NodeHost.Instance.Nodes.ThisNode.Node.Name + this.Process.Name + " - " + this.Ontology.Ontology.Name;
+                return Host.Nodes.ThisNode.Node.Name + this.Process.Name + " - " + this.Ontology.Ontology.Name;
             }
         }
 
@@ -77,7 +79,7 @@ namespace Anycmd.Host.EDI
             {
                 if (_ontology == null)
                 {
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.Process.OntologyID, out _ontology))
+                    if (!Host.Ontologies.TryGetOntology(this.Process.OntologyID, out _ontology))
                     {
                         throw new CoreException("非法本体标识" + this.Process.OntologyID);
                     }

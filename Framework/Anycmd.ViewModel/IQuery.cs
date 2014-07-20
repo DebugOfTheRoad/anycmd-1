@@ -1,7 +1,8 @@
 ﻿
 namespace Anycmd.ViewModel
 {
-    using Anycmd.Host;
+    using Host;
+    using Model;
     using Query;
     using System;
     using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Anycmd.ViewModel
         /// <param name="tableOrViewName"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        Dictionary<string, object> Get(string tableOrViewName, Guid id);
+        DicReader Get(string tableOrViewName, Guid id);
 
         /// <summary>
         /// 
@@ -26,7 +27,7 @@ namespace Anycmd.ViewModel
         /// <param name="filters"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        List<Dictionary<string, object>> GetPlist(string tableOrViewName, Func<SqlFilter> filterCallback, PagingInput paging);
+        List<DicReader> GetPlist(string tableOrViewName, Func<SqlFilter> filterCallback, PagingInput paging);
 
         /// <summary>
         /// 
@@ -35,6 +36,6 @@ namespace Anycmd.ViewModel
         /// <param name="filters"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        List<Dictionary<string, object>> GetPlist(EntityTypeState entityType, Func<SqlFilter> filterCallback, PagingInput paging);
+        List<DicReader> GetPlist(EntityTypeState entityType, Func<SqlFilter> filterCallback, PagingInput paging);
     }
 }

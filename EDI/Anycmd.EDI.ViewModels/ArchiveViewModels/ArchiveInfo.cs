@@ -2,9 +2,10 @@
 namespace Anycmd.EDI.ViewModels.ArchiveViewModels
 {
     using Exceptions;
+    using Host.EDI;
+    using Model;
     using System;
     using System.Collections.Generic;
-    using Anycmd.Host.EDI;
 
     /// <summary>
     /// 
@@ -13,18 +14,18 @@ namespace Anycmd.EDI.ViewModels.ArchiveViewModels
     {
         public ArchiveInfo() { }
 
-        public ArchiveInfo(Dictionary<string, object> dic)
+        public ArchiveInfo(DicReader reader)
         {
-            if (dic == null)
+            if (reader == null)
             {
-                throw new ArgumentNullException("dic");
+                throw new ArgumentNullException("reader");
             }
-            foreach (var item in dic)
+            foreach (var item in reader)
             {
                 this.Add(item.Key, item.Value);
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology((Guid)this["OntologyID"], out ontology))
+            if (!reader.Host.Ontologies.TryGetOntology((Guid)this["OntologyID"], out ontology))
             {
                 throw new CoreException("意外的本体标识" + this["OntologyID"]);
             }

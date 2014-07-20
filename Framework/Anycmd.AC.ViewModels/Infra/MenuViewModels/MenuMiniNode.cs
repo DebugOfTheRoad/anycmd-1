@@ -9,14 +9,14 @@ namespace Anycmd.AC.Infra.ViewModels.MenuViewModels
     /// </summary>
     public class MenuMiniNode
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public MenuMiniNode(AppHost host)
+        public MenuMiniNode(IAppHost host)
         {
             this.host = host;
         }
 
-        public static MenuMiniNode Create(AppHost host, IMenu menu)
+        public static MenuMiniNode Create(IAppHost host, IMenu menu)
         {
             return new MenuMiniNode(host)
             {

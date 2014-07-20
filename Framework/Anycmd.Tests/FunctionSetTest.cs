@@ -31,11 +31,11 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             ResourceTypeState resource;
-            Assert.True(host.ResourceSet.TryGetResource(host.ResourceSet.First().Id, out resource));
+            Assert.True(host.ResourceTypeSet.TryGetResource(host.ResourceTypeSet.First().Id, out resource));
             Assert.Equal(1, host.FunctionSet.Count());
             Assert.True(host.FunctionSet.TryGetFunction(entityID, out functionByID));
 
@@ -77,11 +77,11 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             ResourceTypeState resource;
-            Assert.True(host.ResourceSet.TryGetResource(host.ResourceSet.First().Id, out resource));
+            Assert.True(host.ResourceTypeSet.TryGetResource(host.ResourceTypeSet.First().Id, out resource));
             Assert.Equal(1, host.FunctionSet.Count());
             Assert.True(host.FunctionSet.TryGetFunction(entityID, out functionByID));
             bool catched = false;
@@ -95,7 +95,7 @@ namespace Anycmd.Tests
                     DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                     IsEnabled = 1,
                     IsManaged = true,
-                    ResourceTypeID = host.ResourceSet.First().Id,
+                    ResourceTypeID = host.ResourceTypeSet.First().Id,
                     SortCode = 10
                 }));
             }
@@ -116,7 +116,7 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(0, host.FunctionSet.Count());
 
-            host.Container.RemoveService(typeof(IRepository<Function>));
+            host.RemoveService(typeof(IRepository<Function>));
             var moFunctionRepository = host.GetMoqRepository<Function, IRepository<Function>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -127,16 +127,16 @@ namespace Anycmd.Tests
             moFunctionRepository.Setup<Function>(a => a.GetByKey(entityID1)).Returns(new Function
             {
                 Id = entityID1,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id
             });
             moFunctionRepository.Setup<Function>(a => a.GetByKey(entityID2)).Returns(new Function
             {
                 Id = entityID2,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id
             });
-            host.Container.AddService(typeof(IRepository<Function>), moFunctionRepository.Object);
+            host.AddService(typeof(IRepository<Function>), moFunctionRepository.Object);
 
             host.Handle(new AddAppSystemCommand(new AppSystemCreateInput
             {
@@ -157,7 +157,7 @@ namespace Anycmd.Tests
                     DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                     IsEnabled = 1,
                     IsManaged = true,
-                    ResourceTypeID = host.ResourceSet.First().Id,
+                    ResourceTypeID = host.ResourceTypeSet.First().Id,
                     SortCode = 10
                 }));
             }
@@ -181,7 +181,7 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             Assert.Equal(1, host.FunctionSet.Count());

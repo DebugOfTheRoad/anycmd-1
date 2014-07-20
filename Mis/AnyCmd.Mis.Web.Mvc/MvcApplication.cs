@@ -56,13 +56,12 @@ namespace Anycmd.Mis.Web.Mvc
 
             var appHost = new DefaultAppHost();
             Application.Add("AppHostInstance", appHost);
-            var container = appHost.Container;
-            container.AddService(typeof(IFunctionListImport), new FunctionListImport());
-            container.AddService(typeof(IEfFilterStringBuilder), new EfFilterStringBuilder());
-            container.AddService(typeof(ILoggingService), new log4netLoggingService(appHost));
-            container.AddService(typeof(IUserSessionStorage), new WebUserSessionStorage());
-
+            appHost.AddService(typeof(IFunctionListImport), new FunctionListImport());
+            appHost.AddService(typeof(IEfFilterStringBuilder), new EfFilterStringBuilder());
+            appHost.AddService(typeof(ILoggingService), new log4netLoggingService(appHost));
+            appHost.AddService(typeof(IUserSessionStorage), new WebUserSessionStorage());
             appHost.Init();
+
             appHost.RegisterRepository(new List<string>
             {
                 "EDIEntities",
@@ -73,8 +72,7 @@ namespace Anycmd.Mis.Web.Mvc
             appHost.RegisterQuery(typeof(BatchQuery).Assembly, typeof(AccountQuery).Assembly);
             appHost.RegisterEDICore();
 
-            (new ServiceHost("", typeof(MessageService).Assembly)).Init();
-            new DefaultNodeHost(appHost).Init();
+            (new ServiceHost(appHost, "", typeof(MessageService).Assembly)).Init();
         }
     }
 }

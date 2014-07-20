@@ -1,11 +1,9 @@
-﻿using Anycmd.Events.Serialization;
-using System;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
-
+﻿
 namespace Anycmd.Events.Storage
 {
-    using Util;
+    using System;
+    using System.Runtime.Serialization;
+    using System.Xml.Serialization;
 
     /// <summary>
     /// Represents the domain event data object which holds the data of a specific domain event.
@@ -112,49 +110,6 @@ namespace Anycmd.Events.Storage
         {
             get;
             set;
-        }
-        #endregion
-
-        #region Public Methods
-        /// <summary>
-        /// Creates and initializes the domain event data object from the given domain event.
-        /// </summary>
-        /// <param name="entity">The domain event instance from which the domain event data object
-        /// is created and initialized.</param>
-        /// <returns>The initialized data object instance.</returns>
-        public static DomainEventDataObject FromDomainEvent(IDomainEvent entity)
-        {
-            IDomainEventSerializer serializer = AppHost.Instance.GetRequiredService<IDomainEventSerializer>();
-            DomainEventDataObject obj = new DomainEventDataObject();
-            obj.Branch = entity.Branch;
-            obj.Data = serializer.Serialize(entity);
-            obj.Id = entity.Id;
-            if (string.IsNullOrEmpty(entity.AssemblyQualifiedEventType))
-                obj.AssemblyQualifiedEventType = entity.GetType().AssemblyQualifiedName;
-            else
-                obj.AssemblyQualifiedEventType = entity.AssemblyQualifiedEventType;
-            obj.Timestamp = entity.Timestamp;
-            obj.Version = entity.Version;
-            obj.SourceID = entity.Source.Id;
-            obj.AssemblyQualifiedSourceType = entity.Source.GetType().AssemblyQualifiedName;
-            return obj;
-        }
-        /// <summary>
-        /// Converts the domain event data object to its corresponding domain event entity instance.
-        /// </summary>
-        /// <returns>The domain event entity instance that is converted from the current domain event data object.</returns>
-        public IDomainEvent ToDomainEvent()
-        {
-            if (string.IsNullOrEmpty(this.AssemblyQualifiedEventType))
-                throw new ArgumentNullException("AssemblyQualifiedTypeName");
-            if (this.Data == null || this.Data.Length == 0)
-                throw new ArgumentNullException("Data");
-
-            IDomainEventSerializer serializer = AppHost.Instance.GetRequiredService<IDomainEventSerializer>();
-            Type type = Type.GetType(this.AssemblyQualifiedEventType);
-            IDomainEvent ret = (IDomainEvent)serializer.Deserialize(type, this.Data);
-            ret.Id = this.Id;
-            return ret;
         }
         #endregion
     }

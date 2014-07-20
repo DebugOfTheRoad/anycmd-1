@@ -1,10 +1,8 @@
 ﻿
 namespace Anycmd.Host.EDI.Handlers
 {
-    using Anycmd.Host;
     using Hecp;
     using Info;
-    using Logging;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -16,6 +14,13 @@ namespace Anycmd.Host.EDI.Handlers
     /// </summary>
     public class DefaultInputValidator : IInputValidator
     {
+        private readonly IAppHost host;
+
+        public DefaultInputValidator(IAppHost host)
+        {
+            this.host = host;
+        }
+
         public ProcessResult Validate(IMessage command)
         {
             if (command == null)
@@ -81,7 +86,7 @@ namespace Anycmd.Host.EDI.Handlers
             #endregion
             #region 时间戳验证
             if (command.TimeStamp < SystemTime.Now().AddYears(-1) // TODO:配置消息的左时间
-                || command.TimeStamp > SystemTime.Now().AddSeconds(NodeHost.Instance.AppHost.Config.TicksTimeout))
+                || command.TimeStamp > SystemTime.Now().AddSeconds(host.Config.TicksTimeout))
             {
                 return new ProcessResult(false, Status.InvalidCommandTicks, "非法的命令时间戳，命令时间戳不能是一年前或将来。");
             }
@@ -96,7 +101,7 @@ namespace Anycmd.Host.EDI.Handlers
             NodeDescriptor requestNode = null;
             if (command.ClientType == ClientType.Node)
             {
-                if (!NodeHost.Instance.Nodes.TryGetNodeByID(command.ClientID, out requestNode))
+                if (!host.Nodes.TryGetNodeByID(command.ClientID, out requestNode))
                 {
                     return new ProcessResult(false, Status.InvalidClientID, "非法的节点");
                 }
@@ -108,7 +113,7 @@ namespace Anycmd.Host.EDI.Handlers
                 return new ProcessResult(false, Status.InvalidOntology, "必须通过本体码界定命令的上下文，本体码不能为空。");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(command.Ontology, out ontology))
+            if (!host.Ontologies.TryGetOntology(command.Ontology, out ontology))
             {
                 return new ProcessResult(false, Status.InvalidOntology, "非法的本体码。本体列表中不存在编码为" + command.Ontology + "的本体码");
             }
@@ -187,7 +192,7 @@ namespace Anycmd.Host.EDI.Handlers
                 if (Verb.Create.Equals(command.Verb)
                     && type != MessageType.Event)
                 {
-                    if (requestNode != NodeHost.Instance.Nodes.CenterNode
+                    if (requestNode != host.Nodes.CenterNode
                         && command.DataTuple.IDItems.Items.Any(a => string.Equals(a.Key, "Id", StringComparison.OrdinalIgnoreCase)))
                     {
                         return new ProcessResult(false, Status.InvalidInfoID, "非中心节点的create型命令不能提供Id");
@@ -262,13 +267,13 @@ namespace Anycmd.Host.EDI.Handlers
             if (infoItem.Element.Element.InfoDicID.HasValue)
             {
                 InfoDicState infoDic;
-                if (!NodeHost.Instance.InfoDics.TryGetInfoDic(infoItem.Element.Element.InfoDicID.Value, out infoDic))
+                if (!host.InfoDics.TryGetInfoDic(infoItem.Element.Element.InfoDicID.Value, out infoDic))
                 {
                     result = new ProcessResult(false, Status.InternalServerError, infoItem.Element.Element.Name + "本体元素信息字典配置错误，非法的信息字典标识：" + infoItem.Element.Element.InfoDicID.Value);
                     return false;
                 }
                 InfoDicItemState infoDicItem;
-                if (!NodeHost.Instance.InfoDics.TryGetInfoDicItem(infoDic, infoItem.Value, out infoDicItem) || infoDicItem.IsEnabled != 1)
+                if (!host.InfoDics.TryGetInfoDicItem(infoDic, infoItem.Value, out infoDicItem) || infoDicItem.IsEnabled != 1)
                 {
                     result = new ProcessResult(false, Status.InvalidDicItemValue, "非法的" + infoItem.Element.Element.Name + "字典值：" + infoItem.Value);
                     return false;
@@ -304,7 +309,7 @@ namespace Anycmd.Host.EDI.Handlers
                     result = new ProcessResult(false, r.StateCode, r.Description);
                     if (r.Exception != null)
                     {
-                        LoggingService.Error(r.Exception);
+                        infoItem.Element.Host.LoggingService.Error(r.Exception);
                     }
                     return false;
                 }
@@ -323,7 +328,7 @@ namespace Anycmd.Host.EDI.Handlers
                 result = ProcessResult.Ok;
                 return false;
             }
-            if (!NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(organizationCode.Trim(), out org))
+            if (!host.OrganizationSet.TryGetOrganization(organizationCode.Trim(), out org))
             {
                 result = new ProcessResult(false, Status.InvalidOrganization, string.Format("非法的组织结构码{0}", organizationCode));
                 return false;
@@ -335,7 +340,7 @@ namespace Anycmd.Host.EDI.Handlers
                 return false;
             }
             var orgCode = org.Code;
-            if (NodeHost.Instance.AppHost.OrganizationSet.Any(o => orgCode.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)))
+            if (host.OrganizationSet.Any(o => orgCode.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)))
             {
                 result = new ProcessResult(false, Status.InvalidOrganization, string.Format("{0}不是叶节点，不能容纳" + ontology.Ontology.Name, org.Name));
                 return false;

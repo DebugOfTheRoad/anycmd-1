@@ -137,7 +137,7 @@ namespace Anycmd.EDI.MessageProvider.SqlServer2008
                 // 本组命令类型所对应的数据库表
                 string tableID = string.Format("[{0}][{1}]", ontology.Ontology.MessageSchemaName, GetTableName(g.Key));
                 DbTable dbTable;
-                if (!NodeHost.Instance.AppHost.DbTables.TryGetDbTable(this.GetCommandDb(ontology), tableID, out dbTable))
+                if (!ontology.Host.DbTables.TryGetDbTable(this.GetCommandDb(ontology), tableID, out dbTable))
                 {
                     r = new ProcessResult(new CoreException("意外的数据库表标识" + tableID));
                 }
@@ -229,7 +229,7 @@ namespace Anycmd.EDI.MessageProvider.SqlServer2008
 
             if (r.Exception != null)
             {
-                LoggingService.Error(r.Exception);
+                ontology.Host.LoggingService.Error(r.Exception);
             }
 
             return r;
@@ -261,7 +261,7 @@ namespace Anycmd.EDI.MessageProvider.SqlServer2008
 
             if (r.Exception != null)
             {
-                LoggingService.Error(r.Exception);
+                ontology.Host.LoggingService.Error(r.Exception);
             }
 
             return r;
@@ -297,7 +297,7 @@ namespace Anycmd.EDI.MessageProvider.SqlServer2008
             {
                 while (reader.Read())
                 {
-                    list.Add(CommandRecord.Create(commandType, reader));
+                    list.Add(CommandRecord.Create(ontology.Host, commandType, reader));
                 }
                 reader.Close();
 
@@ -387,7 +387,7 @@ where a.Ontology=@Ontology {0}";
             {
                 while (reader.Read())
                 {
-                    list.Add(CommandRecord.Create(commandType, reader));
+                    list.Add(CommandRecord.Create(ontology.Host, commandType, reader));
                 }
             }
             total = (int)this.GetCommandDb(ontology).ExecuteScalar(countQS, parms.Select(p => ((ICloneable)p).Clone()).ToArray());
@@ -405,7 +405,7 @@ where a.Ontology=@Ontology {0}";
             {
                 if (reader.Read())
                 {
-                    return CommandRecord.Create(commandType, reader);
+                    return CommandRecord.Create(ontology.Host, commandType, reader);
                 }
             }
 
@@ -426,7 +426,7 @@ where a.Ontology=@Ontology {0}";
                     if (!_dbDic.ContainsKey(ontology))
                     {
                         RdbDescriptor db;
-                        if (!NodeHost.Instance.AppHost.Rdbs.TryDb(ontology.Ontology.MessageDatabaseID, out db))
+                        if (!ontology.Host.Rdbs.TryDb(ontology.Ontology.MessageDatabaseID, out db))
                         {
                             throw new CoreException("意外的数据库ID" + ontology.Ontology.MessageDatabaseID.ToString());
                         }
@@ -493,7 +493,7 @@ where a.Ontology=@Ontology {0}";
             /// <param name="commandType"></param>
             /// <param name="record"></param>
             /// <returns></returns>
-            internal static CommandRecord Create(MessageTypeKind commandType, System.Data.IDataRecord record)
+            internal static CommandRecord Create(IAppHost host, MessageTypeKind commandType, System.Data.IDataRecord record)
             {
                 MessageType requestType;
                 record.GetString(record.GetOrdinal("MessageType")).TryParse(out requestType);
@@ -502,6 +502,7 @@ where a.Ontology=@Ontology {0}";
                 return new CommandRecord(commandType,
                     record.GetGuid(record.GetOrdinal("Id")),
                     DataItemsTuple.Create(
+                        host,
                         record.GetNullableString("InfoID"),
                         record.GetNullableString("InfoValue"),
                         record.GetNullableString("QueryList"),

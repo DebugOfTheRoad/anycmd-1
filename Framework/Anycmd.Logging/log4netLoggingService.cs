@@ -1,19 +1,19 @@
 ﻿
 namespace Anycmd.Logging
 {
+    using Exceptions;
     using log4net;
     using log4net.Config;
+    using Query;
     using Rdb;
     using System;
     using System.Collections.Generic;
-    using Exceptions;
-    using Query;
+    using System.Configuration;
     using System.Data.SqlClient;
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Configuration;
 
     /// <summary>
     /// <remarks>日志存储在引导库的AnyLog表</remarks>
@@ -30,10 +30,10 @@ namespace Anycmd.Logging
         /// </summary>
         public string BootConnString { get { return _bootConnString; } }
 
-        private readonly AppHost host;
+        private readonly IAppHost host;
         private readonly ILog log;
 
-        public log4netLoggingService(AppHost host)
+        public log4netLoggingService(IAppHost host)
         {
 
             log4net.GlobalContext.Properties["ProcessName"] = Process.GetCurrentProcess().ProcessName;
@@ -67,7 +67,7 @@ namespace Anycmd.Logging
                 throw new CoreException("意外的AnyLog数据库标识67E6CBF4-B481-4DDD-9FD9-1F0E06E9E1CB");
             } 
             DbTable dbTable;
-            if (!NodeHost.Instance.AppHost.DbTables.TryGetDbTable(db, tableID, out dbTable))
+            if (!host.DbTables.TryGetDbTable(db, tableID, out dbTable))
             {
                 throw new CoreException("意外的数据库表标识" + tableID);
             }

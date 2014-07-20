@@ -16,7 +16,7 @@ namespace Anycmd.Ef
             List<EfRepositoryContext> repositoryContexts = new List<EfRepositoryContext>();
             foreach (var item in efDbContextNames)
             {
-                repositoryContexts.Add(new EfRepositoryContext(item));
+                repositoryContexts.Add(new EfRepositoryContext(host, item));
             }
             foreach (var assembly in assemblies)
             {
@@ -33,7 +33,7 @@ namespace Anycmd.Ef
                             if (TryGetType(repositoryContext, type))
                             {
                                 var repository = Activator.CreateInstance(repositoryType, host, repositoryContext.EfDbContextName);
-                                host.Container.AddService(genericInterface, repository);
+                                host.AddService(genericInterface, repository);
                             }
                         }
                     }
@@ -60,7 +60,7 @@ namespace Anycmd.Ef
                         var defaultInterface = type.GetInterface("I" + type.Name);
                         if (defaultInterface != null)
                         {
-                            host.Container.AddService(defaultInterface, Activator.CreateInstance(type, host));
+                            host.AddService(defaultInterface, Activator.CreateInstance(type, host));
                         }
                     }
                 }

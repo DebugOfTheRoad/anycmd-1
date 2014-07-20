@@ -1,16 +1,17 @@
-﻿using Anycmd.Logging;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Threading.Tasks;
-
+﻿
 namespace Anycmd.Container
 {
+    using Logging;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.ComponentModel.Design;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// A thread-safe service container class.
     /// </summary>
-    public sealed class AnycmdServiceContainer : IServiceProvider, IServiceContainer, IDisposable
+    public class AnycmdServiceContainer : IServiceProvider, IServiceContainer, IDisposable
     {
         readonly ConcurrentStack<IServiceProvider> fallbackProviders = new ConcurrentStack<IServiceProvider>();
         readonly Dictionary<Type, object> services = new Dictionary<Type, object>();
@@ -38,7 +39,15 @@ namespace Anycmd.Container
                     ServiceCreatorCallback callback = instance as ServiceCreatorCallback;
                     if (callback != null)
                     {
-                        LoggingService.Debug("Service startup: " + serviceType);
+                        Object log;
+                        if (services.TryGetValue(typeof(ILoggingService), out log))
+                        {
+                            var loggingService = log as ILoggingService;
+                            if (loggingService != null)
+                            {
+                                loggingService.Debug("Service startup: " + serviceType);
+                            }
+                        }
                         instance = callback(this, serviceType);
                         if (instance != null)
                         {
@@ -88,7 +97,15 @@ namespace Anycmd.Container
                 }
                 if (disposable != null)
                 {
-                    LoggingService.Debug("Service shutdown: " + disposableTypes[i]);
+                    Object log;
+                    if (services.TryGetValue(typeof(ILoggingService), out log))
+                    {
+                        var loggingService = log as ILoggingService;
+                        if (loggingService != null)
+                        {
+                            loggingService.Debug("Service shutdown: " + disposableTypes[i]);
+                        }
+                    }
                     disposable.Dispose();
                 }
             }

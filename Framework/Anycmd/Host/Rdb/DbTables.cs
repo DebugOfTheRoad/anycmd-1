@@ -10,13 +10,16 @@ namespace Anycmd.Host.Rdb
     /// </summary>
     public sealed class DbTables : IDbTables
     {
+        public static readonly IDbTables Empty = new DbTables(AppHost.Empty);
+
         private readonly Dictionary<RdbDescriptor, Dictionary<string, DbTable>> _dicByID = new Dictionary<RdbDescriptor, Dictionary<string, DbTable>>();
         private bool _initialized = false;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public DbTables(AppHost host)
+        public DbTables(IAppHost host)
         {
             this.host = host;
+            // TODO:接入总线
         }
 
         /// <summary>

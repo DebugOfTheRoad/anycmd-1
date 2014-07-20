@@ -10,6 +10,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using Identity.ViewModels.AccountViewModels;
     using Identity.ViewModels.ContractorViewModels;
     using MiniUI;
+    using Model;
     using Query;
     using Repositories;
     using System;
@@ -50,7 +51,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
         {
             if (!string.IsNullOrEmpty(isTooltip))
             {
-                var data = GetRequiredService<IAccountQuery>().Get("AccountInfo", Host.User.Worker.Id);
+                var data = GetRequiredService<IAccountQuery>().Get("AccountInfo", Host.UserSession.Worker.Id);
 
                 return this.PartialView("Partials/Details", data);
             }
@@ -121,7 +122,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             Host.ChangePassword(new PasswordChangeInput
             {
-                LoginName = Host.User.Principal.Identity.Name,
+                LoginName = Host.UserSession.Principal.Identity.Name,
                 OldPassword = oldPassword,
                 NewPassword = password
             });
@@ -190,12 +191,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 }
             }
             requestModel.includeDescendants = requestModel.includeDescendants ?? false;
-            List<Dictionary<string, object>> userAccountTrs = null;
+            List<DicReader> userAccountTrs = null;
             // TODO:注意，这里引入了权限逻辑。
             // 如果组织机构为空则需要检测是否是插法人员，因为只有开发人员才可以看到全部用户
             if (string.IsNullOrEmpty(requestModel.organizationCode))
             {
-                if (!Host.User.IsDeveloper())
+                if (!Host.UserSession.IsDeveloper())
                 {
                     throw new ValidationException("对不起，您没有查看全部账户的权限");
                 }
@@ -456,10 +457,10 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             requestData.includeDescendants = requestData.includeDescendants ?? false;
-            List<Dictionary<string, object>> data;
+            List<DicReader> data;
             if (string.IsNullOrEmpty(requestData.organizationCode))
             {
-                if (!Host.User.IsDeveloper())
+                if (!Host.UserSession.IsDeveloper())
                 {
                     throw new ValidationException("对不起，您没有查看全部管理员的权限");
                 }
@@ -487,11 +488,11 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             requestData.includeDescendants = requestData.includeDescendants ?? false;
-            List<Dictionary<string, object>> userTrs = null;
+            List<DicReader> userTrs = null;
             // 如果组织机构为空则需要检测是否是超级管理员，因为只有超级管理员才可以看到全部包工头
             if (string.IsNullOrEmpty(requestData.organizationCode))
             {
-                if (!Host.User.IsDeveloper())
+                if (!Host.UserSession.IsDeveloper())
                 {
                     throw new ValidationException("对不起，您没有查看全部包工头的权限");
                 }

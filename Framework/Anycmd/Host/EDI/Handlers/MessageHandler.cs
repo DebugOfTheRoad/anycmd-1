@@ -62,7 +62,7 @@ namespace Anycmd.Host.EDI.Handlers
                         }
                         if (context.Command is IEntity)
                         {
-                            using (var cmdProviderAct = new WfAct(context, context.Ontology.MessageProvider, "保存执行失败的命令"))
+                            using (var cmdProviderAct = new WfAct(context.Host, context, context.Ontology.MessageProvider, "保存执行失败的命令"))
                             {
                                 if (requestType == MessageType.Action || context.Command.CommandType == MessageTypeKind.Received)
                                 {
@@ -84,7 +84,7 @@ namespace Anycmd.Host.EDI.Handlers
                         }
                         if (Verb.Get.Equals(context.Command.Verb))
                         {
-                            using (var act = new WfAct(context, context.Ontology.EntityProvider, "填充get型命令的InfoValue字段"))
+                            using (var act = new WfAct(context.Host, context, context.Ontology.EntityProvider, "填充get型命令的InfoValue字段"))
                             {
                                 var selectElements = new OrderedElementSet();
                                 foreach (var element in context.Ontology.Elements.Values.Where(a => a.Element.IsEnabled == 1))
@@ -99,9 +99,9 @@ namespace Anycmd.Host.EDI.Handlers
                                 context.Result.ResultDataItems = infoValues.Select(a => new DataItem(a.Key, a.Value)).ToList();
                             }
                         }
-                        var nodeHost = NodeHost.Instance;
+                        var nodeHost = context.Host;
                         // ApplyProcessingFilters 应用处理前过滤器
-                        ProcessResult result = nodeHost.ApplyProcessingFilters(context);
+                        ProcessResult result = nodeHost.ApplyEDIMessageHandingFilters(context);
                         if (!result.IsSuccess)
                         {
                             context.Result.UpdateStatus(result.StateCode, result.Description);
@@ -124,7 +124,7 @@ namespace Anycmd.Host.EDI.Handlers
                             }
 
                             // ApplyProcessedFilters 应用处理后过滤器
-                            result = nodeHost.ApplyProcessedFilters(context);
+                            result = nodeHost.ApplyEDIMessageHandledFilters(context);
                             if (!result.IsSuccess)
                             {
                                 context.Result.UpdateStatus(result.StateCode, result.Description);
@@ -136,7 +136,7 @@ namespace Anycmd.Host.EDI.Handlers
                 if (stateCode < 200)
                 {
                     IInfoStringConverter converter;
-                    if (!NodeHost.Instance.InfoStringConverters.TryGetInfoStringConverter(context.Command.DataTuple.InfoFormat, out converter))
+                    if (!context.Host.InfoStringConverters.TryGetInfoStringConverter(context.Command.DataTuple.InfoFormat, out converter))
                     {
                         throw new CoreException("意外的信息格式" + context.Command.DataTuple.InfoFormat);
                     }
@@ -170,7 +170,7 @@ namespace Anycmd.Host.EDI.Handlers
                         Res_ReasonPhrase = context.Result.ReasonPhrase,
                         Res_StateCode = (int)context.Result.Status
                     };
-                    LoggingService.Log(anyLog);
+                    context.Ontology.Host.LoggingService.Log(anyLog);
                 }
             }
             catch (Exception ex)
@@ -209,9 +209,9 @@ namespace Anycmd.Host.EDI.Handlers
                 return;
             }
             #region 执行
-            using (var act = new WfAct(context, context.Ontology.EntityProvider, context.Ontology.EntityProvider.Description))
+            using (var act = new WfAct(context.Host, context, context.Ontology.EntityProvider, context.Ontology.EntityProvider.Description))
             {
-                using (var sqlAct = new WfAct(context, context.Ontology.EntityProvider, "执行命令"))
+                using (var sqlAct = new WfAct(context.Host, context, context.Ontology.EntityProvider, "执行命令"))
                 {
                     Verb actionCode = context.Command.Verb;
                     ProcessResult r = context.Ontology.EntityProvider.ExecuteCommand(context.ToDbCommand());
@@ -219,7 +219,7 @@ namespace Anycmd.Host.EDI.Handlers
                     // 执行成功
                     if (r.IsSuccess)
                     {
-                        using (var cmdProviderAct = new WfAct(context, context.Ontology.MessageProvider, "保存成功执行的命令和由于命令执行而生产的待分发命令"))
+                        using (var cmdProviderAct = new WfAct(context.Host, context, context.Ontology.MessageProvider, "保存成功执行的命令和由于命令执行而生产的待分发命令"))
                         {
                             #region 如果是正在接收的命令
                             if (!(context.Command is IEntity))
@@ -235,8 +235,8 @@ namespace Anycmd.Host.EDI.Handlers
                             }
                             #endregion
                             #region 建造待分发命令
-                            var commandFactory = NodeHost.Instance.MessageProducer;
-                            using (var factoryAct = new WfAct(context, commandFactory, "命令工厂建造待分发命令"))
+                            var commandFactory = context.Host.MessageProducer;
+                            using (var factoryAct = new WfAct(context.Host, context, commandFactory, "命令工厂建造待分发命令"))
                             {
                                 IList<MessageEntity> products = commandFactory.Produce(new MessageTuple(context, GetTuple(context)));
                                 // 保存生产的待分发命令
@@ -251,7 +251,7 @@ namespace Anycmd.Host.EDI.Handlers
                     // 执行失败
                     else
                     {
-                        using (var cmdProviderAct = new WfAct(context, context.Ontology.MessageProvider, "保存执行失败的命令"))
+                        using (var cmdProviderAct = new WfAct(context.Host, context, context.Ontology.MessageProvider, "保存执行失败的命令"))
                         {
                             context.Ontology.MessageProvider.SaveCommand(context.Ontology, context.Command.ToExecuteFailing(context.Result));
                             if (context.Command is IEntity)
@@ -294,7 +294,7 @@ namespace Anycmd.Host.EDI.Handlers
                 // 如果当前本体动作配置为不需要持久化则不持久化
                 if (context.Ontology.Actions[context.Command.Verb].IsPersist)
                 {
-                    using (var act = new WfAct(context, context.Ontology.MessageProvider, "持久化成功接收的命令"))
+                    using (var act = new WfAct(context.Host, context, context.Ontology.MessageProvider, "持久化成功接收的命令"))
                     {
                         var r = context.Ontology.MessageProvider.SaveCommand(context.Ontology, context.Command.ToReceived(context.Result));
                         if (!r.IsSuccess)
@@ -311,7 +311,7 @@ namespace Anycmd.Host.EDI.Handlers
         private static void PublishAuditEvent(MessageContext context)
         {
             #region 审核事件
-            using (var auditAct = new WfAct(context, context.Ontology.MessageProvider, "持久化本地事件，转化为待分发事件打入分发队列"))
+            using (var auditAct = new WfAct(context.Host, context, context.Ontology.MessageProvider, "持久化本地事件，转化为待分发事件打入分发队列"))
             {
                 var evnt = new MessageEntity(MessageTypeKind.LocalEvent, context.Command.Id, context.Command.DataTuple)
                 {
@@ -363,7 +363,7 @@ namespace Anycmd.Host.EDI.Handlers
                         #region 命令事件
                         // 如果是审计节点的审计事件
                         if (context.Command.EventSubjectCode.Equals(EventSubjectCode.StateCodeChanged_Audit)
-                                && (context.ClientAgent == NodeHost.Instance.Nodes.ThisNode))
+                                && (context.ClientAgent == context.Host.Nodes.ThisNode))
                         {
                             #region 审计节点事件
                             var localEvent = context.Ontology.MessageProvider.GetCommand(MessageTypeKind.LocalEvent,
@@ -383,14 +383,14 @@ namespace Anycmd.Host.EDI.Handlers
                                     return;
                                 }
                             }
-                            using (var act = new WfAct(context, context.Ontology.MessageProvider, "审核完成"))
+                            using (var act = new WfAct(context.Host, context, context.Ontology.MessageProvider, "审核完成"))
                             {
-                                var ctx = new MessageContext(localEvent);
+                                var ctx = new MessageContext(context.Host, localEvent);
                                 if (context.Command.Status == (int)Status.AuditApproved)
                                 {
                                     localEvent.IsDumb = context.Command.IsDumb;
                                     #region 执行
-                                    using (var sqlAct = new WfAct(ctx, ctx.Ontology.EntityProvider, "执行命令"))
+                                    using (var sqlAct = new WfAct(context.Host, ctx, ctx.Ontology.EntityProvider, "执行命令"))
                                     {
                                         // 注意：执行的是本地事件，而不是请求事件
                                         Verb actionCode = ctx.Command.Verb;
@@ -402,8 +402,8 @@ namespace Anycmd.Host.EDI.Handlers
                                         {
                                             ctx.Ontology.MessageProvider.SaveCommand(ctx.Ontology, ctx.Command.ToExecuted(context.Result));
 
-                                            var commandFactory = NodeHost.Instance.MessageProducer;
-                                            using (var factoryAct = new WfAct(ctx, commandFactory, "生产命令"))
+                                            var commandFactory = context.Host.MessageProducer;
+                                            using (var factoryAct = new WfAct(context.Host, ctx, commandFactory, "生产命令"))
                                             {
                                                 IList<MessageEntity> products = commandFactory.Produce(new MessageTuple(ctx, GetTuple(ctx)));
                                                 // 保存生产的待分发命令
@@ -422,7 +422,7 @@ namespace Anycmd.Host.EDI.Handlers
                                 }
                                 else
                                 {
-                                    using (var cmdProviderAct = new WfAct(ctx, ctx.Ontology.MessageProvider, "保存执行失败的命令"))
+                                    using (var cmdProviderAct = new WfAct(context.Host, ctx, ctx.Ontology.MessageProvider, "保存执行失败的命令"))
                                     {
                                         ctx.Ontology.MessageProvider.SaveCommand(ctx.Ontology, ctx.Command.ToExecuteFailing(context.Result));
                                     }
@@ -442,7 +442,7 @@ namespace Anycmd.Host.EDI.Handlers
                             }
                             else
                             {
-                                using (var act = new WfAct(context, context.Ontology.MessageProvider, context.Result.Description))
+                                using (var act = new WfAct(context.Host, context, context.Ontology.MessageProvider, context.Result.Description))
                                 {
                                     context.Ontology.MessageProvider.SaveCommand(context.Ontology, context.Command.ToClientEvent(context.Result));
                                 }
@@ -472,8 +472,8 @@ namespace Anycmd.Host.EDI.Handlers
             if (context.Command.Verb == Verb.Create)
             {
                 List<InfoItem> items = new List<InfoItem>();
-                var commandFactory = NodeHost.Instance.MessageProducer;
-                foreach (var node in NodeHost.Instance.Nodes)
+                var commandFactory = context.Host.MessageProducer;
+                foreach (var node in context.Host.Nodes)
                 {
                     if (commandFactory.IsProduce(context, node))
                     {

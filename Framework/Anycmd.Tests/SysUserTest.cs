@@ -60,8 +60,8 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(1, host.SysUsers.GetDevAccounts().Count);
 
-            host.Container.RemoveService(typeof(IRepository<Account>));
-            host.Container.RemoveService(typeof(IRepository<DeveloperID>));
+            host.RemoveService(typeof(IRepository<Account>));
+            host.RemoveService(typeof(IRepository<DeveloperID>));
             var moAccountRepository = host.GetMoqRepository<Account, IRepository<Account>>();
             var moDeveloperRepository = host.GetMoqRepository<DeveloperID, IRepository<DeveloperID>>();
             var entityID1 = Guid.NewGuid();
@@ -75,8 +75,8 @@ namespace Anycmd.Tests
             moAccountRepository.Setup<Account>(a => a.GetByKey(entityID2)).Returns(new Account { Id = entityID2, Name = name, LoginName = loginName2 });
             moDeveloperRepository.Setup<DeveloperID>(a => a.GetByKey(entityID1)).Returns(new DeveloperID { Id = entityID1 });
             moDeveloperRepository.Setup<DeveloperID>(a => a.GetByKey(entityID2)).Returns(new DeveloperID { Id = entityID2 });
-            host.Container.AddService(typeof(IRepository<Account>), moAccountRepository.Object);
-            host.Container.AddService(typeof(IRepository<DeveloperID>), moDeveloperRepository.Object);
+            host.AddService(typeof(IRepository<Account>), moAccountRepository.Object);
+            host.AddService(typeof(IRepository<DeveloperID>), moDeveloperRepository.Object);
 
             host.GetRequiredService<IRepository<Account>>().Add(new Account
             {

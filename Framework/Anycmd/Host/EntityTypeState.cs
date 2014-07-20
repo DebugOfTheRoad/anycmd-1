@@ -30,7 +30,7 @@ namespace Anycmd.Host
 
         private EntityTypeState() { }
 
-        public static EntityTypeState Create(AppHost host, EntityTypeBase entityType, EntityTypeMap map)
+        public static EntityTypeState Create(IAppHost host, EntityTypeBase entityType, EntityTypeMap map)
         {
             if (entityType == null)
             {
@@ -61,7 +61,7 @@ namespace Anycmd.Host
             };
         }
 
-        public AppHost AppHost { get; private set; }
+        public IAppHost AppHost { get; private set; }
 
         public EntityTypeMap Map
         {

@@ -1,20 +1,15 @@
 ﻿
 namespace Anycmd.Host.EDI
 {
-    using Anycmd.Repositories;
     using Entities;
+    using Repositories;
     using System.Linq;
 
     public class DefaultNodeHostBootstrap : INodeHostBootstrap
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public DefaultNodeHostBootstrap()
-        {
-            this.host = AppHost.Instance;
-        }
-
-        public DefaultNodeHostBootstrap(AppHost host)
+        public DefaultNodeHostBootstrap(IAppHost host)
         {
             this.host = host;
         }

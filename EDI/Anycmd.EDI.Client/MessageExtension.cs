@@ -2,37 +2,17 @@
 namespace Anycmd.EDI.Client
 {
     using DataContracts;
-    using Util;
     using Exceptions;
+    using Host.EDI;
+    using Host.EDI.Hecp;
     using System;
-    using Anycmd.Host.EDI;
-    using Anycmd.Host.EDI.Hecp;
+    using Util;
 
     /// <summary>
     /// 扩展命令数据传输对象接口。提供转移命令的方法，用以为客户端程序员隔离复杂的命令知识。
     /// </summary>
     public static class MessageExtension
     {
-        /// <summary>
-        /// 此方法从节点上下文中读取自我节点。调用本方法需要启用数据交换配置系统。
-        /// </summary>
-        /// <param name="cmdDto"></param>
-        /// <returns></returns>
-        public static IMessageDto RequestThisNode(this IMessageDto cmdDto)
-        {
-            return RequestNode(cmdDto, NodeHost.Instance.Nodes.ThisNode);
-        }
-
-        /// <summary>
-        /// 此方法从节点上下文中读取中心节点。调用本方法需要启用数据交换配置系统。
-        /// </summary>
-        /// <param name="cmdDto"></param>
-        /// <returns></returns>
-        public static IMessageDto RequestCenterNode(this IMessageDto cmdDto)
-        {
-            return RequestNode(cmdDto, NodeHost.Instance.Nodes.CenterNode);
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -71,7 +51,7 @@ namespace Anycmd.EDI.Client
                         break;
                     case ClientType.Node:
                         NodeDescriptor clientNode;
-                        if (!NodeHost.Instance.Nodes.TryGetNodeByPublicKey(cmdDto.Credential.ClientID, out clientNode))
+                        if (!toNode.Host.Nodes.TryGetNodeByPublicKey(cmdDto.Credential.ClientID, out clientNode))
                         {
                             throw new CoreException("意外的客户节点标识" + cmdDto.Credential.ClientID);
                         }

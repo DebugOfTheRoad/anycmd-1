@@ -9,11 +9,6 @@ namespace Anycmd.EDI.Queries.Ef
     /// </summary>
     public class PluginQuery : QueryBase, IPluginQuery
     {
-        public PluginQuery()
-            : base("EDIEntities")
-        {
-        }
-
         public PluginQuery(AppHost host)
             : base(host, "EDIEntities")
         {

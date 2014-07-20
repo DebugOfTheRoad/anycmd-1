@@ -1,13 +1,12 @@
 ﻿
-using Anycmd.Events.Storage;
-using Anycmd.Specifications;
-using Anycmd.Storage;
-using System;
-using System.Collections.Generic;
-
 namespace Anycmd.Snapshots.Providers
 {
+    using Events.Storage;
     using Model;
+    using Specifications;
+    using Storage;
+    using System;
+    using System.Collections.Generic;
     using Util;
 
     /// <summary>
@@ -126,6 +125,7 @@ namespace Anycmd.Snapshots.Providers
         #region Private Fields
         private readonly int numOfEvents;
         private readonly Dictionary<EventNumberSnapshotMappingKey, ISnapshot> snapshotMapping = new Dictionary<EventNumberSnapshotMappingKey, ISnapshot>();
+        private readonly IAppHost host;
         #endregion
 
         #region Ctor
@@ -136,9 +136,10 @@ namespace Anycmd.Snapshots.Providers
         /// <param name="snapshotStorage">The instance of the snapshot storage this is used for initializing the <c>EventNumberSnapshotProvider</c> class.</param>
         /// <param name="option">The snapshot provider option.</param>
         /// <param name="numOfEvents">The maximum number of events.</param>
-        public EventNumberSnapshotProvider(IStorage eventStorage, IStorage snapshotStorage, SnapshotProviderOption option, int numOfEvents)
+        public EventNumberSnapshotProvider(IAppHost host, IStorage eventStorage, IStorage snapshotStorage, SnapshotProviderOption option, int numOfEvents)
             : base(eventStorage, snapshotStorage, option)
         {
+            this.host = host;
             this.numOfEvents = numOfEvents;
         }
         #endregion
@@ -224,7 +225,7 @@ namespace Anycmd.Snapshots.Providers
         public override void CreateOrUpdateSnapshot(ISourcedAggregateRoot aggregateRoot)
         {
             ISnapshot snapshot = aggregateRoot.CreateSnapshot();
-            SnapshotDataObject dataObj = SnapshotDataObject.CreateFromAggregateRoot(aggregateRoot);
+            SnapshotDataObject dataObj = host.CreateFromAggregateRoot(aggregateRoot);
             PropertyBag insertOrUpdateData = new PropertyBag(dataObj);
             var key = new EventNumberSnapshotMappingKey(aggregateRoot.GetType().AssemblyQualifiedName, aggregateRoot.Id);
 
@@ -266,7 +267,7 @@ namespace Anycmd.Snapshots.Providers
             SnapshotDataObject dataObj = this.SnapshotStorage.SelectFirstOnly<SnapshotDataObject>(spec);
             if (dataObj == null)
                 return null;
-            ISnapshot snapshot = dataObj.ExtractSnapshot();
+            ISnapshot snapshot = host.ExtractSnapshot(dataObj);
             this.snapshotMapping.Add(key, snapshot);
             return snapshot;
         }

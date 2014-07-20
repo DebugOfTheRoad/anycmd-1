@@ -1,14 +1,14 @@
-﻿using Anycmd.Logging;
-using System;
-using System.Collections.Generic;
-
+﻿
 namespace Anycmd.Host.EDI
 {
     using AC;
-    using Anycmd.Host.EDI.Handlers;
-    using Anycmd.Host.EDI.Handlers.Distribute;
-    using Anycmd.Host.EDI.Hecp;
     using Exceptions;
+    using Host.EDI.Handlers;
+    using Host.EDI.Handlers.Distribute;
+    using Host.EDI.Hecp;
+    using Logging;
+    using System;
+    using System.Collections.Generic;
     using Util;
 
     public sealed class NodeDescriptor
@@ -19,10 +19,12 @@ namespace Anycmd.Host.EDI
         private IMessageTransfer _transfer = null;
 
         private readonly object locker = new object();
+        private readonly IAppHost host;
 
         #region Ctor
-        public NodeDescriptor(NodeState node)
+        public NodeDescriptor(IAppHost host, NodeState node)
         {
+            this.host = host;
             if (node == null)
             {
                 throw new ArgumentNullException("node");
@@ -32,6 +34,10 @@ namespace Anycmd.Host.EDI
         #endregion
 
         #region Public Properties
+        public IAppHost Host
+        {
+            get { return host; }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -51,7 +57,7 @@ namespace Anycmd.Host.EDI
             {
                 if (_transfer == null)
                 {
-                    if (!NodeHost.Instance.Transfers.TryGetTransfer(this.Node.TransferID, out _transfer))
+                    if (!Host.Transfers.TryGetTransfer(this.Node.TransferID, out _transfer))
                     {
                         throw new CoreException("意外的命令转移器");
                     }
@@ -93,7 +99,7 @@ namespace Anycmd.Host.EDI
         {
             get
             {
-                int m = HostConfig.Instance.BeatPeriod;
+                int m = this.Host.Config.BeatPeriod;
                 if (this.Node.BeatPeriod.HasValue)
                 {
                     m = this.Node.BeatPeriod.Value;
@@ -149,7 +155,7 @@ namespace Anycmd.Host.EDI
         /// <returns></returns>
         public IEnumerable<ElementDescriptor> GetInfoIDElements()
         {
-            return NodeHost.Instance.Nodes.GetInfoIDElements(this);
+            return Host.Nodes.GetInfoIDElements(this);
         }
 
         public bool IsInfoIDElement(ElementDescriptor element)
@@ -158,7 +164,7 @@ namespace Anycmd.Host.EDI
             {
                 throw new ArgumentNullException("element");
             }
-            return NodeHost.Instance.Nodes.IsInfoIDElement(this, element);
+            return Host.Nodes.IsInfoIDElement(this, element);
         }
 
         #region IsCareforElement
@@ -174,7 +180,7 @@ namespace Anycmd.Host.EDI
             {
                 throw new ArgumentNullException("element");
             }
-            return NodeHost.Instance.Nodes.IsCareforElement(this, element);
+            return Host.Nodes.IsCareforElement(this, element);
         }
         #endregion
 
@@ -190,7 +196,7 @@ namespace Anycmd.Host.EDI
             {
                 throw new ArgumentNullException("ontology");
             }
-            return NodeHost.Instance.Nodes.IsCareForOntology(this, ontology);
+            return Host.Nodes.IsCareForOntology(this, ontology);
         }
         #endregion
 
@@ -368,7 +374,7 @@ namespace Anycmd.Host.EDI
                             Res_ReasonPhrase = Status.NodeException.ToName(),
                             Res_StateCode = (int)Status.NodeException
                         };
-                        LoggingService.Log(anyLog);
+                        Host.LoggingService.Log(anyLog);
                     }
                     else
                     {

@@ -1,22 +1,29 @@
 
-namespace Anycmd.EDI.ViewModels.NodeViewModels {
-    using Anycmd.Host.EDI;
+namespace Anycmd.EDI.ViewModels.NodeViewModels
+{
+    using Host.EDI;
     using System;
 
     /// <summary>
     /// 
     /// </summary>
-    public partial class NodeTr {
+    public partial class NodeTr
+    {
         private bool _isSelfDetected = false;
         private bool _isSelf = false;
         private bool _isCenterDetected = false;
         private bool _isCenter = false;
+        private readonly IAppHost host;
 
-        public NodeTr() { }
+        private NodeTr(IAppHost host)
+        {
+            this.host = host;
+        }
 
         public static NodeTr Create(NodeDescriptor node)
         {
-            return new NodeTr {
+            return new NodeTr(node.Host)
+            {
                 AnycmdApiAddress = node.Node.AnycmdApiAddress,
                 AnycmdWSAddress = node.Node.AnycmdWSAddress,
                 BeatPeriod = node.Node.BeatPeriod,
@@ -134,11 +141,14 @@ namespace Anycmd.EDI.ViewModels.NodeViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public bool IsSelf {
-            get {
-                if (!_isSelfDetected) {
+        public bool IsSelf
+        {
+            get
+            {
+                if (!_isSelfDetected)
+                {
                     _isSelfDetected = true;
-                    _isSelf = this.Id == NodeHost.Instance.Nodes.ThisNode.Node.Id;
+                    _isSelf = this.Id == host.Nodes.ThisNode.Node.Id;
                 }
                 return _isSelf;
             }
@@ -147,11 +157,14 @@ namespace Anycmd.EDI.ViewModels.NodeViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public bool IsCenter {
-            get {
-                if (!_isCenterDetected) {
+        public bool IsCenter
+        {
+            get
+            {
+                if (!_isCenterDetected)
+                {
                     _isCenterDetected = true;
-                    _isCenter = this.Id == NodeHost.Instance.Nodes.CenterNode.Node.Id;
+                    _isCenter = this.Id == host.Nodes.CenterNode.Node.Id;
                 }
                 return _isCenter;
             }

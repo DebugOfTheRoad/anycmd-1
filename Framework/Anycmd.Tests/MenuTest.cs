@@ -117,7 +117,7 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(0, host.MenuSet.Count());
 
-            host.Container.RemoveService(typeof(IRepository<Menu>));
+            host.RemoveService(typeof(IRepository<Menu>));
             var moMenuRepository = host.GetMoqRepository<Menu, IRepository<Menu>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -127,7 +127,7 @@ namespace Anycmd.Tests
             moMenuRepository.Setup(a => a.Remove(It.Is<Menu>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moMenuRepository.Setup<Menu>(a => a.GetByKey(entityID1)).Returns(new Menu { Id = entityID1, Name = name });
             moMenuRepository.Setup<Menu>(a => a.GetByKey(entityID2)).Returns(new Menu { Id = entityID2, Name = name });
-            host.Container.AddService(typeof(IRepository<Menu>), moMenuRepository.Object);
+            host.AddService(typeof(IRepository<Menu>), moMenuRepository.Object);
 
             bool catched = false;
             try

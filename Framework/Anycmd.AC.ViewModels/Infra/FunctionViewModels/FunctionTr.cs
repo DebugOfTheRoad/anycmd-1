@@ -9,9 +9,9 @@ namespace Anycmd.AC.Infra.ViewModels.FunctionViewModels
     /// </summary>
     public class FunctionTr
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        private FunctionTr(AppHost host)
+        private FunctionTr(IAppHost host)
         {
             this.host = host;
         }

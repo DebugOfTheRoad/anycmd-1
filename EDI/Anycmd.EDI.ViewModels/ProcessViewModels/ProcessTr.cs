@@ -1,19 +1,26 @@
 ﻿
-namespace Anycmd.EDI.ViewModels.ProcessViewModels {
-    using Anycmd.Host.EDI;
+namespace Anycmd.EDI.ViewModels.ProcessViewModels
+{
     using Exceptions;
+    using Host.EDI;
     using System;
 
     /// <summary>
     /// 
     /// </summary>
-    public class ProcessTr {
-        private ProcessDescriptor _process;
+    public class ProcessTr
+    {
+        private readonly IAppHost host;
 
-        public ProcessTr() { }
+        private ProcessTr(IAppHost host)
+        {
+            this.host = host;
+        }
 
-        public static ProcessTr Create(ProcessDescriptor process) {
-            return new ProcessTr {
+        public static ProcessTr Create(ProcessDescriptor process)
+        {
+            return new ProcessTr(process.Host)
+            {
                 CreateOn = process.Process.CreateOn,
                 Id = process.Process.Id,
                 IsEnabled = process.Process.IsEnabled,
@@ -21,7 +28,8 @@ namespace Anycmd.EDI.ViewModels.ProcessViewModels {
                 NetPort = process.Process.NetPort,
                 OntologyID = process.Process.OntologyID,
                 OrganizationCode = process.Process.OrganizationCode,
-                Type = process.Process.Type
+                Type = process.Process.Type,
+                WebApiBaseAddress = process.WebApiBaseAddress
             };
         }
 
@@ -52,16 +60,20 @@ namespace Anycmd.EDI.ViewModels.ProcessViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string OntologyCode {
-            get {
+        public string OntologyCode
+        {
+            get
+            {
                 return this.Ontology.Ontology.Code;
             }
         }
         /// <summary>
         /// 
         /// </summary>
-        public string OntologyName {
-            get {
+        public string OntologyName
+        {
+            get
+            {
                 return this.Ontology.Ontology.Name;
             }
         }
@@ -77,23 +89,18 @@ namespace Anycmd.EDI.ViewModels.ProcessViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string WebApiBaseAddress {
-            get {
-                if (_process == null) {
-                    if (!NodeHost.Instance.Processs.TryGetProcess(this.Id, out _process)) {
-                        throw new CoreException("意外的进程标识" + this.Id);
-                    }
-                }
-                return _process.WebApiBaseAddress;
-            }
-        }
+        public string WebApiBaseAddress { get; set; }
 
         private OntologyDescriptor _ontology;
 
-        private OntologyDescriptor Ontology {
-            get {
-                if (_ontology == null) {
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.OntologyID, out _ontology)) {
+        private OntologyDescriptor Ontology
+        {
+            get
+            {
+                if (_ontology == null)
+                {
+                    if (!host.Ontologies.TryGetOntology(this.OntologyID, out _ontology))
+                    {
                         throw new ValidationException("意外的本体标识" + this.OntologyID);
                     }
                 }

@@ -30,6 +30,6 @@ namespace Anycmd.Host.EDI {
         /// 注册插件
         /// </summary>
         /// <param name="nodeHost">数据交换宿主。与NodeHost.Instance效果相同</param>
-        void Register(INodeHost nodeHost);
+        void Register(IAppHost nodeHost);
     }
 }

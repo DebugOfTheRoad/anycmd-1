@@ -13,19 +13,9 @@ namespace Anycmd.EDI.Application {
     /// </summary>
     public sealed class ServiceSelfHost : AppHostHttpListenerBase {
         private readonly ProcessDescriptor process;
-        private readonly AppHost appHost;
+        private readonly Anycmd.IAppHost appHost;
 
-        public ServiceSelfHost(ProcessDescriptor process)
-            : base("Self-Host", typeof(MessageService).Assembly) {
-            if (process == null) {
-                throw new ArgumentNullException("process");
-            }
-            this.appHost = AppHost.Instance;
-            this.process = process;
-            this.ServiceName = process.ProcessType.ToName() + " - " + process.Process.Name;
-        }
-
-        public ServiceSelfHost(AppHost appHost, ProcessDescriptor process)
+        public ServiceSelfHost(Anycmd.IAppHost appHost, ProcessDescriptor process)
             : base("Self-Host", typeof(MessageService).Assembly)
         {
             if (appHost == null)
@@ -48,7 +38,7 @@ namespace Anycmd.EDI.Application {
         }
 
         public override void Configure(Container container) {
-            var adapter = new ServiceContainerAdapter(appHost.Container);
+            var adapter = new ServiceContainerAdapter(appHost);
             container.Adapter = adapter;
 
             SetConfig(new HostConfig {

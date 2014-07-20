@@ -10,7 +10,7 @@ namespace Anycmd.EDI.ViewModels.InfoDicViewModels
     /// </summary>
     public partial class InfoDicInfo : Dictionary<string, object>
     {
-        public InfoDicInfo(AppHost host, Dictionary<string, object> dic)
+        public InfoDicInfo(IAppHost host, Dictionary<string, object> dic)
         {
             if (dic == null)
             {

@@ -9,9 +9,9 @@ namespace Anycmd.AC.Infra.ViewModels.EntityTypeViewModels
     /// </summary>
     public class EntityTypeTr
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        private EntityTypeTr(AppHost host)
+        private EntityTypeTr(IAppHost host)
         {
             this.host = host;
         }

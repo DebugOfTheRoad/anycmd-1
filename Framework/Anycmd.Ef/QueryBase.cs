@@ -1,6 +1,7 @@
 ﻿
 namespace Anycmd.Ef
 {
+    using Util;
     using Exceptions;
     using Host;
     using Model;
@@ -20,15 +21,9 @@ namespace Anycmd.Ef
         private IEfFilterStringBuilder _filterStringBuilder;
 
         private readonly string efDbContextName;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public QueryBase(string efDbContextName)
-        {
-            host = AppHost.Instance;
-            this.efDbContextName = efDbContextName;
-        }
-
-        public QueryBase(AppHost host, string efDbContextName)
+        public QueryBase(IAppHost host, string efDbContextName)
         {
             this.host = host;
             this.efDbContextName = efDbContextName;
@@ -44,7 +39,7 @@ namespace Anycmd.Ef
                 var repositoryContext = EfContext.Storage.GetRepositoryContext(this.efDbContextName);
                 if (repositoryContext == null)
                 {
-                    repositoryContext = new EfRepositoryContext(this.efDbContextName);
+                    repositoryContext = new EfRepositoryContext(host, this.efDbContextName);
                     EfContext.Storage.SetRepositoryContext(repositoryContext);
                 }
                 return repositoryContext.DbContext;
@@ -76,7 +71,7 @@ namespace Anycmd.Ef
             }
         }
 
-        public Dictionary<string, object> Get(string tableOrViewName, Guid id)
+        public DicReader Get(string tableOrViewName, Guid id)
         {
             var sql = "select * from " + tableOrViewName + " as a where Id=@Id";
             using (var conn = DbContext.Database.Connection)
@@ -92,7 +87,7 @@ namespace Anycmd.Ef
                 {
                     if (reader.Read())
                     {
-                        var dic = new Dictionary<string, object>();
+                        var dic = new DicReader(host);
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             dic.Add(reader.GetName(i), reader.GetValue(i));
@@ -145,7 +140,7 @@ namespace Anycmd.Ef
             return query.ToList<T>();
         }
 
-        public List<Dictionary<string, object>> GetPlist(string tableOrViewName, Func<SqlFilter> filterCallback, PagingInput paging)
+        public List<DicReader> GetPlist(string tableOrViewName, Func<SqlFilter> filterCallback, PagingInput paging)
         {
             SqlFilter filter = SqlFilter.Empty;
             if (filterCallback != null)
@@ -156,7 +151,7 @@ namespace Anycmd.Ef
 @"SELECT TOP " + paging.pageSize + " * FROM (SELECT ROW_NUMBER() OVER(ORDER BY " + paging.sortField + " " + paging.sortOrder + ") AS RowNumber,* FROM " + tableOrViewName + " as a " + filter.FilterString + " ) a WHERE a.RowNumber > " + paging.pageIndex * paging.pageSize;
             string countSql =
 @"SELECT count(1) FROM " + tableOrViewName + " as a " + filter.FilterString;
-            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+            List<DicReader> list = new List<DicReader>();
             using (var conn = DbContext.Database.Connection)
             {
                 var cmd = conn.CreateCommand();
@@ -176,7 +171,7 @@ namespace Anycmd.Ef
                 {
                     while (reader.Read())
                     {
-                        var dic = new Dictionary<string, object>();
+                        var dic = new DicReader(host);
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             dic.Add(reader.GetName(i), reader.GetValue(i));
@@ -192,7 +187,7 @@ namespace Anycmd.Ef
             }
         }
 
-        public List<Dictionary<string, object>> GetPlist(EntityTypeState entityType, Func<SqlFilter> filterCallback, PagingInput paging)
+        public List<DicReader> GetPlist(EntityTypeState entityType, Func<SqlFilter> filterCallback, PagingInput paging)
         {
             if (string.IsNullOrEmpty(entityType.TableName))
             {

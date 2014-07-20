@@ -1,9 +1,9 @@
 ﻿
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
-    using Anycmd.Host;
-    using Anycmd.Host.EDI;
-    using Anycmd.Repositories;
+    using Host;
+    using Host.EDI;
+    using Repositories;
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host.EDI.Entities;
@@ -125,7 +125,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(input.ontologyCode, out ontology))
+            if (!Host.Ontologies.TryGetOntology(input.ontologyCode, out ontology))
             {
                 throw new ValidationException("意外的本体码" + input.ontologyCode);
             }

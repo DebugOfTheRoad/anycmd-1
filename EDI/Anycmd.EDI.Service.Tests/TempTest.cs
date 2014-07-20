@@ -5,12 +5,8 @@ namespace Anycmd.EDI.Service.Tests
     using System;
     using Xunit;
 
-    public class TempTest : IUseFixture<Boot>
+    public class TempTest
     {
-        public void SetFixture(Boot data)
-        {
-        }
-
         [Fact]
         public void StructTest()
         {

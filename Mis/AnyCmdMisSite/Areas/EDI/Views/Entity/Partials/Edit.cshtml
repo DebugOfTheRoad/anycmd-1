@@ -14,7 +14,7 @@
         <div style="padding: 0px;">
             @{
                 var ontologyCode = Request.Params["ontologyCode"];
-                var ontology = NodeHost.Instance.Ontologies[ontologyCode];
+                var ontology = Html.GetHost().Ontologies[ontologyCode];
                 var elementsDic = ontology.Elements
                     .Where(f => f.Value.Element != null && f.Value.Element.IsEnabled == 1 && f.Value.Element.IsInput && f.Value.Element.GroupID.HasValue)
                     .OrderBy(e => e.Value.Element.SortCode)

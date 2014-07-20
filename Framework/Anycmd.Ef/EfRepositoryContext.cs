@@ -16,23 +16,13 @@ namespace Anycmd.Ef
         private readonly string efDbContextName;
         private DbContext _efContext;
         private readonly object sync = new object();
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
         public string EfDbContextName {
             get { return efDbContextName; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public EfRepositoryContext(string efDbContextName)
-        {
-            CheckConfig(efDbContextName);
-            this.host = AppHost.Instance;
-            this.efDbContextName = efDbContextName;
-        }
-
-        public EfRepositoryContext(AppHost host, string efDbContextName)
+        public EfRepositoryContext(IAppHost host, string efDbContextName)
         {
             CheckConfig(efDbContextName);
             this.host = host;
@@ -105,9 +95,9 @@ namespace Anycmd.Ef
             if ((obj is IEntityBase))
             {
                 var entity = (obj as IEntityBase);
-                if (entity.CreateUserID == null && host.User.Principal.Identity.IsAuthenticated)
+                if (entity.CreateUserID == null && host.UserSession.Principal.Identity.IsAuthenticated)
                 {
-                    var user = host.User;
+                    var user = host.UserSession;
                     if (string.IsNullOrEmpty(entity.CreateBy))
                     {
                         entity.CreateBy = user.Worker.Name;
@@ -135,9 +125,9 @@ namespace Anycmd.Ef
             if ((obj is IEntityBase) && state == EntityState.Modified)
             {
                 var entity = (obj as IEntityBase);
-                if (entity.ModifiedUserID == null && host.User.Principal.Identity.IsAuthenticated)
+                if (entity.ModifiedUserID == null && host.UserSession.Principal.Identity.IsAuthenticated)
                 {
-                    var user = host.User;
+                    var user = host.UserSession;
                     if (string.IsNullOrEmpty(entity.ModifiedBy))
                     {
                         entity.ModifiedBy = user.Worker.Name;

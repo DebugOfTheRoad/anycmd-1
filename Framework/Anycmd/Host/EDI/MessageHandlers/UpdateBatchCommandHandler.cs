@@ -9,16 +9,16 @@ namespace Anycmd.Host.EDI.MessageHandlers
 
     public class UpdateBatchCommandHandler : CommandHandler<UpdateBatchCommand>
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public UpdateBatchCommandHandler(AppHost host)
+        public UpdateBatchCommandHandler(IAppHost host)
         {
             this.host = host;
         }
 
         public override void Handle(UpdateBatchCommand command)
         {
-            var batchRepository = NodeHost.Instance.GetRequiredService<IRepository<Batch>>();
+            var batchRepository = host.GetRequiredService<IRepository<Batch>>();
             var entity = batchRepository.GetByKey(command.Input.Id);
             if (entity == null)
             {

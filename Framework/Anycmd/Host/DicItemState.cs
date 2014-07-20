@@ -21,7 +21,7 @@ namespace Anycmd.Host
 
         private DicItemState() { }
 
-        public static DicItemState Create(AppHost host, DicItemBase dicItem)
+        public static DicItemState Create(IAppHost host, DicItemBase dicItem)
         {
             if (dicItem == null)
             {

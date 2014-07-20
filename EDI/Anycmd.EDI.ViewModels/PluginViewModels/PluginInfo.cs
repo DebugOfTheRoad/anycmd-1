@@ -7,7 +7,8 @@ namespace Anycmd.EDI.ViewModels.PluginViewModels {
     public class PluginInfo : Dictionary<string, object> {
         public PluginInfo() { }
 
-        public PluginInfo(AppHost host, Dictionary<string, object> dic) {
+        public PluginInfo(IAppHost host, Dictionary<string, object> dic)
+        {
             if (dic == null) {
                 throw new ArgumentNullException("dic");
             }

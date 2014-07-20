@@ -1,5 +1,6 @@
 ﻿
-namespace Anycmd {
+namespace Anycmd
+{
     using EDI;
     using Host.EDI;
     using Host.EDI.Handlers;
@@ -11,15 +12,13 @@ namespace Anycmd {
     /// <summary>
     /// 数据交换宿主
     /// </summary>
-    public interface INodeHost {
+    public interface INodeHost
+    {
+        IAppHost AppHost { get; }
         /// <summary>
         /// 
         /// </summary>
         Guid Id { get; }
-        /// <summary>
-        /// 宿主配置
-        /// </summary>
-        HostConfig Config { get; }
 
         /// <summary>
         /// 插件
@@ -66,6 +65,8 @@ namespace Anycmd {
         /// </summary>
         IEntityProviderSet EntityProviders { get; }
 
+        IMessageProducer MessageProducer { get; }
+
         /// <summary>
         /// 命令转移器
         /// </summary>
@@ -74,22 +75,22 @@ namespace Anycmd {
         /// <summary>
         /// 添加请求过滤器, 这些过滤器在Http请求被转化为Hecp请求后应用
         /// </summary>
-        List<Func<HecpContext, ProcessResult>> PreRequestFilters { get; }
+        List<Func<HecpContext, ProcessResult>> PreHecpRequestFilters { get; }
 
         /// <summary>
         /// 添加命令过滤器。这些过滤器在Command验证通过但被处理前应用
         /// </summary>
-        List<Func<MessageContext, ProcessResult>> GlobalProcessingFilters { get; }
+        List<Func<MessageContext, ProcessResult>> GlobalEDIMessageHandingFilters { get; }
 
         /// <summary>
         /// 添加命令过滤器。这些过滤器在Command验证通过并被处理后应用
         /// </summary>
-        List<Func<MessageContext, ProcessResult>> GlobalProcessedFilters { get; }
+        List<Func<MessageContext, ProcessResult>> GlobalEDIMessageHandledFilters { get; }
 
         /// <summary>
         /// 添加响应过滤器。这些过滤器在Hecp响应末段应用
         /// </summary>
-        List<Func<HecpContext, ProcessResult>> GlobalResponseFilters { get; }
+        List<Func<HecpContext, ProcessResult>> GlobalHecpResponseFilters { get; }
 
         /// <summary>
         /// 根据插件类型获取插件目录地址

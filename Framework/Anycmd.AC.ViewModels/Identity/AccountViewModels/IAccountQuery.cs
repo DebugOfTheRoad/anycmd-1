@@ -1,6 +1,7 @@
 ﻿
 namespace Anycmd.AC.Identity.ViewModels.AccountViewModels
 {
+    using Model;
     using Query;
     using System;
     using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Anycmd.AC.Identity.ViewModels.AccountViewModels
         /// <param name="includeDescendants"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        List<Dictionary<string, object>> GetPlistAccountTrs(List<FilterData> filters, string organizationCode, bool includeDescendants, PagingInput paging);
+        List<DicReader> GetPlistAccountTrs(List<FilterData> filters, string organizationCode, bool includeDescendants, PagingInput paging);
         /// <summary>
         /// 
         /// </summary>
@@ -27,7 +28,7 @@ namespace Anycmd.AC.Identity.ViewModels.AccountViewModels
         /// <param name="roleID"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        List<Dictionary<string, object>> GetPlistRoleAccountTrs(string key, Guid roleID, PagingInput paging);
+        List<DicReader> GetPlistRoleAccountTrs(string key, Guid roleID, PagingInput paging);
         /// <summary>
         /// 
         /// </summary>
@@ -35,8 +36,16 @@ namespace Anycmd.AC.Identity.ViewModels.AccountViewModels
         /// <param name="groupID"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        List<Dictionary<string, object>> GetPlistGroupAccountTrs(string key, Guid groupID, PagingInput paging);
+        List<DicReader> GetPlistGroupAccountTrs(string key, Guid groupID, PagingInput paging);
 
-        List<Dictionary<string, object>> GetPlistContractorTrs(List<FilterData> filters, string organizationCode, bool includeDescendants, PagingInput paging);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="organizationCode"></param>
+        /// <param name="includeDescendants"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        List<DicReader> GetPlistContractorTrs(List<FilterData> filters, string organizationCode, bool includeDescendants, PagingInput paging);
     }
 }

@@ -5,14 +5,9 @@ namespace Anycmd.Host
 
     public class PasswordEncryptionService : IPasswordEncryptionService
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public PasswordEncryptionService()
-        {
-            this.host = AppHost.Instance;
-        }
-
-        public PasswordEncryptionService(AppHost host)
+        public PasswordEncryptionService(IAppHost host)
         {
             this.host = host;
         }

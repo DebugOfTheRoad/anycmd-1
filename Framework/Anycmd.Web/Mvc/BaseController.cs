@@ -9,12 +9,11 @@ namespace Anycmd.Web.Mvc
     /// </summary>
     public abstract class BaseController : Controller
     {
-
-        protected static AppHost Host
+        protected static IAppHost Host
         {
             get
             {
-                return System.Web.HttpContext.Current.Application["AppHostInstance"] as AppHost;
+                return System.Web.HttpContext.Current.Application["AppHostInstance"] as IAppHost;
             }
         }
 

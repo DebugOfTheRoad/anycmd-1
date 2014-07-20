@@ -1,7 +1,7 @@
 ﻿
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
-    using Anycmd.Host.EDI;
+    using Host.EDI;
     using Anycmd.Web.Mvc;
     using Exceptions;
     using Host;
@@ -64,7 +64,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 Guid id;
                 if (Guid.TryParse(Request["id"], out id))
                 {
-                    var data = new NodeInfo(Host, nodeEntityType.GetData(id));
+                    var data = new NodeInfo(nodeEntityType.GetData(id));
                     return new PartialViewResult { ViewName = "Partials/Details", ViewData = new ViewDataDictionary(data) };
                 }
                 else
@@ -168,7 +168,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             {
                 throw new ValidationException("未传入标识");
             }
-            return this.JsonResult(new NodeInfo(Host, nodeEntityType.GetData(id.Value)));
+            return this.JsonResult(new NodeInfo(nodeEntityType.GetData(id.Value)));
         }
 
         /// <summary>
@@ -181,12 +181,12 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         public ActionResult GetPlistNodeActions(GetPlistNodeActions requestModel)
         {
             NodeDescriptor node;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(requestModel.nodeID.ToString(), out node))
+            if (!Host.Nodes.TryGetNodeByID(requestModel.nodeID.ToString(), out node))
             {
                 throw new ValidationException("意外的节点标识" + requestModel.nodeID);
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(requestModel.ontologyID, out ontology))
+            if (!Host.Ontologies.TryGetOntology(requestModel.ontologyID, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + requestModel.ontologyID);
             }
@@ -252,12 +252,12 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("elementID是必须的");
             }
             NodeDescriptor node;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(nodeID.Value.ToString(), out node))
+            if (!Host.Nodes.TryGetNodeByID(nodeID.Value.ToString(), out node))
             {
                 throw new ValidationException("意外的节点标识" + nodeID);
             }
             ElementDescriptor element;
-            if (!NodeHost.Instance.Ontologies.TryGetElement(elementID.Value, out element))
+            if (!Host.Ontologies.TryGetElement(elementID.Value, out element))
             {
                 throw new ValidationException("意外的本体元素标识" + elementID);
             }
@@ -273,7 +273,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     elementActionAllowType = elementAction.AllowType.ToName();
                     elementActionAuditType = elementAction.AuditType.ToName();
                 }
-                var nodeElementActions = NodeHost.Instance.Nodes.GetNodeElementActions(node, element).Values;
+                var nodeElementActions = Host.Nodes.GetNodeElementActions(node, element).Values;
                 var id = Guid.NewGuid();
                 DateTime? createOn = null;
                 bool isAllowed = false;
@@ -337,14 +337,14 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID, out ontology))
             {
                 throw new ValidationException("意外的本体标识" + ontologyID);
             }
             List<OntologyAssignNodeTr> data = new List<OntologyAssignNodeTr>();
-            foreach (var node in NodeHost.Instance.Nodes)
+            foreach (var node in Host.Nodes)
             {
-                var nodeOntologyCares = NodeHost.Instance.Nodes.GetNodeOntologyCares(node);
+                var nodeOntologyCares = Host.Nodes.GetNodeOntologyCares(node);
                 var id = Guid.NewGuid();
                 var isAssigned = false;
                 DateTime? createOn = null;
@@ -414,7 +414,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             }
             int pageIndex = requestModel.pageIndex ?? 0;
             int pageSize = requestModel.pageSize ?? 10;
-            var queryable = NodeHost.Instance.Nodes.Select(a => NodeTr.Create(a)).AsQueryable();
+            var queryable = Host.Nodes.Select(a => NodeTr.Create(a)).AsQueryable();
             foreach (var filter in requestModel.filters)
             {
                 queryable = queryable.Where(filter.ToPredicate(), filter.value);
@@ -445,7 +445,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("未传入本体标识");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyID.Value, out ontology))
             {
                 throw new ValidationException("意外的本体表示");
             }
@@ -782,7 +782,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                         IsAudit = row["IsAudit"].ToString()
                     };
                     NodeDescriptor nodeDescriptor;
-                    if (!NodeHost.Instance.Nodes.TryGetNodeByID(inputModel.NodeID.ToString(), out nodeDescriptor))
+                    if (!Host.Nodes.TryGetNodeByID(inputModel.NodeID.ToString(), out nodeDescriptor))
                     {
                         throw new ValidationException("意外的节点标识" + inputModel.NodeID);
                     }

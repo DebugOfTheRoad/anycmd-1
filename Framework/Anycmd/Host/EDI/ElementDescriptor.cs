@@ -1,11 +1,11 @@
 ﻿
 namespace Anycmd.Host.EDI
 {
-    using Exceptions;
+	using Exceptions;
 	using Hecp;
 	using Host;
 	using Host.AC.Infra;
-    using System;
+	using System;
 	using System.Collections.Generic;
 	using System.Data;
 	using Util;
@@ -99,13 +99,16 @@ namespace Anycmd.Host.EDI
 			{ModifiedCommandIDCode.Name,ModifiedCommandIDCode}
 		};
 
+		private readonly IAppHost host;
+
 		#region Ctor
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="element"></param>
-		public ElementDescriptor(ElementState element)
+		public ElementDescriptor(IAppHost host, ElementState element)
 		{
+			this.host = host;
 			if (element == null)
 			{
 				throw new ArgumentNullException("element");
@@ -124,6 +127,11 @@ namespace Anycmd.Host.EDI
 			this.IsRuntimeElement = SystemElementCodes.ContainsKey(element.Code);
 		}
 		#endregion
+
+		public IAppHost Host
+		{
+			get { return host; }
+		}
 
 		/// <summary>
 		/// 
@@ -180,7 +188,7 @@ namespace Anycmd.Host.EDI
 		{
 			get
 			{
-				return NodeHost.Instance.Ontologies[this.Element.OntologyID];
+				return Host.Ontologies[this.Element.OntologyID];
 			}
 		}
 
@@ -243,19 +251,19 @@ namespace Anycmd.Host.EDI
 				&& this.Element.Code.Equals("ZZJGM", StringComparison.OrdinalIgnoreCase))
 			{
 				OrganizationState org;
-				return NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(value, out org) ? org.Name : "非法的无法翻译的组织结构码";
+				return Host.OrganizationSet.TryGetOrganization(value, out org) ? org.Name : "非法的无法翻译的组织结构码";
 			}
 			// 翻译节点标识为节点名
 			else if (this == this.Ontology.CreateNodeIDElement)
 			{
 				NodeDescriptor node;
-				return NodeHost.Instance.Nodes.TryGetNodeByID(value, out node) ? node.Node.Name : "非法的无法翻译的节点标识";
+				return Host.Nodes.TryGetNodeByID(value, out node) ? node.Node.Name : "非法的无法翻译的节点标识";
 			}
 			// 翻译节点标识为节点名
 			else if (this == this.Ontology.ModifiedNodeIDElement)
 			{
 				NodeDescriptor node;
-				if (NodeHost.Instance.Nodes.TryGetNodeByID(value, out node))
+				if (Host.Nodes.TryGetNodeByID(value, out node))
 				{
 					return node.Node.Name;
 				}
@@ -270,12 +278,12 @@ namespace Anycmd.Host.EDI
 				if (!string.IsNullOrWhiteSpace(value))
 				{
 					InfoDicState infoDic;
-					if (!NodeHost.Instance.InfoDics.TryGetInfoDic(this.Element.InfoDicID.Value, out infoDic))
+					if (!Host.InfoDics.TryGetInfoDic(this.Element.InfoDicID.Value, out infoDic))
 					{
 						return value;
 					}
 					InfoDicItemState infoDicItem;
-					return NodeHost.Instance.InfoDics.TryGetInfoDicItem(infoDic, value, out infoDicItem) ? infoDicItem.Name : "非法的无法翻译的字典值";
+					return Host.InfoDics.TryGetInfoDicItem(infoDic, value, out infoDicItem) ? infoDicItem.Name : "非法的无法翻译的字典值";
 				}
 				else
 				{
@@ -296,7 +304,7 @@ namespace Anycmd.Host.EDI
 		/// <returns></returns>
 		public IReadOnlyDictionary<Verb, NodeElementActionState> GetActions(NodeDescriptor node)
 		{
-			return NodeHost.Instance.Nodes.GetNodeElementActions(node, this);
+			return Host.Nodes.GetNodeElementActions(node, this);
 		}
 
 		public override int GetHashCode()

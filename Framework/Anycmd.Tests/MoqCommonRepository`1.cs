@@ -12,15 +12,9 @@ namespace Anycmd.Tests
         where TAggregateRoot : class, IAggregateRoot
     {
         private MoqRepositoryContext context;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public MoqCommonRepository()
-        {
-            host = AppHost.Instance;
-            context = new MoqRepositoryContext(host);
-        }
-
-        public MoqCommonRepository(AppHost host)
+        public MoqCommonRepository(IAppHost host)
         {
             this.host = host;
             context = new MoqRepositoryContext(host);
@@ -61,10 +55,11 @@ namespace Anycmd.Tests
         private readonly Guid id = Guid.NewGuid();
         private readonly object sync = new object();
 
-        private static readonly ThreadLocal<Dictionary<AppHost, Dictionary<Type, List<IAggregateRoot>>>> data = new ThreadLocal<Dictionary<AppHost,Dictionary<Type,List<IAggregateRoot>>>>(()=> new Dictionary<AppHost, Dictionary<Type, List<IAggregateRoot>>>());
-        private readonly AppHost host;
+        private static readonly ThreadLocal<Dictionary<IAppHost, Dictionary<Type, List<IAggregateRoot>>>> 
+            data = new ThreadLocal<Dictionary<IAppHost, Dictionary<Type, List<IAggregateRoot>>>>(() => new Dictionary<IAppHost, Dictionary<Type, List<IAggregateRoot>>>());
+        private readonly IAppHost host;
 
-        public MoqRepositoryContext(AppHost host)
+        public MoqRepositoryContext(IAppHost host)
         {
             this.host = host;
             if (!data.Value.ContainsKey(host))

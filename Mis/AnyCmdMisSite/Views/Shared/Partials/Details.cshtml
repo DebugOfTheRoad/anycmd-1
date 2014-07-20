@@ -15,7 +15,7 @@
 <script id="@(prifix)_DetailsTemplate" type="text/x-jquery-tmpl">
     @{
         var entityType = Html.GetEntityType(codespace, entityTypeCode);
-        var properties = AppHost.Instance.EntityTypeSet.GetProperties(entityType).Values.Where(f => f.IsDetailsShow);
+        var properties = Html.GetHost().EntityTypeSet.GetProperties(entityType).Values.Where(f => f.IsDetailsShow);
         if (!this.GetUser().IsDeveloper()) {
             properties = properties.Where(f => !f.IsDeveloperOnly);
         }

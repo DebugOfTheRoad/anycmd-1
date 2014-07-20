@@ -17,12 +17,14 @@ namespace Anycmd.Host.EDI.Handlers
         private readonly Guid id = new Guid("C35CBF3B-BD0A-49A6-BCDE-039E05402CE0");
         private readonly string name = "命令工厂";
         private readonly string description = "命令工厂";
+        private readonly IAppHost host;
 
         /// <summary>
         /// 
         /// </summary>
-        public DefaultMessageProducer()
+        public DefaultMessageProducer(IAppHost host)
         {
+            this.host = host;
         }
 
         /// <summary>
@@ -106,7 +108,7 @@ namespace Anycmd.Host.EDI.Handlers
                 return new List<MessageEntity>();
             }
             var list = new List<MessageEntity>();
-            var builder = new CommandBuilder(toNode);
+            var builder = new CommandBuilder(host, toNode);
             var result = builder.Build(tuple);
             if (result != null)
             {
@@ -141,11 +143,11 @@ namespace Anycmd.Host.EDI.Handlers
         {
             get
             {
-                foreach (var node in NodeHost.Instance.Nodes)
+                foreach (var node in host.Nodes)
                 {
-                    if (node != NodeHost.Instance.Nodes.ThisNode)
+                    if (node != host.Nodes.ThisNode)
                     {
-                        yield return new CommandBuilder(node);
+                        yield return new CommandBuilder(host, node);
                     }
                 }
             }
@@ -156,12 +158,15 @@ namespace Anycmd.Host.EDI.Handlers
         /// </summary>
         private sealed class CommandBuilder
         {
+            private readonly IAppHost host;
+
             /// <summary>
             /// 构造
             /// </summary>
             /// <param name="toNode">向该节点建造待分发命令</param>
-            public CommandBuilder(NodeDescriptor toNode)
+            public CommandBuilder(IAppHost host, NodeDescriptor toNode)
             {
+                this.host = host;
                 this.ToNode = toNode;
             }
 
@@ -185,7 +190,7 @@ namespace Anycmd.Host.EDI.Handlers
                     throw new ArgumentNullException("tuple");
                 }
                 #region 演出
-                if (ToNode == NodeHost.Instance.Nodes.ThisNode)
+                if (ToNode == host.Nodes.ThisNode)
                 {
                     throw new CoreException("不能建造分发向自己的命令消息");
                 }
@@ -239,6 +244,7 @@ namespace Anycmd.Host.EDI.Handlers
                         infoIDItems = tuple.Tuple.Where(e => e.Element.Element.IsInfoIDItem && ToNode.IsInfoIDElement(e.Element)).ToArray();
                     }
                     DataItemsTuple dataTuple = DataItemsTuple.Create(
+                        host,
                         infoIDItems,
                         infoValueCares.ToArray(),
                         tuple.Context.Command.DataTuple.QueryList,
@@ -277,7 +283,7 @@ namespace Anycmd.Host.EDI.Handlers
                         DataItem[] infoIDItems = tuple.Context.TowInfoTuple.SingleInfoTuple
                             .Where(e => e.Element.Element.IsInfoIDItem)
                             .Select(e => new DataItem(e.Key, e.Value)).ToArray();
-                        DataItemsTuple dataTuple = DataItemsTuple.Create(infoIDItems, null, tuple.Context.Command.DataTuple.QueryList, tuple.Context.Command.DataTuple.InfoFormat);
+                        DataItemsTuple dataTuple = DataItemsTuple.Create(host, infoIDItems, null, tuple.Context.Command.DataTuple.QueryList, tuple.Context.Command.DataTuple.InfoFormat);
                         return new MessageEntity(MessageTypeKind.Distribute, Guid.NewGuid(), dataTuple)
                         {
                             ClientID = ToNode.Node.Id.ToString(),

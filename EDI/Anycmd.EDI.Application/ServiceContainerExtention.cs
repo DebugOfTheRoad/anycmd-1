@@ -13,17 +13,17 @@ namespace Anycmd.EDI.Application {
         /// 
         /// </summary>
         /// <param name="container"></param>
-        public static void RegisterEDICore(this AppHost host) {
-            var container = host.Container;
+        public static void RegisterEDICore(this IAppHost host)
+        {
             #region EDI
-            container.AddService(typeof(IExecutorFactory), new ExecutorFactory());
-            container.AddService(typeof(IDispatcherFactory), new DispatcherFactory());
-            container.AddService(typeof(IAuthenticator), new DefaultAuthenticator());
-            container.AddService(typeof(IMessageProducer), new DefaultMessageProducer());
-            container.AddService(typeof(IStackTraceFormater), new JsonStackTraceFormater());
-            container.AddService(typeof(IInputValidator), new DefaultInputValidator());
-            container.AddService(typeof(IAuditDiscriminator), new DefaultAuditDiscriminator());
-            container.AddService(typeof(IPermissionValidator), new DefaultPermissionValidator());
+            host.AddService(typeof(IExecutorFactory), new ExecutorFactory());
+            host.AddService(typeof(IDispatcherFactory), new DispatcherFactory());
+            host.AddService(typeof(IAuthenticator), new DefaultAuthenticator(host));
+            host.AddService(typeof(IMessageProducer), new DefaultMessageProducer(host));
+            host.AddService(typeof(IStackTraceFormater), new JsonStackTraceFormater());
+            host.AddService(typeof(IInputValidator), new DefaultInputValidator(host));
+            host.AddService(typeof(IAuditDiscriminator), new DefaultAuditDiscriminator(host));
+            host.AddService(typeof(IPermissionValidator), new DefaultPermissionValidator());
             #endregion
         }
     }

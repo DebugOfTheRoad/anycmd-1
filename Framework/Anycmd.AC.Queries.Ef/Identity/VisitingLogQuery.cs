@@ -2,6 +2,7 @@
 namespace Anycmd.AC.Identity.Queries.Ef
 {
     using Anycmd.Ef;
+    using Model;
     using Query;
     using System;
     using System.Collections.Generic;
@@ -13,17 +14,12 @@ namespace Anycmd.AC.Identity.Queries.Ef
     /// </summary>
     public sealed class VisitingLogQuery : QueryBase, IVisitingLogQuery
     {
-        public VisitingLogQuery()
-            : base("IdentityEntities")
-        {
-        }
-
         public VisitingLogQuery(AppHost host)
             : base(host, "IdentityEntities")
         {
         }
 
-        public List<Dictionary<string, object>> GetPlistVisitingLogTrs(string key, DateTime? leftVisitOn, DateTime? rightVisitOn, PagingInput paging)
+        public List<DicReader> GetPlistVisitingLogTrs(string key, DateTime? leftVisitOn, DateTime? rightVisitOn, PagingInput paging)
         {
             paging.Valid();
             if (key != null)
@@ -50,7 +46,7 @@ namespace Anycmd.AC.Identity.Queries.Ef
             return base.GetPlist("VisitingLog", filter, paging);
         }
 
-        public List<Dictionary<string, object>> GetPlistVisitingLogTrs(Guid accountID, string loginName, DateTime? leftVisitOn, DateTime? rightVisitOn, PagingInput paging)
+        public List<DicReader> GetPlistVisitingLogTrs(Guid accountID, string loginName, DateTime? leftVisitOn, DateTime? rightVisitOn, PagingInput paging)
         {
             paging.Valid();
             loginName = (loginName ?? string.Empty).ToLower();

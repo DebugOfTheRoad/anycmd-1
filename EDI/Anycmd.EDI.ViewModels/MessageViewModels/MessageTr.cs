@@ -1,5 +1,6 @@
 ﻿
-namespace Anycmd.EDI.MessageViewModels {
+namespace Anycmd.EDI.MessageViewModels
+{
     using Exceptions;
     using Host;
     using Host.EDI;
@@ -15,7 +16,8 @@ namespace Anycmd.EDI.MessageViewModels {
     /// 实现命令视图模型的抽象泛型基类
     /// </summary>
     /// <typeparam name="TCommand">命令类型参数</typeparam>
-    public class MessageTr : IMessageView {
+    public class MessageTr : IMessageView
+    {
         private MessageEntity command;
         private string clientName = null;
         private string ontologyName = null;
@@ -29,15 +31,19 @@ namespace Anycmd.EDI.MessageViewModels {
         private bool _isSelf = false;
         private bool _isCenterDetected = false;
         private bool _isCenter = false;
+        private readonly IAppHost host;
 
-        protected internal MessageTr() {
+        protected internal MessageTr(IAppHost host)
+        {
+            this.host = host;
         }
 
         /// <summary>
         /// 板上组装。提供给子类实现的模板方法。
         /// </summary>
         /// <param name="command"></param>
-        protected virtual void PopulateCore(MessageEntity command) {
+        protected virtual void PopulateCore(MessageEntity command)
+        {
 
         }
 
@@ -47,8 +53,9 @@ namespace Anycmd.EDI.MessageViewModels {
         /// <typeparam name="T"></typeparam>
         /// <param name="command"></param>
         /// <returns></returns>
-        public static MessageTr Create(MessageEntity command) {
-            var t = new MessageTr();
+        public static MessageTr Create(IAppHost host, MessageEntity command)
+        {
+            var t = new MessageTr(host);
             t.Populate(command);
 
             return t;
@@ -57,11 +64,14 @@ namespace Anycmd.EDI.MessageViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public bool IsSelf {
-            get {
-                if (!_isSelfDetected) {
+        public bool IsSelf
+        {
+            get
+            {
+                if (!_isSelfDetected)
+                {
                     _isSelfDetected = true;
-                    _isSelf = NodeHost.Instance.Config.ThisNodeID.Equals(this.ClientID, StringComparison.OrdinalIgnoreCase);
+                    _isSelf = host.Config.ThisNodeID.Equals(this.ClientID, StringComparison.OrdinalIgnoreCase);
                 }
                 return _isSelf;
             }
@@ -70,11 +80,14 @@ namespace Anycmd.EDI.MessageViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public bool IsCenter {
-            get {
-                if (!_isCenterDetected) {
+        public bool IsCenter
+        {
+            get
+            {
+                if (!_isCenterDetected)
+                {
                     _isCenterDetected = true;
-                    _isCenter = NodeHost.Instance.Config.CenterNodeID.Equals(this.ClientID, StringComparison.OrdinalIgnoreCase);
+                    _isCenter = host.Config.CenterNodeID.Equals(this.ClientID, StringComparison.OrdinalIgnoreCase);
                 }
                 return _isCenter;
             }
@@ -108,18 +121,23 @@ namespace Anycmd.EDI.MessageViewModels {
         public string Principal { get; set; }
         public DateTime CreateOn { get; private set; }
 
-        public string OrganizationName {
-            get {
-                if (organizationName == null) {
+        public string OrganizationName
+        {
+            get
+            {
+                if (organizationName == null)
+                {
                     OrganizationState org;
-                    if (NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(this.OrganizationCode, out org))
+                    if (host.OrganizationSet.TryGetOrganization(this.OrganizationCode, out org))
                     {
                         organizationName = org.Name;
                     }
-                    else {
+                    else
+                    {
                         organizationName = string.Empty;
                     }
-                    if (organizationName == null) {
+                    if (organizationName == null)
+                    {
                         organizationName = string.Empty;
                     }
                 }
@@ -128,14 +146,19 @@ namespace Anycmd.EDI.MessageViewModels {
         }
 
         #region ClientName
-        public string ClientName {
-            get {
-                if (clientName == null) {
+        public string ClientName
+        {
+            get
+            {
+                if (clientName == null)
+                {
                     NodeDescriptor node;
-                    if (NodeHost.Instance.Nodes.TryGetNodeByID(this.ClientID, out node)) {
+                    if (host.Nodes.TryGetNodeByID(this.ClientID, out node))
+                    {
                         clientName = node.Node.Name;
                     }
-                    else {
+                    else
+                    {
                         clientName = string.Empty;
                     }
                 }
@@ -145,9 +168,12 @@ namespace Anycmd.EDI.MessageViewModels {
         #endregion
 
         #region OntologyName
-        public string OntologyName {
-            get {
-                if (ontologyName == null) {
+        public string OntologyName
+        {
+            get
+            {
+                if (ontologyName == null)
+                {
                     ontologyName = this._Ontology.Ontology.Name;
                 }
                 return ontologyName;
@@ -155,11 +181,15 @@ namespace Anycmd.EDI.MessageViewModels {
         }
         #endregion
 
-        public string ActionName {
-            get {
-                if (actionName == null) {
+        public string ActionName
+        {
+            get
+            {
+                if (actionName == null)
+                {
                     ActionState action;
-                    if (!this._Ontology.Actions.TryGetValue(new Verb(this.Verb), out action)) {
+                    if (!this._Ontology.Actions.TryGetValue(new Verb(this.Verb), out action))
+                    {
                         throw new CoreException("意外的" + this.OntologyName + "动作码" + this.Verb);
                     }
                     actionName = action.Name;
@@ -172,15 +202,20 @@ namespace Anycmd.EDI.MessageViewModels {
         /// <summary>
         /// 命令信息，经过翻译的
         /// </summary>
-        public string HumanInfo {
-            get {
-                if (_commandInfo == null) {
+        public string HumanInfo
+        {
+            get
+            {
+                if (_commandInfo == null)
+                {
                     StringBuilder sb = new StringBuilder();
                     sb.Append(this.ActionName);
                     sb.Append("：");
                     int l = sb.Length;
-                    foreach (var item in InfoValueItems) {
-                        if (sb.Length != l) {
+                    foreach (var item in InfoValueItems)
+                    {
+                        if (sb.Length != l)
+                        {
                             sb.Append(";");
                         }
                         sb.Append(item.Element.Element.Name)
@@ -190,16 +225,21 @@ namespace Anycmd.EDI.MessageViewModels {
                 }
                 return _commandInfo;
             }
-            set {
+            set
+            {
                 _commandInfo = value;
             }
         }
         #endregion
 
-        private OntologyDescriptor _Ontology {
-            get {
-                if (ontology == null) {
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.Ontology, out ontology)) {
+        private OntologyDescriptor _Ontology
+        {
+            get
+            {
+                if (ontology == null)
+                {
+                    if (!host.Ontologies.TryGetOntology(this.Ontology, out ontology))
+                    {
                         throw new CoreException("意外的本体码" + this.Ontology);
                     }
                 }
@@ -211,7 +251,8 @@ namespace Anycmd.EDI.MessageViewModels {
         /// 根据传入的命令对象组装命令展示对象
         /// </summary>
         /// <param name="command"></param>
-        private void Populate(MessageEntity command) {
+        private void Populate(MessageEntity command)
+        {
             this.command = command;
             this.Id = command.Id;
             this.MessageID = command.MessageID;
@@ -239,22 +280,28 @@ namespace Anycmd.EDI.MessageViewModels {
         }
 
         #region private InfoValueItems
-        private IList<InfoItem> InfoValueItems {
-            get {
-                if (_infoValueItems == null) {
+        private IList<InfoItem> InfoValueItems
+        {
+            get
+            {
+                if (_infoValueItems == null)
+                {
                     OntologyDescriptor ontology;
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.Ontology, out ontology)) {
+                    if (!host.Ontologies.TryGetOntology(this.Ontology, out ontology))
+                    {
                         return EmptyInfoValueItems;
                     }
                     _infoValueItems = new List<InfoItem>();
-                    foreach (var item in this.command.DataTuple.ValueItems.Items) {
+                    foreach (var item in this.command.DataTuple.ValueItems.Items)
+                    {
                         _infoValueItems.Add(InfoItem.Create(ontology.Elements[item.Key], item.Value));
                     }
                 }
 
                 return _infoValueItems;
             }
-            set {
+            set
+            {
                 _infoValueItems = value;
             }
         }

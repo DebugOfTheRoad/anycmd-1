@@ -1,25 +1,31 @@
-﻿using Anycmd.EDI;
-using System;
-
+﻿
 namespace Anycmd.Host.EDI
 {
+    using Anycmd.EDI;
+    using System;
+
     public sealed class ElementInfoRuleState : IElementInfoRule
     {
-        private ElementInfoRuleState() { }
+        private readonly IAppHost host;
+
+        private ElementInfoRuleState(IAppHost host)
+        {
+            this.host = host;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="elementInfoRule"></param>
         /// <returns></returns>
-        public static ElementInfoRuleState Create(IElementInfoRule elementInfoRule)
+        public static ElementInfoRuleState Create(IAppHost host, IElementInfoRule elementInfoRule)
         {
             InfoRuleState infoRule;
-            if (!NodeHost.Instance.InfoRules.TryGetInfoRule(elementInfoRule.InfoRuleID, out infoRule))
+            if (!host.InfoRules.TryGetInfoRule(elementInfoRule.InfoRuleID, out infoRule))
             {
                 throw new InvalidProgramException("请检测InfoRule的存在性");
             }
-            return new ElementInfoRuleState
+            return new ElementInfoRuleState(host)
             {
                 CreateOn = elementInfoRule.CreateOn,
                 ElementID = elementInfoRule.ElementID,

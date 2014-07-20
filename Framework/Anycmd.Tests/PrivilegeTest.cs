@@ -109,11 +109,11 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             ResourceTypeState resource;
-            Assert.True(host.ResourceSet.TryGetResource(host.ResourceSet.First().Id, out resource));
+            Assert.True(host.ResourceTypeSet.TryGetResource(host.ResourceTypeSet.First().Id, out resource));
             Assert.Equal(1, host.FunctionSet.Count());
             Assert.True(host.FunctionSet.TryGetFunction(functionID, out functionByID));
             var entityID = Guid.NewGuid();

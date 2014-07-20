@@ -1,19 +1,20 @@
 ﻿
 namespace Anycmd.EDI.ViewModels.ProcessViewModels
 {
-    using System;
     using Exceptions;
+    using Host.EDI;
+    using Model;
+    using System;
     using System.Collections.Generic;
-    using Anycmd.Host.EDI;
 
     /// <summary>
     /// 
     /// </summary>
     public class ProcessInfo : Dictionary<string, object>
     {
-        public ProcessInfo() { }
+        private ProcessInfo() { }
 
-        public ProcessInfo(Dictionary<string, object> dic)
+        public ProcessInfo(DicReader dic)
         {
             if (dic == null)
             {
@@ -24,7 +25,7 @@ namespace Anycmd.EDI.ViewModels.ProcessViewModels
                 this.Add(item.Key, item.Value);
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology((Guid)this["OntologyID"], out ontology))
+            if (!dic.Host.Ontologies.TryGetOntology((Guid)this["OntologyID"], out ontology))
             {
                 throw new CoreException("意外的本体标识" + this["OntologyID"]);
             }
@@ -37,7 +38,7 @@ namespace Anycmd.EDI.ViewModels.ProcessViewModels
                 this.Add("OntologyName", ontology.Ontology.Name);
             }
             ProcessDescriptor _process;
-            if (!NodeHost.Instance.Processs.TryGetProcess((Guid)this["Id"], out _process))
+            if (!dic.Host.Processs.TryGetProcess((Guid)this["Id"], out _process))
             {
                 throw new CoreException("意外的进程标识" + this["Id"]);
             }

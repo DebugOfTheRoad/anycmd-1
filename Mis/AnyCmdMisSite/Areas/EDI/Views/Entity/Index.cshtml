@@ -1,7 +1,7 @@
 ﻿@{
 	Layout = "~/Areas/EDI/Views/Entity/_Index.cshtml";
 	string ontologyCode = Request.Params["ontologyCode"];
-	var ontology = NodeHost.Instance.Ontologies[ontologyCode];
+	var ontology = Html.GetHost().Ontologies[ontologyCode];
 	var prifix = "EDI_Entity_Index_";
 	ViewBag.Title = ontology.Ontology.Name + "管理";
 }

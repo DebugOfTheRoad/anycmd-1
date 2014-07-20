@@ -1,8 +1,8 @@
 ﻿
 namespace Anycmd
 {
-    using Anycmd.Host;
     using Exceptions;
+    using Host;
     using System.Collections.Generic;
 
     /// <summary>
@@ -17,7 +17,7 @@ namespace Anycmd
         /// <param name="dicCode"></param>
         /// <param name="dicItemCode"></param>
         /// <returns></returns>
-        public static string Translate(this AppHost host, string dicCode, int dicItemCode)
+        public static string Translate(this IAppHost host, string dicCode, int dicItemCode)
         {
             return Translate(host, dicCode, dicItemCode.ToString());
         }
@@ -29,7 +29,7 @@ namespace Anycmd
         /// <param name="dicCode"></param>
         /// <param name="dicItemCode"></param>
         /// <returns></returns>
-        public static string Translate(this AppHost host, string dicCode, bool dicItemCode)
+        public static string Translate(this IAppHost host, string dicCode, bool dicItemCode)
         {
             return Translate(host, dicCode, dicItemCode.ToString());
         }
@@ -41,7 +41,7 @@ namespace Anycmd
         /// <param name="dicCode"></param>
         /// <param name="dicItemCode"></param>
         /// <returns></returns>
-        public static string Translate(this AppHost host, string dicCode, string dicItemCode)
+        public static string Translate(this IAppHost host, string dicCode, string dicItemCode)
         {
             DicState dic;
             if (host.DicSet.TryGetDic(dicCode, out dic))
@@ -64,7 +64,7 @@ namespace Anycmd
         /// <param name="propertyCode"></param>
         /// <param name="dicItemCode"></param>
         /// <returns></returns>
-        public static string Translate(this AppHost host, string codespace, string entityTypeCode, string propertyCode, int dicItemCode)
+        public static string Translate(this IAppHost host, string codespace, string entityTypeCode, string propertyCode, int dicItemCode)
         {
             return Translate(host, codespace, entityTypeCode, propertyCode, dicItemCode.ToString());
         }
@@ -78,7 +78,7 @@ namespace Anycmd
         /// <param name="propertyCode"></param>
         /// <param name="dicItemCode"></param>
         /// <returns></returns>
-        public static string Translate(this AppHost host, string codespace, string entityTypeCode, string propertyCode, bool dicItemCode)
+        public static string Translate(this IAppHost host, string codespace, string entityTypeCode, string propertyCode, bool dicItemCode)
         {
             return Translate(host, codespace, entityTypeCode, propertyCode, dicItemCode.ToString());
         }
@@ -92,7 +92,7 @@ namespace Anycmd
         /// <param name="propertyCode"></param>
         /// <param name="dicItemCode"></param>
         /// <returns></returns>
-        public static string Translate(this AppHost host, string codespace, string entityTypeCode, string propertyCode, string dicItemCode)
+        public static string Translate(this IAppHost host, string codespace, string entityTypeCode, string propertyCode, string dicItemCode)
         {
             EntityTypeState entityType;
             if (!host.EntityTypeSet.TryGetEntityType(codespace, entityTypeCode, out entityType))

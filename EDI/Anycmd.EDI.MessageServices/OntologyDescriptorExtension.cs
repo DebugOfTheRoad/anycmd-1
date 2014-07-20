@@ -35,7 +35,7 @@ namespace Anycmd.EDI.MessageServices {
                     if (!item.IsRuntimeElement) {
                         InfoDicState infoDic = null;
                         if (item.Element.InfoDicID.HasValue) {
-                            NodeHost.Instance.InfoDics.TryGetInfoDic(item.Element.InfoDicID.Value, out infoDic);
+                            ontology.Host.InfoDics.TryGetInfoDic(item.Element.InfoDicID.Value, out infoDic);
                         }
                         var infoDicCode = infoDic == null ? "" : infoDic.Code;
                         var infoDicName = infoDic == null ? "" : infoDic.Name;

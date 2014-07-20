@@ -1,18 +1,27 @@
 
-namespace Anycmd.EDI.ViewModels.ElementViewModels {
-    using Anycmd.Host.EDI;
+namespace Anycmd.EDI.ViewModels.ElementViewModels
+{
     using Exceptions;
     using Host.AC.Infra;
+    using Host.EDI;
     using System;
 
     /// <summary>
     /// 
     /// </summary>
-    public partial class ElementTr {
-        public ElementTr() { }
+    public partial class ElementTr
+    {
+        private readonly IAppHost host;
 
-        public static ElementTr Create(ElementState element) {
-            return new ElementTr {
+        public ElementTr(IAppHost host)
+        {
+            this.host = host;
+        }
+
+        public static ElementTr Create(ElementState element)
+        {
+            return new ElementTr(element.Host)
+            {
                 Nullable = element.Nullable,
                 Code = element.Code,
                 CreateOn = element.CreateOn,
@@ -65,16 +74,20 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string OntologyCode {
-            get {
+        public string OntologyCode
+        {
+            get
+            {
                 return this.Ontology.Ontology.Code;
             }
         }
         /// <summary>
         /// 
         /// </summary>
-        public string OntologyName {
-            get {
+        public string OntologyName
+        {
+            get
+            {
                 return this.Ontology.Ontology.Name;
             }
         }
@@ -101,9 +114,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string InfoDicName {
-            get {
-                if (!this.InfoDicID.HasValue) {
+        public string InfoDicName
+        {
+            get
+            {
+                if (!this.InfoDicID.HasValue)
+                {
                     return string.Empty;
                 }
                 return this.InfoDic.Name;
@@ -112,9 +128,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string InfoDicCode {
-            get {
-                if (!this.InfoDicID.HasValue) {
+        public string InfoDicCode
+        {
+            get
+            {
+                if (!this.InfoDicID.HasValue)
+                {
                     return string.Empty;
                 }
                 return this.InfoDic.Code;
@@ -166,10 +185,13 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         public bool IsGridColumn { get; set; }
 
         private ElementDataSchema _dataSchema;
-        private ElementDataSchema DataSchema {
-            get {
-                if (_dataSchema == null) {
-                    _dataSchema = OntologyDescriptor.SingleElement(this.Id).DataSchema;
+        private ElementDataSchema DataSchema
+        {
+            get
+            {
+                if (_dataSchema == null)
+                {
+                    _dataSchema = host.Ontologies.GetElement(this.Id).DataSchema;
                 }
 
                 return _dataSchema;
@@ -179,13 +201,17 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public bool IsConfigValid {
-            get {
+        public bool IsConfigValid
+        {
+            get
+            {
                 bool isValid = true;
-                if (DataSchema == null) {
+                if (DataSchema == null)
+                {
                     isValid = false;
                 }
-                else if (DataSchema.MaxLength.HasValue && DataSchema.MaxLength > 0 && this.MaxLength > DataSchema.MaxLength) {
+                else if (DataSchema.MaxLength.HasValue && DataSchema.MaxLength > 0 && this.MaxLength > DataSchema.MaxLength)
+                {
                     isValid = false;
                 }
 
@@ -196,9 +222,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public bool DbIsNullable {
-            get {
-                if (DataSchema == null) {
+        public bool DbIsNullable
+        {
+            get
+            {
+                if (DataSchema == null)
+                {
                     return false;
                 }
                 return DataSchema.IsNullable;
@@ -207,9 +236,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string DbTypeName {
-            get {
-                if (DataSchema == null) {
+        public string DbTypeName
+        {
+            get
+            {
+                if (DataSchema == null)
+                {
                     return string.Empty;
                 }
                 return DataSchema.TypeName;
@@ -218,9 +250,12 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public int? DbMaxLength {
-            get {
-                if (DataSchema == null) {
+        public int? DbMaxLength
+        {
+            get
+            {
+                if (DataSchema == null)
+                {
                     return null;
                 }
                 return DataSchema.MaxLength;
@@ -228,10 +263,14 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         }
 
         private OntologyDescriptor _ontology;
-        private OntologyDescriptor Ontology {
-            get {
-                if (_ontology == null) {
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.OntologyID, out _ontology)) {
+        private OntologyDescriptor Ontology
+        {
+            get
+            {
+                if (_ontology == null)
+                {
+                    if (!host.Ontologies.TryGetOntology(this.OntologyID, out _ontology))
+                    {
                         throw new CoreException("意外的本体标识" + this.OntologyID);
                     }
                 }
@@ -240,13 +279,18 @@ namespace Anycmd.EDI.ViewModels.ElementViewModels {
         }
 
         private InfoDicState _infoDic;
-        private InfoDicState InfoDic {
-            get {
-                if (!this.InfoDicID.HasValue) {
+        private InfoDicState InfoDic
+        {
+            get
+            {
+                if (!this.InfoDicID.HasValue)
+                {
                     return null;
                 }
-                if (_infoDic == null) {
-                    if (!NodeHost.Instance.InfoDics.TryGetInfoDic(this.InfoDicID.Value, out _infoDic)) {
+                if (_infoDic == null)
+                {
+                    if (!host.InfoDics.TryGetInfoDic(this.InfoDicID.Value, out _infoDic))
+                    {
                         throw new CoreException("意外的信息字典标识" + this.InfoDicID);
                     }
                 }

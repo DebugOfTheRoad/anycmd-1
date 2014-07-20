@@ -1,12 +1,11 @@
-﻿
+﻿using ServiceStack;
+
 namespace Anycmd.EDI.Application
 {
     using DataContracts;
     using Funq;
     using MessageServices;
-    using ServiceStack;
     using System;
-    using System.ComponentModel.Design;
     using System.Reflection;
 
     /// <summary>
@@ -14,27 +13,12 @@ namespace Anycmd.EDI.Application
     /// </summary>        
     public class ServiceHost : AppHostBase
     {
-        private readonly AppHost appHost;
+        private readonly IAppHost appHost;
 
         /// <summary>
         /// Initializes a new instance of your ServiceStack application, with the specified name and assembly containing the services.
         /// </summary>
-        public ServiceHost()
-            : base("数据交换服务", typeof(MessageService).Assembly)
-        {
-            this.appHost = AppHost.Instance;
-        }
-
-        public ServiceHost(string serviceName, params Assembly[] assembliesWithServices)
-            : base(serviceName, assembliesWithServices)
-        {
-            this.appHost = AppHost.Instance;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of your ServiceStack application, with the specified name and assembly containing the services.
-        /// </summary>
-        public ServiceHost(AppHost appHost)
+        public ServiceHost(IAppHost appHost)
             : base("数据交换服务", typeof(MessageService).Assembly)
         {
             if (appHost == null)
@@ -44,7 +28,7 @@ namespace Anycmd.EDI.Application
             this.appHost = appHost;
         }
 
-        public ServiceHost(AppHost appHost, string serviceName, params Assembly[] assembliesWithServices)
+        public ServiceHost(IAppHost appHost, string serviceName, params Assembly[] assembliesWithServices)
             : base(serviceName, assembliesWithServices)
         {
             if (appHost == null)
@@ -60,7 +44,7 @@ namespace Anycmd.EDI.Application
         /// <param name="container">The built-in IoC used with ServiceStack.</param>
         public override void Configure(Container container)
         {
-            container.Adapter = new ServiceContainerAdapter(appHost.Container);
+            container.Adapter = new ServiceContainerAdapter(appHost);
 
             SetConfig(new HostConfig
             {

@@ -217,7 +217,7 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(0, host.EntityTypeSet.Count());
 
-            host.Container.RemoveService(typeof(IRepository<EntityType>));
+            host.RemoveService(typeof(IRepository<EntityType>));
             var moEntityTypeRepository = host.GetMoqRepository<EntityType, IRepository<EntityType>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -256,7 +256,7 @@ namespace Anycmd.Tests
                 SortCode = 100,
                 TableName = string.Empty
             });
-            host.Container.AddService(typeof(IRepository<EntityType>), moEntityTypeRepository.Object);
+            host.AddService(typeof(IRepository<EntityType>), moEntityTypeRepository.Object);
 
 
             bool catched = false;

@@ -31,7 +31,7 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             FunctionState functionByID;
@@ -86,7 +86,7 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(0, host.PageSet.Count());
 
-            host.Container.RemoveService(typeof(IRepository<Page>));
+            host.RemoveService(typeof(IRepository<Page>));
             var moPageRepository = host.GetMoqRepository<Page, IRepository<Page>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -95,7 +95,7 @@ namespace Anycmd.Tests
             moPageRepository.Setup(a => a.Remove(It.Is<Page>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moPageRepository.Setup<Page>(a => a.GetByKey(entityID1)).Returns(new Page { Id = entityID1 });
             moPageRepository.Setup<Page>(a => a.GetByKey(entityID2)).Returns(new Page { Id = entityID2 });
-            host.Container.AddService(typeof(IRepository<Page>), moPageRepository.Object);
+            host.AddService(typeof(IRepository<Page>), moPageRepository.Object);
 
             host.Handle(new AddFunctionCommand(new FunctionCreateInput
             {
@@ -105,7 +105,7 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             host.Handle(new AddFunctionCommand(new FunctionCreateInput
@@ -116,7 +116,7 @@ namespace Anycmd.Tests
                 DeveloperID = host.SysUsers.GetDevAccounts().First().Id,
                 IsEnabled = 1,
                 IsManaged = true,
-                ResourceTypeID = host.ResourceSet.First().Id,
+                ResourceTypeID = host.ResourceTypeSet.First().Id,
                 SortCode = 10
             }));
             FunctionState functionByID;

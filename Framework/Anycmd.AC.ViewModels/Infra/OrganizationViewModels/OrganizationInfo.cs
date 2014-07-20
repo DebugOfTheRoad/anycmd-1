@@ -1,11 +1,11 @@
 ﻿
 namespace Anycmd.AC.Infra.ViewModels.OrganizationViewModels
 {
-    using Anycmd.Host;
     using Exceptions;
+    using Host;
+    using Model;
     using System;
     using System.Collections.Generic;
-    using Util;
 
     public class OrganizationInfo : Dictionary<string, object>
     {
@@ -24,13 +24,13 @@ namespace Anycmd.AC.Infra.ViewModels.OrganizationViewModels
             }
             if (!data.ContainsKey("CategoryName"))
             {
-                data.Add("CategoryName", dic.AppHost.Translate("AC", "Organization", "CategoryName", data["CategoryCode"].ToString()));
+                data.Add("CategoryName", dic.Host.Translate("AC", "Organization", "CategoryName", data["CategoryCode"].ToString()));
             }
             if (data["ParentCode"] != DBNull.Value)
             {
                 string parentCode = (string)data["ParentCode"];
                 OrganizationState parentOrg;
-                if (!dic.AppHost.OrganizationSet.TryGetOrganization(parentCode, out parentOrg))
+                if (!dic.Host.OrganizationSet.TryGetOrganization(parentCode, out parentOrg))
                 {
                     throw new CoreException("意外的父组织结构编码" + parentCode);
                 }

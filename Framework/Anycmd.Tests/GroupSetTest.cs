@@ -67,7 +67,7 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(0, host.GroupSet.Count());
 
-            host.Container.RemoveService(typeof(IRepository<Group>));
+            host.RemoveService(typeof(IRepository<Group>));
             var moGroupRepository = host.GetMoqRepository<Group, IRepository<Group>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -77,7 +77,7 @@ namespace Anycmd.Tests
             moGroupRepository.Setup(a => a.Remove(It.Is<Group>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moGroupRepository.Setup<Group>(a => a.GetByKey(entityID1)).Returns(new Group { Id = entityID1, Name = name });
             moGroupRepository.Setup<Group>(a => a.GetByKey(entityID2)).Returns(new Group { Id = entityID2, Name = name });
-            host.Container.AddService(typeof(IRepository<Group>), moGroupRepository.Object);
+            host.AddService(typeof(IRepository<Group>), moGroupRepository.Object);
 
             bool catched = false;
             try

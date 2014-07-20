@@ -10,6 +10,6 @@ namespace Anycmd.Host
         /// <summary>
         /// 导入指定程序集中的操作
         /// </summary>
-        void Import(AppHost host, string appSystemCode);
+        void Import(IAppHost host, string appSystemCode);
     }
 }

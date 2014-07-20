@@ -2,6 +2,7 @@
 namespace Anycmd.AC.Services.Ef
 {
     using Anycmd.Ef;
+    using Model;
     using Query;
     using System;
     using System.Collections.Generic;
@@ -13,17 +14,12 @@ namespace Anycmd.AC.Services.Ef
     /// </summary>
     public sealed class PrivilegeQuery : QueryBase, IPrivilegeQuery
     {
-        public PrivilegeQuery()
-            : base("ACEntities")
-        {
-        }
-
         public PrivilegeQuery(AppHost host)
             : base(host, "ACEntities")
         {
         }
 
-        public List<Dictionary<string, object>> GetPlistOrganizationAccountTrs(string key, string organizationCode
+        public List<DicReader> GetPlistOrganizationAccountTrs(string key, string organizationCode
             , bool includeDescendants, PagingInput paging)
         {
             paging.Valid();

@@ -166,7 +166,7 @@ namespace Anycmd.Tests
             Assert.Equal(1, host.OrganizationSet.Count());
             Assert.Equal(OrganizationState.VirtualRoot, host.OrganizationSet.First());
 
-            host.Container.RemoveService(typeof(IRepository<Organization>));
+            host.RemoveService(typeof(IRepository<Organization>));
             var moOrganizationRepository = host.GetMoqRepository<Organization, IRepository<Organization>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -176,7 +176,7 @@ namespace Anycmd.Tests
             moOrganizationRepository.Setup(a => a.Remove(It.Is<Organization>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moOrganizationRepository.Setup<Organization>(a => a.GetByKey(entityID1)).Returns(new Organization { Id = entityID1, Name = name });
             moOrganizationRepository.Setup<Organization>(a => a.GetByKey(entityID2)).Returns(new Organization { Id = entityID2, Name = name });
-            host.Container.AddService(typeof(IRepository<Organization>), moOrganizationRepository.Object);
+            host.AddService(typeof(IRepository<Organization>), moOrganizationRepository.Object);
 
             bool catched = false;
             try

@@ -6,7 +6,6 @@ namespace Anycmd.EDI.EntityProvider.SqlServer2008
 	using Host.EDI;
 	using Host.EDI.Handlers;
 	using Host.EDI.Info;
-	using Logging;
 	using Query;
 	using Rdb;
 	using System;
@@ -106,10 +105,10 @@ namespace Anycmd.EDI.EntityProvider.SqlServer2008
 				var db = this.GetEntityDb(element.Ontology);
 				DbTableColumn column;
 				string columnID = string.Format("[{0}][{1}][{2}]", element.Ontology.Ontology.EntitySchemaName, element.Ontology.Ontology.EntityTableName, element.Element.FieldCode);
-				if (!NodeHost.Instance.AppHost.DbTableColumns.TryGetDbTableColumn(db, columnID, out column))
+				if (!element.Host.DbTableColumns.TryGetDbTableColumn(db, columnID, out column))
 				{
 					var msg = "实体库中不存在" + columnID + "列";
-					LoggingService.Error(msg);
+					element.Host.LoggingService.Error(msg);
 					return null;
 				}
 				dataSchema = new ElementDataSchema(column);
@@ -180,7 +179,7 @@ namespace Anycmd.EDI.EntityProvider.SqlServer2008
 			}
 			catch (Exception ex)
 			{
-				LoggingService.Error(ex);
+				command.Ontology.Host.LoggingService.Error(ex);
 				return new ProcessResult(ex);
 			}
 		}
@@ -200,7 +199,7 @@ namespace Anycmd.EDI.EntityProvider.SqlServer2008
 				throw new CoreException("归档库的数据库名不能与本体库相同");
 			}
 			// 创建归档库
-			archiveDb.Create(this.GetEntityDb(ontology), HostConfig.Instance.EntityArchivePath);
+			archiveDb.Create(this.GetEntityDb(ontology), ontology.Host.Config.EntityArchivePath);
 			string archiveTableName = string.Format(
 				"{0}.{1}.{2}", archiveDb.Database.CatalogName, ontology.Ontology.EntitySchemaName, ontology.Ontology.EntityTableName);
 			string sql =
@@ -683,7 +682,7 @@ IF EXISTS ( SELECT  1
 					if (!_dbDic.ContainsKey(ontology))
 					{
 						RdbDescriptor db;
-						if (!NodeHost.Instance.AppHost.Rdbs.TryDb(ontology.Ontology.EntityDatabaseID, out db))
+						if (!ontology.Host.Rdbs.TryDb(ontology.Ontology.EntityDatabaseID, out db))
 						{
 							throw new CoreException("意外的数据库ID" + ontology.Ontology.EntityDatabaseID.ToString());
 						}
@@ -720,7 +719,7 @@ IF EXISTS ( SELECT  1
 				password = entityDb.Password;
 			}
 
-			return new RdbDescriptor(NodeHost.Instance.AppHost, new RDatabase
+			return new RdbDescriptor(ontology.Host, new RDatabase
 			{
 				CatalogName = _catalogName,
 				CreateBy = archive.CreateBy,

@@ -17,7 +17,7 @@ namespace Anycmd.Host
 
         private PageState() { }
 
-        public static PageState Create(AppHost host, PageBase page)
+        public static PageState Create(IAppHost host, PageBase page)
         {
             if (page == null)
             {
@@ -34,7 +34,7 @@ namespace Anycmd.Host
             };
         }
 
-        public AppHost AppHost { get; private set; }
+        public IAppHost AppHost { get; private set; }
 
         public Guid Id { get; private set; }
 

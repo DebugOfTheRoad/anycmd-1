@@ -1,6 +1,7 @@
 ﻿
 namespace Anycmd.AC.ViewModels.PrivilegeViewModels
 {
+    using Model;
     using Query;
     using System.Collections.Generic;
     using ViewModel;
@@ -22,6 +23,6 @@ namespace Anycmd.AC.ViewModels.PrivilegeViewModels
         /// <param name="sortOrder"></param>
         /// <param name="total"></param>
         /// <returns></returns>
-        List<Dictionary<string, object>> GetPlistOrganizationAccountTrs(string key, string organizationCode, bool includeDescendants, PagingInput paging);
+        List<DicReader> GetPlistOrganizationAccountTrs(string key, string organizationCode, bool includeDescendants, PagingInput paging);
     }
 }

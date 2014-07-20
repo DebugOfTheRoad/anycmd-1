@@ -34,7 +34,7 @@ namespace Anycmd.EDI.MessageViewModels {
                     , sortField, sortOrder, out total);
             IList<MessageTr> list = new List<MessageTr>();
             foreach (var command in commands) {
-                list.Add(MessageTr.Create(command));
+                list.Add(MessageTr.Create(ontology.Host, command));
             }
 
             return list;
@@ -52,7 +52,7 @@ namespace Anycmd.EDI.MessageViewModels {
         public static MessageTr GetCommandInfo(
             this IMessageProvider messageProvider, MessageTypeKind messageTypeKind, OntologyDescriptor ontology, Guid id) {
             var command = messageProvider.GetCommand(messageTypeKind, ontology, id);
-            return MessageInfo.Create(command);
+            return MessageInfo.Create(ontology.Host, command);
         }
     }
 }

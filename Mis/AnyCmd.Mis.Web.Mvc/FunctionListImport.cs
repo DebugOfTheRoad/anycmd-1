@@ -27,7 +27,7 @@ namespace Anycmd.Mis.Web.Mvc
         private static readonly object locker = new object();
         private static bool _isChanged = true;
 
-        public void Import(AppHost host, string appSystemCode)
+        public void Import(IAppHost host, string appSystemCode)
         {
             if (_isChanged)
             {
@@ -129,7 +129,7 @@ namespace Anycmd.Mis.Web.Mvc
                                         throw new ValidationException(type.FullName + method.Name);
                                     }
 
-                                    if (!host.ResourceSet.TryGetResource(appSystem, resourceCode, out resource))
+                                    if (!host.ResourceTypeSet.TryGetResource(appSystem, resourceCode, out resource))
                                     {
                                         throw new ValidationException("意外的资源码" + resourceCode);
                                     }

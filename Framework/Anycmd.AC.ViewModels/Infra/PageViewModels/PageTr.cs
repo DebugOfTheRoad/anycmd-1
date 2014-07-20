@@ -10,9 +10,9 @@ namespace Anycmd.AC.Infra.ViewModels.PageViewModels
     /// </summary>
     public class PageTr
     {
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        private PageTr(AppHost host)
+        private PageTr(IAppHost host)
         {
             this.host = host;
         }

@@ -30,7 +30,7 @@ namespace Anycmd.Host
         public static bool IsDeveloper(this IUserSession user)
         {
             AccountState account;
-            return user.Principal.Identity.IsAuthenticated && user.AppHost.SysUsers.TryGetDevAccount(user.Worker.Id, out account);
+            return user.Principal.Identity.IsAuthenticated && user.Host.SysUsers.TryGetDevAccount(user.Worker.Id, out account);
         }
         #endregion
 
@@ -43,7 +43,7 @@ namespace Anycmd.Host
         /// <returns></returns>
         public static T GetData<T>(this IUserSession user, string key)
         {
-            var userSessionStorage = user.AppHost.GetRequiredService<IUserSessionStorage>();
+            var userSessionStorage = user.Host.GetRequiredService<IUserSessionStorage>();
             var obj = userSessionStorage.GetData(key);
             if (obj is T)
             {
@@ -59,7 +59,7 @@ namespace Anycmd.Host
         /// <param name="data"></param>
         public static void SetData(this IUserSession user, string key, object data)
         {
-            var userSessionStorage = user.AppHost.GetRequiredService<IUserSessionStorage>();
+            var userSessionStorage = user.Host.GetRequiredService<IUserSessionStorage>();
             userSessionStorage.SetData(key, data);
         }
         #endregion
@@ -109,7 +109,7 @@ namespace Anycmd.Host
             foreach (var roleID in GetAllRoleIDs(user))
             {
                 RoleState role;
-                if (user.AppHost.RoleSet.TryGetRole(roleID, out role))
+                if (user.Host.RoleSet.TryGetRole(roleID, out role))
                 {
                     roles.Add(role);
                 }
@@ -165,7 +165,7 @@ namespace Anycmd.Host
             foreach (var functionID in GetAllFunctionIDs(user))
             {
                 FunctionState function;
-                if (user.AppHost.FunctionSet.TryGetFunction(functionID, out function))
+                if (user.Host.FunctionSet.TryGetFunction(functionID, out function))
                 {
                     functions.Add(function);
                 }
@@ -228,7 +228,7 @@ namespace Anycmd.Host
                 List<MenuState> menuList = new List<MenuState>();
                 if (user.IsDeveloper())
                 {
-                    foreach (var menu in user.AppHost.MenuSet)
+                    foreach (var menu in user.Host.MenuSet)
                     {
                         menuList.Add(menu);
                     }
@@ -240,10 +240,10 @@ namespace Anycmd.Host
                     {
                         roleIDs.Add(roleID);
                     }
-                    foreach (var roleMenu in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Menu && roleIDs.Contains(a.SubjectInstanceID)))
+                    foreach (var roleMenu in user.Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Menu && roleIDs.Contains(a.SubjectInstanceID)))
                     {
                         MenuState menu;
-                        if (user.AppHost.MenuSet.TryGetMenu(roleMenu.ObjectInstanceID, out menu))
+                        if (user.Host.MenuSet.TryGetMenu(roleMenu.ObjectInstanceID, out menu))
                         {
                             menuList.Add(menu);
                         }
@@ -312,14 +312,14 @@ namespace Anycmd.Host
         /// <returns></returns>
         public static bool Permit(this IUserSession user, string resourceCode, string functionCode)
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
             ResourceTypeState resource;
-            if (!user.AppHost.ResourceSet.TryGetResource(user.AppHost.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+            if (!user.Host.ResourceTypeSet.TryGetResource(user.Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
             {
                 throw new ValidationException("意外的资源码" + resourceCode);
             }
             FunctionState function;
-            if (!user.AppHost.FunctionSet.TryGetFunction(resource, functionCode, out function))
+            if (!user.Host.FunctionSet.TryGetFunction(resource, functionCode, out function))
             {
                 return true;
             }
@@ -330,14 +330,14 @@ namespace Anycmd.Host
             where TEntity : IManagedPropertyValues
             where TInput : IManagedPropertyValues
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
             ResourceTypeState resource;
-            if (!user.AppHost.ResourceSet.TryGetResource(user.AppHost.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+            if (!user.Host.ResourceTypeSet.TryGetResource(user.Host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
             {
                 throw new ValidationException("意外的资源码" + resourceCode);
             }
             FunctionState function;
-            if (!user.AppHost.FunctionSet.TryGetFunction(resource, functionCode, out function))
+            if (!user.Host.FunctionSet.TryGetFunction(resource, functionCode, out function))
             {
                 return true;
             }
@@ -351,7 +351,7 @@ namespace Anycmd.Host
         /// <returns></returns>
         public static bool Permit(this IUserSession user, PageState page)
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
             if (page == null)
             {
                 throw new ArgumentNullException("page");
@@ -361,7 +361,7 @@ namespace Anycmd.Host
                 return true;
             }
             FunctionState function;
-            if (!user.AppHost.FunctionSet.TryGetFunction(page.Id, out function))
+            if (!user.Host.FunctionSet.TryGetFunction(page.Id, out function))
             {
                 return true;
             }
@@ -372,7 +372,7 @@ namespace Anycmd.Host
             where TEntity : IManagedPropertyValues
             where TInput : IManagedPropertyValues
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
             if (page == null)
             {
                 throw new ArgumentNullException("page");
@@ -382,7 +382,7 @@ namespace Anycmd.Host
                 return true;
             }
             FunctionState function;
-            if (!user.AppHost.FunctionSet.TryGetFunction(page.Id, out function))
+            if (!user.Host.FunctionSet.TryGetFunction(page.Id, out function))
             {
                 return true;
             }
@@ -398,9 +398,9 @@ namespace Anycmd.Host
         /// <returns>True表示有权，False无权</returns>
         public static bool Permit(this IUserSession user, Guid functionID)
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
             FunctionState function;
-            if (!user.AppHost.FunctionSet.TryGetFunction(functionID, out function))
+            if (!user.Host.FunctionSet.TryGetFunction(functionID, out function))
             {
                 return true;
             }
@@ -411,9 +411,9 @@ namespace Anycmd.Host
             where TEntity : IManagedPropertyValues
             where TInput : IManagedPropertyValues
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
             FunctionState function;
-            if (!user.AppHost.FunctionSet.TryGetFunction(functionID, out function))
+            if (!user.Host.FunctionSet.TryGetFunction(functionID, out function))
             {
                 return true;
             }
@@ -428,7 +428,7 @@ namespace Anycmd.Host
         /// <returns></returns>
         public static bool Permit(this IUserSession user, FunctionState function)
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
 
             return securityService.Permit(user, function, null);
         }
@@ -437,14 +437,14 @@ namespace Anycmd.Host
             where T : IManagedPropertyValues
             where TInput : IManagedPropertyValues
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
 
             return securityService.Permit(user, function, currentEntity);
         }
 
         public static bool Permit(this IUserSession user, FunctionState function, ManagedEntityData currentEntity)
         {
-            var securityService = user.AppHost.GetRequiredService<ISecurityService>();
+            var securityService = user.Host.GetRequiredService<ISecurityService>();
 
             return securityService.Permit(user, function, currentEntity);
         }
@@ -483,7 +483,7 @@ namespace Anycmd.Host
                             {
                                 Guid organizationID = accountPrivilege.ObjectInstanceID;
                                 OrganizationState organization;
-                                if (user.AppHost.OrganizationSet.TryGetOrganization(organizationID, out organization))
+                                if (user.Host.OrganizationSet.TryGetOrganization(organizationID, out organization))
                                 {
                                     organizations.Add(organization);
                                 }
@@ -493,7 +493,7 @@ namespace Anycmd.Host
                             {
                                 Guid roleID = accountPrivilege.ObjectInstanceID;
                                 RoleState role;
-                                if (user.AppHost.RoleSet.TryGetRole(roleID, out role))
+                                if (user.Host.RoleSet.TryGetRole(roleID, out role))
                                 {
                                     roles.Add(role);
                                 }
@@ -503,7 +503,7 @@ namespace Anycmd.Host
                             {
                                 Guid groupID = accountPrivilege.ObjectInstanceID;
                                 GroupState group;
-                                if (user.AppHost.GroupSet.TryGetGroup(groupID, out group))
+                                if (user.Host.GroupSet.TryGetGroup(groupID, out group))
                                 {
                                     groups.Add(group);
                                 }
@@ -513,7 +513,7 @@ namespace Anycmd.Host
                             {
                                 Guid functionID = accountPrivilege.ObjectInstanceID;
                                 FunctionState function;
-                                if (user.AppHost.FunctionSet.TryGetFunction(functionID, out function))
+                                if (user.Host.FunctionSet.TryGetFunction(functionID, out function))
                                 {
                                     functions.Add(function);
                                 }
@@ -523,7 +523,7 @@ namespace Anycmd.Host
                             {
                                 Guid menuID = accountPrivilege.ObjectInstanceID;
                                 MenuState menu;
-                                if (user.AppHost.MenuSet.TryGetMenu(menuID, out menu))
+                                if (user.Host.MenuSet.TryGetMenu(menuID, out menu))
                                 {
                                     menus.Add(menu);
                                 }
@@ -533,7 +533,7 @@ namespace Anycmd.Host
                             {
                                 Guid appSystemID = accountPrivilege.ObjectInstanceID;
                                 AppSystemState appSystem;
-                                if (user.AppHost.AppSystemSet.TryGetAppSystem(appSystemID, out appSystem))
+                                if (user.Host.AppSystemSet.TryGetAppSystem(appSystemID, out appSystem))
                                 {
                                     appSystems.Add(appSystem);
                                 }
@@ -580,22 +580,22 @@ namespace Anycmd.Host
                 }
                 foreach (var organization in user.GetOrganizations())
                 {
-                    foreach (var item in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.SubjectInstanceID == organization.Id))
+                    foreach (var item in user.Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.SubjectInstanceID == organization.Id))
                     {
                         if (item.ObjectType == ACObjectType.Role)
                         {
                             RoleState role;
-                            if (user.AppHost.RoleSet.TryGetRole(item.ObjectInstanceID, out role))
+                            if (user.Host.RoleSet.TryGetRole(item.ObjectInstanceID, out role))
                             {
                                 allRoles.Add(role.Id);
                             }
                         }
                         else if (item.ObjectType == ACObjectType.Group)
                         {
-                            foreach (var roleGroup in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == item.ObjectInstanceID))
+                            foreach (var roleGroup in user.Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == item.ObjectInstanceID))
                             {
                                 RoleState role;
-                                if (user.AppHost.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
+                                if (user.Host.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
                                 {
                                     allRoles.Add(role.Id);
                                 }
@@ -605,10 +605,10 @@ namespace Anycmd.Host
                 }
                 foreach (var group in user.GetGroups())
                 {
-                    foreach (var roleGroup in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == group.Id))
+                    foreach (var roleGroup in user.Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Group && a.ObjectInstanceID == group.Id))
                     {
                         RoleState role;
-                        if (user.AppHost.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
+                        if (user.Host.RoleSet.TryGetRole(roleGroup.SubjectInstanceID, out role))
                         {
                             allRoles.Add(role.Id);
                         }
@@ -633,14 +633,14 @@ namespace Anycmd.Host
                 functionIDs = new HashSet<Guid>();
                 // TODO:考虑在PrivilegeSet集合中计算好缓存起来，从而可以直接根据角色索引而
                 var roleIDs = user.GetAllRoleIDs();
-                foreach (var privilegeBigram in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Function && roleIDs.Contains(a.SubjectInstanceID)))
+                foreach (var privilegeBigram in user.Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Role && a.ObjectType == ACObjectType.Function && roleIDs.Contains(a.SubjectInstanceID)))
                 {
                     functionIDs.Add(privilegeBigram.ObjectInstanceID);
                 }
                 // 追加账户所在组织结构的直接功能授权
                 foreach (var organization in user.GetOrganizations())
                 {
-                    foreach (var item in user.AppHost.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.ObjectType == ACObjectType.Function && a.SubjectInstanceID == organization.Id))
+                    foreach (var item in user.Host.PrivilegeSet.Where(a => a.SubjectType == ACSubjectType.Organization && a.ObjectType == ACObjectType.Function && a.SubjectInstanceID == organization.Id))
                     {
                         Guid functionID = item.ObjectInstanceID;
                         functionIDs.Add(functionID);

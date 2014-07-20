@@ -258,7 +258,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         {
             var response = new ResponseData { id = id, success = true };
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyCode, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyCode, out ontology))
             {
                 throw new ValidationException("非法的本体码");
             }
@@ -284,7 +284,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     if (evnt.Status == (int)Status.ToAudit
                     && evnt.EventSourceType.Equals("Command", StringComparison.OrdinalIgnoreCase))
                     {
-                        var node = NodeHost.Instance.Nodes.ThisNode;
+                        var node = Host.Nodes.ThisNode;
                         var ticks = DateTime.UtcNow.Ticks;
                         var cmd = new Message()
                         {
@@ -316,7 +316,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                                 }
                             }
                         };
-                        var result = AnyMessage.Create(HecpRequest.Create(cmd), NodeHost.Instance.Nodes.ThisNode).Response();
+                        var result = AnyMessage.Create(HecpRequest.Create(cmd), Host.Nodes.ThisNode).Response();
                         if (result.Body.Event.Status == (int)Status.NotExist)
                         {
                             ontology.MessageProvider.DeleteCommand(MessageTypeKind.LocalEvent, ontology, evnt.Id, evnt.IsDumb);
@@ -358,7 +358,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
         {
             var response = new ResponseData { id = id, success = true };
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyCode, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyCode, out ontology))
             {
                 throw new ValidationException("非法的本体码");
             }
@@ -384,7 +384,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                     if (evnt.Status == (int)Status.ToAudit
                     && evnt.EventSourceType.Equals("Command", StringComparison.OrdinalIgnoreCase))
                     {
-                        var node = NodeHost.Instance.Nodes.ThisNode;
+                        var node = Host.Nodes.ThisNode;
                         var ticks = DateTime.UtcNow.Ticks;
                         var cmd = new Message()
                         {
@@ -416,7 +416,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                                 }
                             }
                         };
-                        var result = AnyMessage.Create(HecpRequest.Create(cmd), NodeHost.Instance.Nodes.ThisNode).Response();
+                        var result = AnyMessage.Create(HecpRequest.Create(cmd), Host.Nodes.ThisNode).Response();
                         if (result.Body.Event.Status == (int)Status.NotExist)
                         {
                             ontology.MessageProvider.DeleteCommand(MessageTypeKind.LocalEvent, ontology, evnt.Id, evnt.IsDumb);
@@ -459,7 +459,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 throw new ValidationException("命令类型不能为空");
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyCode, out ontology))
+            if (!Host.Ontologies.TryGetOntology(ontologyCode, out ontology))
             {
                 throw new ValidationException("非法的本体码");
             }
@@ -508,7 +508,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
                 return ModelState.ToJsonResult();
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(requestModel.ontologyCode, out ontology))
+            if (!Host.Ontologies.TryGetOntology(requestModel.ontologyCode, out ontology))
             {
                 throw new ValidationException("非法的本体码");
             }

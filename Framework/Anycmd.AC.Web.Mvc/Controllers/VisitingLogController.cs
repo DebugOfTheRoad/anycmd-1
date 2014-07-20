@@ -11,6 +11,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
     using System.Linq;
     using System.Web.Mvc;
     using Util;
+    using Model;
 
     /// <summary>
     /// 系统来访日志模型视图控制器<see cref="ACEntities.VisitingLog"/>
@@ -68,12 +69,12 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             {
                 return ModelState.ToJsonResult();
             }
-            if (!Host.User.Principal.Identity.IsAuthenticated)
+            if (!Host.UserSession.Principal.Identity.IsAuthenticated)
             {
                 return this.JsonResult(new MiniGrid<Dictionary<string, object>> { total = 0, data = new List<Dictionary<string, object>> { } });
             }
             var visitingLogs = GetRequiredService<IVisitingLogQuery>().GetPlistVisitingLogTrs(
-                Host.User.Worker.Id, Host.User.Principal.Identity.Name, requestData.leftVisitOn, requestData.rightVisitOn
+                Host.UserSession.Worker.Id, Host.UserSession.Principal.Identity.Name, requestData.leftVisitOn, requestData.rightVisitOn
                 , requestData);
             var data = new MiniGrid<VisitingLogTr> { total = requestData.total.Value, data = visitingLogs.Select(a => new VisitingLogTr(a)) };
 

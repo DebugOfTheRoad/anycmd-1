@@ -48,6 +48,7 @@
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AppHostExtension.cs" />
     <Compile Include="GroupViewModels\AccountAssignGroupTr.cs" />
     <Compile Include="GroupViewModels\GetPlistAccountGroups.cs" />
     <Compile Include="GroupViewModels\GetPlistAnnouncementGroups.cs" />
@@ -132,6 +133,16 @@
     <Compile Include="PrivilegeViewModels\PrivilegeBigramUpdateInput.cs" />
     <Compile Include="PrivilegeViewModels\RoleAssignFunctionTr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RdbViewModels\DatabaseInfo.cs" />
+    <Compile Include="RdbViewModels\DatabaseInput.cs" />
+    <Compile Include="RdbViewModels\DbTableColumnInput.cs" />
+    <Compile Include="RdbViewModels\DbTableInput.cs" />
+    <Compile Include="RdbViewModels\DbViewColumnInput.cs" />
+    <Compile Include="RdbViewModels\DbViewInput.cs" />
+    <Compile Include="RdbViewModels\GetPlistTableColumns.cs" />
+    <Compile Include="RdbViewModels\GetPlistTables.cs" />
+    <Compile Include="RdbViewModels\GetPlistViewColumns.cs" />
+    <Compile Include="RdbViewModels\GetPlistViews.cs" />
     <Compile Include="RoleViewModels\AccountAssignRoleTr.cs" />
     <Compile Include="RoleViewModels\GetPlistAccountRoles.cs" />
     <Compile Include="RoleViewModels\GetPlistAnnouncementRoles.cs" />

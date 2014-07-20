@@ -26,7 +26,7 @@ namespace Anycmd.Web.Mvc
             if (exceptionContext.Exception != null)
             {
                 var host = exceptionContext.HttpContext.Application["AppHostInstance"] as AppHost;
-                var user = host.User;
+                var user = host.UserSession;
                 bool isValidationException = exceptionContext.Exception is ValidationException;
                 bool isAjaxRequest = exceptionContext.HttpContext.Request.IsAjaxRequest();
                 ActionResult result = null;
@@ -40,7 +40,7 @@ namespace Anycmd.Web.Mvc
                     var logMessage = new AnycmdLogMessage(exceptionContext.Exception.Message);
 
                     // 记录异常
-                    LoggingService.Error(logMessage, exceptionContext.Exception);
+                    host.LoggingService.Error(logMessage, exceptionContext.Exception);
 
                     // 如果当前登录的不是开发人员就不展示详细异常了
                     if (user.IsDeveloper() || GetClientIP() == IPAddress.Loopback.ToString())

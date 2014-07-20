@@ -5,9 +5,10 @@
     var action = routeData.Values["Action"].ToString();
     var prifix = string.Format("{0}_{1}_{2}_", area, controller, action);
     var page = Html.GetRuntimePage(action, controller);
-    var pageButtons = AppHost.Instance.PageSet.GetPageButtons(page.Page);
+    var pageButtons = Html.GetHost().PageSet.GetPageButtons(page.Page);
     if (pageButtons != null) {
-        foreach (var button in AppHost.Instance.ButtonSet.OrderBy(a => a.SortCode)) {
+        foreach (var button in Html.GetHost().ButtonSet.OrderBy(a => a.SortCode))
+        {
             if (pageButtons.Any(a => a.ButtonID == button.Id)) {
                 var pageButton = pageButtons.First(a => a.ButtonID == button.Id);
                 string attrs = string.Empty;

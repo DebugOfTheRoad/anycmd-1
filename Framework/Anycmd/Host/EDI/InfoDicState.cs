@@ -8,7 +8,7 @@ namespace Anycmd.Host.EDI
     {
         private InfoDicState() { }
 
-        public static InfoDicState Create(IInfoDic infoDic)
+        public static InfoDicState Create(IAppHost host, IInfoDic infoDic)
         {
             if (infoDic == null)
             {
@@ -16,6 +16,7 @@ namespace Anycmd.Host.EDI
             }
             return new InfoDicState
             {
+                Host = host,
                 Code = infoDic.Code,
                 CreateOn = infoDic.CreateOn,
                 Id = infoDic.Id,
@@ -24,6 +25,8 @@ namespace Anycmd.Host.EDI
                 SortCode = infoDic.SortCode
             };
         }
+
+        public IAppHost Host { get; private set; }
 
         public Guid Id { get; private set; }
 

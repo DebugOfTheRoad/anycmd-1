@@ -1,7 +1,7 @@
 ﻿
 namespace Anycmd.EDI.Web.Mvc.Controllers
 {
-    using Anycmd.Host;
+    using Host;
     using Anycmd.Web.Mvc;
     using Exceptions;
     using MiniUI;

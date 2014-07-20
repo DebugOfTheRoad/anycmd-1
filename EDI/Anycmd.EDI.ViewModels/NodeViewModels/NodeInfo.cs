@@ -2,6 +2,7 @@
 namespace Anycmd.EDI.ViewModels.NodeViewModels
 {
     using Host.EDI.Handlers;
+    using Model;
     using System;
     using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace Anycmd.EDI.ViewModels.NodeViewModels
     {
         public NodeInfo() { }
 
-        public NodeInfo(AppHost host, Dictionary<string, object> dic)
+        public NodeInfo(DicReader dic)
         {
             if (dic == null)
             {
@@ -26,7 +27,7 @@ namespace Anycmd.EDI.ViewModels.NodeViewModels
             {
                 string transferName = string.Empty;
                 IMessageTransfer transfer;
-                if (NodeHost.Instance.Transfers.TryGetTransfer((Guid)this["TransferID"], out transfer))
+                if (dic.Host.Transfers.TryGetTransfer((Guid)this["TransferID"], out transfer))
                 {
                     transferName = transfer.Name; ;
                 }
@@ -34,11 +35,11 @@ namespace Anycmd.EDI.ViewModels.NodeViewModels
             }
             if (!this.ContainsKey("DeletionStateName"))
             {
-                this.Add("DeletionStateName", host.Translate("EDI", "Node", "DeletionStateName", (int)this["DeletionStateCode"]));
+                this.Add("DeletionStateName", dic.Host.Translate("EDI", "Node", "DeletionStateName", (int)this["DeletionStateCode"]));
             }
             if (!this.ContainsKey("IsEnabledName"))
             {
-                this.Add("IsEnabledName", host.Translate("EDI", "Node", "IsEnabledName", (int)this["IsEnabled"]));
+                this.Add("IsEnabledName", dic.Host.Translate("EDI", "Node", "IsEnabledName", (int)this["IsEnabled"]));
             }
         }
     }

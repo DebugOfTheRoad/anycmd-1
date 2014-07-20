@@ -136,7 +136,7 @@ namespace Anycmd.EDI.Web.Mvc.Controllers
             else
             {
                 OntologyDescriptor ontology;
-                if (!NodeHost.Instance.Ontologies.TryGetOntology(input.ontologyCode, out ontology))
+                if (!Host.Ontologies.TryGetOntology(input.ontologyCode, out ontology))
                 {
                     throw new ValidationException("意外的本体码" + input.ontologyCode);
                 }

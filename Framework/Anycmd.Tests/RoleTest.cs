@@ -65,7 +65,7 @@ namespace Anycmd.Tests
             var host = TestHelper.GetAppHost();
             Assert.Equal(0, host.RoleSet.Count());
 
-            host.Container.RemoveService(typeof(IRepository<Role>));
+            host.RemoveService(typeof(IRepository<Role>));
             var moRoleRepository = host.GetMoqRepository<Role, IRepository<Role>>();
             var entityID1 = Guid.NewGuid();
             var entityID2 = Guid.NewGuid();
@@ -75,7 +75,7 @@ namespace Anycmd.Tests
             moRoleRepository.Setup(a => a.Remove(It.Is<Role>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moRoleRepository.Setup<Role>(a => a.GetByKey(entityID1)).Returns(new Role { Id = entityID1, Name = name });
             moRoleRepository.Setup<Role>(a => a.GetByKey(entityID2)).Returns(new Role { Id = entityID2, Name = name });
-            host.Container.AddService(typeof(IRepository<Role>), moRoleRepository.Object);
+            host.AddService(typeof(IRepository<Role>), moRoleRepository.Object);
 
             bool catched = false;
             try

@@ -23,7 +23,7 @@
             <a href="AC/Organization/Index" tooltip="组织结构" class="mini-button topMenu" plain="true" style="float: left; margin-top: 2px;">
                 @{
                     ResourceTypeState organization;
-                    if (AppHost.Instance.ResourceSet.TryGetResource(Html.GetHost().AppSystemSet.SelfAppSystem, "Organization", out organization)) {
+                    if (Html.GetHost().ResourceTypeSet.TryGetResource(Html.GetHost().AppSystemSet.SelfAppSystem, "Organization", out organization)) {
                     <img src="@Url.Content("~/content/icons/16x16/" + organization.Icon)" style="border:0px;" />
                     }
                     if (this.GetUser().IsDeveloper()) {

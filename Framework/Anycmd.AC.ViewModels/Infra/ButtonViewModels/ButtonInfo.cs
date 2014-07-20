@@ -1,8 +1,8 @@
 ﻿
 namespace Anycmd.AC.Infra.ViewModels.ButtonViewModels
 {
+    using Model;
     using System.Collections.Generic;
-    using Util;
 
     public class ButtonInfo : Dictionary<string, object>
     {
@@ -21,7 +21,7 @@ namespace Anycmd.AC.Infra.ViewModels.ButtonViewModels
             }
             if (!data.ContainsKey("IsEnabledName"))
             {
-                data.Add("IsEnabledName", dic.AppHost.Translate("AC", "Button", "IsEnabledName", data["IsEnabled"].ToString()));
+                data.Add("IsEnabledName", dic.Host.Translate("AC", "Button", "IsEnabledName", data["IsEnabled"].ToString()));
             }
 
             return data;

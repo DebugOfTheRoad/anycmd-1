@@ -2,9 +2,10 @@
 namespace Anycmd.EDI.ViewModels.BatchViewModels
 {
     using Exceptions;
+    using Host.EDI;
+    using Model;
     using System;
     using System.Collections.Generic;
-    using Anycmd.Host.EDI;
 
     /// <summary>
     /// 
@@ -13,7 +14,7 @@ namespace Anycmd.EDI.ViewModels.BatchViewModels
     {
         public BatchInfo() { }
 
-        public BatchInfo(Dictionary<string, object> dic)
+        public BatchInfo(DicReader dic)
         {
             if (dic == null)
             {
@@ -24,7 +25,7 @@ namespace Anycmd.EDI.ViewModels.BatchViewModels
                 this.Add(item.Key, item.Value);
             }
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology((Guid)this["OntologyID"], out ontology))
+            if (!dic.Host.Ontologies.TryGetOntology((Guid)this["OntologyID"], out ontology))
             {
                 throw new CoreException("意外的本体标识" + this["OntologyID"]);
             }
@@ -37,7 +38,7 @@ namespace Anycmd.EDI.ViewModels.BatchViewModels
                 this.Add("OntologyName", ontology.Ontology.Name);
             }
             NodeDescriptor node;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(this["NodeID"].ToString(), out node))
+            if (!dic.Host.Nodes.TryGetNodeByID(this["NodeID"].ToString(), out node))
             {
                 throw new CoreException("意外的节点标识" + this["NodeID"]);
             }

@@ -284,7 +284,7 @@ namespace Anycmd.Web.Mvc
             {
                 return result;
             }
-            if (property != null && (!string.IsNullOrEmpty(property.Tooltip) || property.AppHost.User.IsDeveloper()))
+            if (property != null && (!string.IsNullOrEmpty(property.Tooltip) || property.AppHost.UserSession.IsDeveloper()))
             {
                 var urlHelper = new UrlHelper(html.ViewContext.RequestContext, html.RouteCollection);
                 var href = urlHelper.Action("Tooltip", "Property", new { area = "AC", propertyID = property.Id });
@@ -309,7 +309,7 @@ namespace Anycmd.Web.Mvc
             {
                 return result;
             }
-            if (page != null && (!string.IsNullOrEmpty(page.Tooltip) || page.AppHost.User.IsDeveloper()))
+            if (page != null && (!string.IsNullOrEmpty(page.Tooltip) || page.AppHost.UserSession.IsDeveloper()))
             {
                 var urlHelper = new UrlHelper(html.ViewContext.RequestContext, html.RouteCollection);
                 var href = urlHelper.Action("Tooltip", "Page", new { area = "AC", pageID = page.Id });
@@ -378,7 +378,7 @@ namespace Anycmd.Web.Mvc
         {
             var host = html.GetHost();
             ResourceTypeState resource;
-            if (!host.ResourceSet.TryGetResource(host.AppSystemSet.SelfAppSystem, controller, out resource))
+            if (!host.ResourceTypeSet.TryGetResource(host.AppSystemSet.SelfAppSystem, controller, out resource))
             {
                 return new PageViewModel(PageState.Empty, "未知页面");
             }
@@ -414,7 +414,7 @@ namespace Anycmd.Web.Mvc
         public static IHtmlString IsEnabled(this HtmlHelper html, string resourceCode, string functionCode)
         {
             var htmlEnabled = string.Empty;
-            if (!html.GetHost().User.Permit(resourceCode, functionCode))
+            if (!html.GetHost().UserSession.Permit(resourceCode, functionCode))
             {
                 htmlEnabled = "enabled='false'";
             }
@@ -552,23 +552,23 @@ namespace Anycmd.Web.Mvc
         #region Permit
         public static bool Permit(this PageState page)
         {
-            return page.AppHost.User.Permit(page);
+            return page.AppHost.UserSession.Permit(page);
         }
 
         public static bool Permit(this PageViewModel page)
         {
-            return page.Page.AppHost.User.Permit(page.Page);
+            return page.Page.AppHost.UserSession.Permit(page.Page);
         }
         #endregion
 
-        public static AppHost GetHost(this HtmlHelper html)
+        public static IAppHost GetHost(this HtmlHelper html)
         {
-            return html.ViewContext.HttpContext.Application["AppHostInstance"] as AppHost;
+            return html.ViewContext.HttpContext.Application["AppHostInstance"] as IAppHost;
         }
 
         public static IUserSession GetUser(this WebViewPage page)
         {
-            return page.Html.GetHost().User;
+            return page.Html.GetHost().UserSession;
         }
 
         #region GetOperationLogEntityType
@@ -576,7 +576,7 @@ namespace Anycmd.Web.Mvc
         {
             var host = GetHost(webPage.Html);
             ResourceTypeState resource;
-            if (!host.ResourceSet.TryGetResource(host.AppSystemSet.SelfAppSystem, "OperationLog", out resource))
+            if (!host.ResourceTypeSet.TryGetResource(host.AppSystemSet.SelfAppSystem, "OperationLog", out resource))
             {
                 return PageViewModel.Empty;
             }
@@ -611,7 +611,7 @@ namespace Anycmd.Web.Mvc
             var sb = new StringBuilder();
             sb.Append("[");
             int l = sb.Length;
-            foreach (var item in NodeHost.Instance.EntityProviders)
+            foreach (var item in GetHost(html).EntityProviders)
             {
                 if (sb.Length > l)
                 {
@@ -643,7 +643,7 @@ namespace Anycmd.Web.Mvc
             var sb = new StringBuilder();
             sb.Append("[");
             int l = sb.Length;
-            foreach (var item in NodeHost.Instance.MessageProviders)
+            foreach (var item in GetHost(html).MessageProviders)
             {
                 if (sb.Length > l)
                 {
@@ -681,11 +681,11 @@ namespace Anycmd.Web.Mvc
         public static IHtmlString InfoDicItemsJsonArray(this HtmlHelper html, string infoDicCode)
         {
             InfoDicState infoDic;
-            if (!NodeHost.Instance.InfoDics.TryGetInfoDic(infoDicCode, out infoDic))
+            if (!GetHost(html).InfoDics.TryGetInfoDic(infoDicCode, out infoDic))
             {
                 return html.Raw("[]");
             }
-            var dicItems = NodeHost.Instance.InfoDics.GetInfoDicItems(infoDic);
+            var dicItems = GetHost(html).InfoDics.GetInfoDicItems(infoDic);
             return InfoDicItemsJsonArray(html, dicItems);
         }
 
@@ -700,11 +700,11 @@ namespace Anycmd.Web.Mvc
             if (element.InfoDicID.HasValue)
             {
                 InfoDicState infoDic;
-                if (!NodeHost.Instance.InfoDics.TryGetInfoDic(element.InfoDicID.Value, out infoDic))
+                if (!GetHost(html).InfoDics.TryGetInfoDic(element.InfoDicID.Value, out infoDic))
                 {
                     return html.Raw("[]");
                 }
-                var dicItems = NodeHost.Instance.InfoDics.GetInfoDicItems(infoDic);
+                var dicItems = GetHost(html).InfoDics.GetInfoDicItems(infoDic);
                 return InfoDicItemsJsonArray(html, dicItems);
             }
 
@@ -716,7 +716,7 @@ namespace Anycmd.Web.Mvc
             var sb = new StringBuilder();
             sb.Append("[");
             int l = sb.Length;
-            foreach (var item in NodeHost.Instance.InfoDics)
+            foreach (var item in GetHost(html).InfoDics)
             {
                 if (item.IsEnabled != 1)
                 {
@@ -777,7 +777,7 @@ namespace Anycmd.Web.Mvc
             StringBuilder sb = new System.Text.StringBuilder();
             sb.Append("[");
             var l = sb.Length;
-            foreach (var node in NodeHost.Instance.Nodes)
+            foreach (var node in GetHost(html).Nodes)
             {
                 if (sb.Length != l)
                 {
@@ -803,9 +803,9 @@ namespace Anycmd.Web.Mvc
             StringBuilder sb = new System.Text.StringBuilder();
             sb.Append("[");
             var l = sb.Length;
-            foreach (var node in NodeHost.Instance.Nodes)
+            foreach (var node in GetHost(html).Nodes)
             {
-                if (node.Node.Id != NodeHost.Instance.Nodes.ThisNode.Node.Id)
+                if (node.Node.Id != GetHost(html).Nodes.ThisNode.Node.Id)
                 {
                     if (sb.Length != l)
                     {
@@ -856,7 +856,7 @@ namespace Anycmd.Web.Mvc
         /// <returns></returns>
         public static IHtmlString InfoFormatJsonArray(this HtmlHelper html)
         {
-            var infoValuesConverters = NodeHost.Instance.InfoStringConverters;
+            var infoValuesConverters = GetHost(html).InfoStringConverters;
             var sb = new StringBuilder();
             sb.Append("[");
             var l = sb.Length;
@@ -886,7 +886,7 @@ namespace Anycmd.Web.Mvc
             var sb = new StringBuilder();
             sb.Append("[");
             var l = sb.Length;
-            foreach (var strategy in NodeHost.Instance.Transfers)
+            foreach (var strategy in GetHost(html).Transfers)
             {
                 if (sb.Length != l)
                 {
@@ -912,7 +912,7 @@ namespace Anycmd.Web.Mvc
             var sb = new StringBuilder();
             sb.Append("[");
             var l = sb.Length;
-            foreach (var ontology in NodeHost.Instance.Ontologies)
+            foreach (var ontology in GetHost(html).Ontologies)
             {
                 if (sb.Length != l)
                 {
@@ -932,7 +932,7 @@ namespace Anycmd.Web.Mvc
         public static OntologyDescriptor GetOntology(this HtmlHelper html, string ontologyCode)
         {
             OntologyDescriptor ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(ontologyCode, out ontology))
+            if (!GetHost(html).Ontologies.TryGetOntology(ontologyCode, out ontology))
             {
                 throw new ValidationException("意外的本体码" + ontologyCode);
             }
@@ -982,7 +982,7 @@ namespace Anycmd.Web.Mvc
         public static IHtmlString Qtip(this HtmlHelper html, IElement element)
         {
             IHtmlString result = MvcHtmlString.Empty;
-            if (element != null && (!string.IsNullOrEmpty(element.Tooltip) || NodeHost.Instance.AppHost.User.IsDeveloper()))
+            if (element != null && (!string.IsNullOrEmpty(element.Tooltip) || GetHost(html).UserSession.IsDeveloper()))
             {
                 var urlHelper = new UrlHelper(html.ViewContext.RequestContext, html.RouteCollection);
                 var href = urlHelper.Action("Tooltip", "Element", new { area = "EDI", elementID = element.Id });

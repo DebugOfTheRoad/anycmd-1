@@ -54,14 +54,14 @@ namespace Anycmd.Host.EDI.Handlers.Distribute {
                 if (context.Exception != null) {
                     context.ClientAgent.IsNetException = true;
                     context.Result.UpdateStatus(Status.InternalServerError, context.Exception.Message);
-                    LoggingService.Error(context.Exception);
+                    context.Ontology.Host.LoggingService.Error(context.Exception);
                 }
                 else {
                     int stateCode = result.Status;
                     if (stateCode < 200) {
-                        if (context.Responder != NodeHost.Instance.Nodes.ThisNode) {
+                        if (context.Responder != context.Ontology.Host.Nodes.ThisNode) {
                             IInfoStringConverter converter;
-                            if (!NodeHost.Instance.InfoStringConverters.TryGetInfoStringConverter(context.Command.DataTuple.InfoFormat, out converter)) {
+                            if (!context.Ontology.Host.InfoStringConverters.TryGetInfoStringConverter(context.Command.DataTuple.InfoFormat, out converter)) {
                                 throw new CoreException("意外的信息格式" + context.Command.DataTuple.InfoFormat);
                             }
                             var anyLog = new AnyLog(Guid.NewGuid()) {
@@ -93,7 +93,7 @@ namespace Anycmd.Host.EDI.Handlers.Distribute {
                                 Res_ReasonPhrase = context.Result.ReasonPhrase,
                                 Res_StateCode = (int)context.Result.Status
                             };
-                            LoggingService.Log(anyLog);
+                            context.Ontology.Host.LoggingService.Log(anyLog);
                         }
                     }
                     else if (stateCode >= 500) {

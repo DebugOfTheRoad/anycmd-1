@@ -163,13 +163,13 @@ namespace Anycmd.Tests
             var entityID2 = Guid.NewGuid();
             var code = "dic1";
             var name = "测试1";
-            host.Container.RemoveService(typeof(IRepository<Dic>));
+            host.RemoveService(typeof(IRepository<Dic>));
             moDicRepository.Setup(a => a.Add(It.Is<Dic>(b => b.Id == entityID1))).Throws(new DbException(entityID1.ToString()));
             moDicRepository.Setup(a => a.Update(It.Is<Dic>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moDicRepository.Setup(a => a.Remove(It.Is<Dic>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moDicRepository.Setup<Dic>(a => a.GetByKey(entityID1)).Returns(new Dic { Id = entityID1, Code = code, Name = name });
             moDicRepository.Setup<Dic>(a => a.GetByKey(entityID2)).Returns(new Dic { Id = entityID2, Code = code, Name = name });
-            host.Container.AddService(typeof(IRepository<Dic>), moDicRepository.Object);
+            host.AddService(typeof(IRepository<Dic>), moDicRepository.Object);
 
 
             bool catched = false;

@@ -1,7 +1,6 @@
 ﻿
 namespace Anycmd
 {
-    using Container;
     using Host.AC.Infra;
     using Host.EDI;
     using Host.EDI.Entities;
@@ -20,7 +19,7 @@ namespace Anycmd
         public DefaultNodeHost(AppHost appHost)
             : base(appHost)
         {
-            this.MessageProducer = new DefaultMessageProducer();
+            this.MessageProducer = new DefaultMessageProducer(this);
             this.Ontologies = new OntologySet(this);
             this.Processs = new ProcesseSet(this);
             this.Nodes = new NodeSet(this);
@@ -35,9 +34,9 @@ namespace Anycmd
         /// <summary>
         /// 
         /// </summary>
-        public override void Configure(AnycmdServiceContainer container)
+        public override void Configure()
         {
-            container.AddService(typeof(INodeHostBootstrap), new FastNodeHostBootstrap(this.AppHost));
+            this.AppHost.AddService(typeof(INodeHostBootstrap), new FastNodeHostBootstrap(this.AppHost));
             this.AppHost.MessageDispatcher.Register(new AddBatchCommandHandler(this.AppHost));
             this.AppHost.MessageDispatcher.Register(new UpdateBatchCommandHandler(this.AppHost));
             this.AppHost.MessageDispatcher.Register(new RemoveBatchCommandHandler(this.AppHost));

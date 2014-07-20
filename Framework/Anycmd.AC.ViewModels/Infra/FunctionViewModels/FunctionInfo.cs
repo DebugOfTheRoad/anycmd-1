@@ -1,11 +1,11 @@
 ﻿
 namespace Anycmd.AC.Infra.ViewModels.FunctionViewModels
 {
-    using Anycmd.Host;
     using Exceptions;
+    using Host;
+    using Model;
     using System;
     using System.Collections.Generic;
-    using Util;
 
     public class FunctionInfo : Dictionary<string, object>
     {
@@ -23,12 +23,12 @@ namespace Anycmd.AC.Infra.ViewModels.FunctionViewModels
                 data.Add(item.Key, item.Value);
             }
             ResourceTypeState resource;
-            if (!dic.AppHost.ResourceSet.TryGetResource((Guid)data["ResourceTypeID"], out resource))
+            if (!dic.Host.ResourceTypeSet.TryGetResource((Guid)data["ResourceTypeID"], out resource))
             {
                 throw new CoreException("意外的资源标识" + data["ResourceTypeID"]);
             }
             AppSystemState appSystem;
-            if (!dic.AppHost.AppSystemSet.TryGetAppSystem(resource.AppSystemID, out appSystem))
+            if (!dic.Host.AppSystemSet.TryGetAppSystem(resource.AppSystemID, out appSystem))
             {
                 throw new CoreException("意外的区域应用系统标识");
             }
@@ -51,21 +51,21 @@ namespace Anycmd.AC.Infra.ViewModels.FunctionViewModels
             }
             if (!data.ContainsKey("IsManagedName"))
             {
-                data.Add("IsManagedName", dic.AppHost.Translate("AC", "DicItem", "IsManagedName", data["IsManaged"].ToString()));
+                data.Add("IsManagedName", dic.Host.Translate("AC", "DicItem", "IsManagedName", data["IsManaged"].ToString()));
             }
             if (!data.ContainsKey("IsEnabledName"))
             {
-                data.Add("IsEnabledName", dic.AppHost.Translate("AC", "DicItem", "IsEnabledName", data["IsEnabled"].ToString()));
+                data.Add("IsEnabledName", dic.Host.Translate("AC", "DicItem", "IsEnabledName", data["IsEnabled"].ToString()));
             }
             if (!data.ContainsKey("IsPage"))
             {
                 PageState page;
-                data.Add("IsPage", dic.AppHost.PageSet.TryGetPage((Guid)data["Id"], out page));
+                data.Add("IsPage", dic.Host.PageSet.TryGetPage((Guid)data["Id"], out page));
             }
             if (!data.ContainsKey("DeveloperCode"))
             {
                 AccountState developer;
-                if (dic.AppHost.SysUsers.TryGetDevAccount((Guid)data["DeveloperID"], out developer))
+                if (dic.Host.SysUsers.TryGetDevAccount((Guid)data["DeveloperID"], out developer))
                 {
                     data.Add("DeveloperCode", developer.LoginName);
                 }

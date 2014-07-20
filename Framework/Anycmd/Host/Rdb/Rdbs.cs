@@ -11,11 +11,13 @@ namespace Anycmd.Host.Rdb
     /// </summary>
     public sealed class Rdbs : IRdbs
     {
+        public static readonly IRdbs Empty = new Rdbs(AppHost.Empty);
+
         private readonly Dictionary<Guid, RdbDescriptor> _dicByID = new Dictionary<Guid, RdbDescriptor>();
         private bool _initialized = false;
-        private readonly AppHost host;
+        private readonly IAppHost host;
 
-        public Rdbs(AppHost host)
+        public Rdbs(IAppHost host)
         {
             this.host = host;
         }

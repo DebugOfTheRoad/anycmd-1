@@ -23,7 +23,7 @@ namespace Anycmd.Host
 
         private AppSystemState() { }
 
-        public static AppSystemState Create(AppHost host, AppSystemBase appSystem)
+        public static AppSystemState Create(IAppHost host, AppSystemBase appSystem)
         {
             if (appSystem == null)
             {

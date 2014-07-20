@@ -38,9 +38,9 @@ namespace Anycmd.Web.Mvc
                 }
                 resourceCode = resourceAttr.ResourceCode;
             }
-            var host = filterContext.HttpContext.Application["AppHostInstance"] as AppHost;
+            var host = filterContext.HttpContext.Application["AppHostInstance"] as IAppHost;
             ResourceTypeState resource;
-            if (!host.ResourceSet.TryGetResource(host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
+            if (!host.ResourceTypeSet.TryGetResource(host.AppSystemSet.SelfAppSystem, resourceCode, out resource))
             {
                 throw new ValidationException("意外的资源码" + resourceCode);
             }
@@ -70,7 +70,7 @@ namespace Anycmd.Web.Mvc
             }
 
             #region 登录验证
-            if (!host.User.Principal.Identity.IsAuthenticated)
+            if (!host.UserSession.Principal.Identity.IsAuthenticated)
             {
                 if (isAjaxRequest)
                 {
@@ -110,7 +110,7 @@ namespace Anycmd.Web.Mvc
             {
                 return;
             }
-            if (!host.User.Permit(function, null))
+            if (!host.UserSession.Permit(function, null))
             {
                 if (isAjaxRequest)
                 {

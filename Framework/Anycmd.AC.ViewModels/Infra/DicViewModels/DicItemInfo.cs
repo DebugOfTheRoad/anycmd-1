@@ -1,8 +1,8 @@
 ﻿
 namespace Anycmd.AC.Infra.ViewModels.DicViewModels
 {
+    using Model;
     using System.Collections.Generic;
-    using Util;
 
     public class DicItemInfo : Dictionary<string, object>
     {
@@ -21,7 +21,7 @@ namespace Anycmd.AC.Infra.ViewModels.DicViewModels
             }
             if (!data.ContainsKey("IsEnabledName"))
             {
-                data.Add("IsEnabledName", dic.AppHost.Translate("AC", "DicItem", "IsEnabledName", data["IsEnabled"].ToString()));
+                data.Add("IsEnabledName", dic.Host.Translate("AC", "DicItem", "IsEnabledName", data["IsEnabled"].ToString()));
             }
 
             return data;

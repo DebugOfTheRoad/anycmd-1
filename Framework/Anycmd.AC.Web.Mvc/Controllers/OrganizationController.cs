@@ -163,7 +163,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
             }
             if (!parentID.HasValue)
             {
-                if (Host.User.IsDeveloper())
+                if (Host.UserSession.IsDeveloper())
                 {
                     return this.JsonResult(Host.OrganizationSet.Where(a => a != OrganizationState.VirtualRoot && a.ParentCode == null).OrderBy(a => a.SortCode).Select(a => new OrganizationMiniNode
                     {
@@ -180,7 +180,7 @@ namespace Anycmd.AC.Web.Mvc.Controllers
                 }
                 else
                 {
-                    var orgs = Host.User.GetOrganizations();
+                    var orgs = Host.UserSession.GetOrganizations();
                     if (orgs != null && orgs.Count > 0)
                     {
                         return this.JsonResult(orgs.Select(org => new OrganizationMiniNode

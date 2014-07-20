@@ -11,16 +11,20 @@ namespace Anycmd.Host.EDI
     public sealed class NodeState : INode
     {
         private Dictionary<OntologyDescriptor, Dictionary<Verb, INodeAction>> _nodeActionDic;
+        private readonly IAppHost host;
 
-        private NodeState() { }
+        private NodeState(IAppHost host)
+        {
+            this.host = host;
+        }
 
-        public static NodeState Create(INode node)
+        public static NodeState Create(IAppHost host, INode node)
         {
             if (node == null)
             {
                 throw new ArgumentNullException("node");
             }
-            var data = new NodeState
+            var data = new NodeState(host)
             {
                 Abstract = node.Abstract,
                 Actions = node.Actions,
@@ -52,18 +56,18 @@ namespace Anycmd.Host.EDI
             data._nodeActionDic = nodeActionDic;
             if (data.Actions != null)
             {
-                var nodeActions = NodeHost.Instance.AppHost.DeserializeFromString<NodeAction[]>(data.Actions);
+                var nodeActions = host.DeserializeFromString<NodeAction[]>(data.Actions);
                 if (nodeActions != null)
                 {
                     foreach (var nodeAction in nodeActions)
                     {
-                        var action = NodeHost.Instance.Ontologies.GetAction(nodeAction.ActionID);
+                        var action = host.Ontologies.GetAction(nodeAction.ActionID);
                         if (action == null)
                         {
                             throw new CoreException("意外的本体动作标识" + nodeAction.ActionID);
                         }
                         OntologyDescriptor ontology;
-                        if (!NodeHost.Instance.Ontologies.TryGetOntology(action.OntologyID, out ontology))
+                        if (!host.Ontologies.TryGetOntology(action.OntologyID, out ontology))
                         {
                             throw new CoreException("意外的本体元素本体标识" + action.OntologyID);
                         }
@@ -71,7 +75,7 @@ namespace Anycmd.Host.EDI
                         {
                             nodeActionDic.Add(ontology, new Dictionary<Verb, INodeAction>());
                         }
-                        var actionDic = NodeHost.Instance.Ontologies.GetActons(ontology);
+                        var actionDic = host.Ontologies.GetActons(ontology);
                         var verb = actionDic.Where(a => a.Value.Id == nodeAction.ActionID).Select(a => a.Key).FirstOrDefault();
                         if (verb == null)
                         {

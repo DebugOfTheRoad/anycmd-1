@@ -15,6 +15,13 @@ namespace Anycmd.Host.EDI.Handlers
     /// </summary>
     public class DefaultAuditDiscriminator : IAuditDiscriminator
     {
+        private readonly IAppHost host;
+
+        public DefaultAuditDiscriminator(IAppHost host)
+        {
+            this.host = host;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -119,7 +126,7 @@ namespace Anycmd.Host.EDI.Handlers
                 // Level5OrganizationAction 如果是组织结构型本体且当前实体所属的组织结构的这个本体动作不需要审核则不审核
                 #region Level5OrganizationAction
                 OrganizationState org;
-                if (!NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(context.OrganizationCode, out org))
+                if (!host.OrganizationSet.TryGetOrganization(context.OrganizationCode, out org))
                 {
                     throw new CoreException("非法的组织结构码" + context.OrganizationCode);
                 }

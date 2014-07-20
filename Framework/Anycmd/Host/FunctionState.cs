@@ -28,7 +28,7 @@ namespace Anycmd.Host
 
         private FunctionState() { }
 
-        public static FunctionState Create(AppHost host, FunctionBase function)
+        public static FunctionState Create(IAppHost host, FunctionBase function)
         {
             if (function == null)
             {
@@ -39,7 +39,7 @@ namespace Anycmd.Host
                 throw new CoreException("必须指定资源");
             }
             ResourceTypeState resource;
-            if (!host.ResourceSet.TryGetResource(function.ResourceTypeID, out resource))
+            if (!host.ResourceTypeSet.TryGetResource(function.ResourceTypeID, out resource))
             {
                 throw new ValidationException("非法的资源标识" + function.ResourceTypeID);
             }
@@ -58,7 +58,7 @@ namespace Anycmd.Host
             };
         }
 
-        public AppHost AppHost { get; private set; }
+        public IAppHost AppHost { get; private set; }
 
         public Guid Id { get; private set; }
 
@@ -71,7 +71,7 @@ namespace Anycmd.Host
             private set
             {
                 ResourceTypeState resource;
-                if (!AppHost.ResourceSet.TryGetResource(value, out resource))
+                if (!AppHost.ResourceTypeSet.TryGetResource(value, out resource))
                 {
                     throw new ValidationException("意外的功能资源标识" + value);
                 }
@@ -119,7 +119,7 @@ namespace Anycmd.Host
                     return ResourceTypeState.Empty;
                 }
                 ResourceTypeState resource;
-                if (!AppHost.ResourceSet.TryGetResource(this.ResourceTypeID, out resource))
+                if (!AppHost.ResourceTypeSet.TryGetResource(this.ResourceTypeID, out resource))
                 {
                     throw new CoreException("意外的资源标识");
                 }

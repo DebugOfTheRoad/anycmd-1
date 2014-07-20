@@ -121,13 +121,13 @@ namespace Anycmd.Tests
             var entityID2 = Guid.NewGuid();
             var code = "app1";
             var name = "测试1";
-            host.Container.RemoveService(typeof(IRepository<AppSystem>));
+            host.RemoveService(typeof(IRepository<AppSystem>));
             moAppSystemRepository.Setup(a => a.Add(It.Is<AppSystem>(b => b.Id == entityID1))).Throws(new DbException(entityID1.ToString()));
             moAppSystemRepository.Setup(a => a.Update(It.Is<AppSystem>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moAppSystemRepository.Setup(a => a.Remove(It.Is<AppSystem>(b => b.Id == entityID2))).Throws(new DbException(entityID2.ToString()));
             moAppSystemRepository.Setup<AppSystem>(a => a.GetByKey(entityID1)).Returns(new AppSystem { Id = entityID1, Code = code, Name = name });
             moAppSystemRepository.Setup<AppSystem>(a => a.GetByKey(entityID2)).Returns(new AppSystem { Id = entityID2, Code = code, Name = name });
-            host.Container.AddService(typeof(IRepository<AppSystem>), moAppSystemRepository.Object);
+            host.AddService(typeof(IRepository<AppSystem>), moAppSystemRepository.Object);
 
             bool catched = false;
             try

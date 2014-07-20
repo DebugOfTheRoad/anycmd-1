@@ -4,7 +4,7 @@
 }
 <script id="detailsTemplate" type="text/x-jquery-tmpl">
     @{
-        var ontology = NodeHost.Instance.Ontologies[ontologyCode];
+        var ontology = Html.GetHost().Ontologies[ontologyCode];
         var elements = ontology.Elements
             .Where(f => f.Value.Element != null && f.Value.Element.IsEnabled == 1 && f.Value.Element.IsDetailsShow)
             .OrderBy(e => e.Value.Element.SortCode).Select(e => e.Value.Element);

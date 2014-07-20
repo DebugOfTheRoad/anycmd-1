@@ -1,5 +1,6 @@
 ﻿
-namespace Anycmd.Host.EDI.Hecp {
+namespace Anycmd.Host.EDI.Hecp
+{
     using Exceptions;
     using Handlers;
     using System;
@@ -9,52 +10,54 @@ namespace Anycmd.Host.EDI.Hecp {
     /// <summary>
     /// Hecp处理程序，它是一种处理HecpContext的资源<see cref="IWfResource"/>
     /// </summary>
-    public sealed class HecpHandler : IWfResource {
+    public sealed class HecpHandler : IWfResource
+    {
         private readonly Guid _id = new Guid("F854A771-4AE2-4235-B4E6-5EBEA5420FFE");
         private readonly string _name = "DefaultHecpHandler";
         private readonly string _description = "Hecp处理程序";
         private readonly HashSet<string> _versionSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
             ApiVersion.V1.ToName()
         };
-
-        public static HecpHandler Instance {
-            get {
-                return new HecpHandler();
-            }
-        }
+        private readonly IAppHost host;
 
         /// <summary>
         /// 
         /// </summary>
-        private HecpHandler() {
+        public HecpHandler(IAppHost host)
+        {
+            this.host = host;
         }
 
         #region Public Properties
         /// <summary>
         /// 
         /// </summary>
-        public Guid Id {
+        public Guid Id
+        {
             get { return _id; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Name {
+        public string Name
+        {
             get { return _name; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public BuiltInResourceKind BuiltInResourceKind {
+        public BuiltInResourceKind BuiltInResourceKind
+        {
             get { return BuiltInResourceKind.HecpHandler; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Description {
+        public string Description
+        {
             get { return _description; }
         }
         #endregion
@@ -64,53 +67,63 @@ namespace Anycmd.Host.EDI.Hecp {
         /// 处理单条命令
         /// </summary>
         /// <param name="context"></param>
-        public void Process(HecpContext context) {
-            try {
-                if (context == null) {
+        public void Process(HecpContext context)
+        {
+            try
+            {
+                if (context == null)
+                {
                     throw new ArgumentNullException("context");
                 }
-                if (!context.IsValid) {
+                if (!context.IsValid)
+                {
                     return;
                 }
-                if (!_versionSet.Contains(context.Request.Version)) {
+                if (!_versionSet.Contains(context.Request.Version))
+                {
                     throw new CoreException("本Hecp处理程序不支持处理版本号" + context.Request.Version + "的消息");
                 }
-                var nodeHost = NodeHost.Instance;
                 // ApplyPreRequestFilters
-                ProcessResult result = nodeHost.ApplyPreRequestFilters(context);
+                ProcessResult result = host.ApplyPreHecpRequestFilters(context);
                 context.Response.Body.Event.Status = (int)result.StateCode;
                 context.Response.Body.Event.Description = result.Description;
-                if (context.Response.IsClosed) {
+                if (context.Response.IsClosed)
+                {
                     return;
                 }
                 #region 身份认证
-                var author = NodeHost.Instance.AppHost.GetRequiredService<IAuthenticator>();
-                if (author == null) {
+                var author = host.GetRequiredService<IAuthenticator>();
+                if (author == null)
+                {
                     throw new CoreException("未配置证书验证器，证书验证器是必须的。");
                 }
-                using (var act = new WfAct(context, author, "验证身份")) {
+                using (var act = new WfAct(host, context, author, "验证身份"))
+                {
                     result = author.Auth(context.Request);
                 }
-                if (!result.IsSuccess) {
+                if (!result.IsSuccess)
+                {
                     context.Response.Body.Event.Status = (int)result.StateCode;
                     context.Response.Body.Event.ReasonPhrase = result.StateCode.ToName();
                     context.Response.Body.Event.Description = result.Description;
                     return;
                 }
                 #endregion
-                var commandContext = MessageContext.Create(context);
+                var commandContext = MessageContext.Create(host, context);
                 MessageHandler.Instance.Response(commandContext);
                 context.Response.Fill(commandContext.Result);
                 // ApplyResponseFilters
-                result = nodeHost.ApplyResponseFilters(context);
+                result = host.ApplyHecpResponseFilters(context);
                 context.Response.Body.Event.Status = (int)result.StateCode;
                 context.Response.Body.Event.ReasonPhrase = result.StateCode.ToName();
                 context.Response.Body.Event.Description = result.Description;
-                if (context.Response.IsClosed) {
+                if (context.Response.IsClosed)
+                {
                     return;
                 }
             }
-            catch {
+            catch
+            {
                 context.Response.Body.Event.Description = "服务器内部逻辑异常";
                 context.Response.Body.Event.Status = 500;
                 context.Response.Body.Event.ReasonPhrase = Status.InternalServerError.ToName();

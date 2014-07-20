@@ -186,7 +186,7 @@ namespace Anycmd.Host.EDI.Handlers.Execute {
 					}
 					else {
 						foreach (var item in toExecutes) {
-							var context = new MessageContext(item);
+							var context = new MessageContext(this.Process.Host, item);
 							var eArgs = new ExecutedEventArgs(context);
 							OnExecuting(eArgs);
 							MessageHandler.Instance.Response(context);

@@ -39,6 +39,7 @@ namespace Anycmd.Host.EDI.Handlers
         private int _actsCount = 0;
         private string _stackTrace = null;
         private IStackTraceFormater _stackTraceFormater = null;
+        private readonly IAppHost host;
         #endregion
 
         #region Ctor
@@ -47,13 +48,14 @@ namespace Anycmd.Host.EDI.Handlers
         /// </summary>
         /// <param name="command"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public MessageContext(MessageBase command)
+        public MessageContext(IAppHost host, MessageBase command)
         {
             if (command == null)
             {
                 this.Exception = new ArgumentNullException("command");
                 throw this.Exception;
             }
+            this.host = host;
             this.Command = command;
             this.Result = new QueryResult(command);
             this.Result.ResultDataItems = new List<DataItem>();
@@ -63,13 +65,13 @@ namespace Anycmd.Host.EDI.Handlers
         /// 
         /// </summary>
         /// <param name="context"></param>
-        public static MessageContext Create(HecpContext context)
+        public static MessageContext Create(IAppHost host, HecpContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
-            var commandContext = new MessageContext(AnyMessage.Create(context.Request, NodeHost.Instance.Nodes.ThisNode));
+            var commandContext = new MessageContext(host, AnyMessage.Create(context.Request, host.Nodes.ThisNode));
             foreach (var act in context)
             {
                 commandContext.Trace(act);
@@ -79,6 +81,11 @@ namespace Anycmd.Host.EDI.Handlers
         #endregion
 
         #region public Properties
+        public IAppHost Host
+        {
+            get { return host; }
+
+        }
         /// <summary>
         /// 命令实体。
         /// </summary>
@@ -119,7 +126,7 @@ namespace Anycmd.Host.EDI.Handlers
                     selectElements.Add(this.Ontology.EntityACLPolicyElement);
                     if (this.Command.Verb == Verb.Update)
                     {
-                        foreach (var node in NodeHost.Instance.Nodes)
+                        foreach (var node in host.Nodes)
                         {
                             if (node.Node.IsEnabled == 1 && node.Node.IsProduceEnabled && node.IsCareForOntology(this.Ontology))
                             {
@@ -171,7 +178,7 @@ namespace Anycmd.Host.EDI.Handlers
                 {
                     this._isValidated = true;
                     #region 输入验证
-                    IInputValidator inputValidator = NodeHost.Instance.AppHost.GetRequiredService<IInputValidator>();
+                    IInputValidator inputValidator = host.GetRequiredService<IInputValidator>();
                     if (inputValidator == null)
                     {
                         throw new CoreException("没有配置命令输入验证器");
@@ -184,7 +191,7 @@ namespace Anycmd.Host.EDI.Handlers
                         return false;
                     }
                     #endregion
-                    IPermissionValidator permissionValidator = NodeHost.Instance.AppHost.GetRequiredService<IPermissionValidator>();
+                    IPermissionValidator permissionValidator = host.GetRequiredService<IPermissionValidator>();
                     if (permissionValidator == null)
                     {
                         throw new CoreException("没有配置权限验证器");
@@ -197,7 +204,7 @@ namespace Anycmd.Host.EDI.Handlers
                         return false;
                     }
                     #region 检验信息标识标识的实体的存在性
-                    using (var act = new WfAct(this, this.Ontology.EntityProvider, "检验信息标识标识的实体的存在性"))
+                    using (var act = new WfAct(host, this, this.Ontology.EntityProvider, "检验信息标识标识的实体的存在性"))
                     {
                         if (this.TowInfoTuple == null)
                         {
@@ -285,7 +292,7 @@ namespace Anycmd.Host.EDI.Handlers
                 if (!this._isAuditDetected)
                 {
                     this._isAuditDetected = true;
-                    IAuditDiscriminator auditDiscriminator = NodeHost.Instance.AppHost.GetRequiredService<IAuditDiscriminator>();
+                    IAuditDiscriminator auditDiscriminator = host.GetRequiredService<IAuditDiscriminator>();
                     if (auditDiscriminator == null)
                     {
                         throw new CoreException("未配置命令审核鉴别器");
@@ -314,7 +321,7 @@ namespace Anycmd.Host.EDI.Handlers
             {
                 if (this._clientAgent == null)
                 {
-                    NodeHost.Instance.Nodes.TryGetNodeByID(this.Command.ClientID, out this._clientAgent);
+                    host.Nodes.TryGetNodeByID(this.Command.ClientID, out this._clientAgent);
                 }
                 return this._clientAgent;
             }
@@ -332,7 +339,7 @@ namespace Anycmd.Host.EDI.Handlers
             {
                 if (this._ontology == null)
                 {
-                    NodeHost.Instance.Ontologies.TryGetOntology(this.Command.Ontology, out this._ontology);
+                    host.Ontologies.TryGetOntology(this.Command.Ontology, out this._ontology);
                 }
                 return this._ontology;
             }
@@ -405,8 +412,8 @@ namespace Anycmd.Host.EDI.Handlers
                     }
                     else if (string.IsNullOrEmpty(this.Command.LocalEntityID))
                     {
-                        bool thisNodeIsCenterNode = NodeHost.Instance.Nodes.ThisNode == NodeHost.Instance.Nodes.CenterNode;
-                        bool requestNodeIsCenterNode = this.ClientAgent == NodeHost.Instance.Nodes.CenterNode;
+                        bool thisNodeIsCenterNode = host.Nodes.ThisNode == host.Nodes.CenterNode;
+                        bool requestNodeIsCenterNode = this.ClientAgent == host.Nodes.CenterNode;
                         if (thisNodeIsCenterNode || requestNodeIsCenterNode)
                         {
                             if (this.InfoTuplePair.IsSingleGuid)
@@ -527,7 +534,7 @@ namespace Anycmd.Host.EDI.Handlers
                 }
                 if (_stackTraceFormater == null)
                 {
-                    _stackTraceFormater = NodeHost.Instance.AppHost.GetRequiredService<IStackTraceFormater>();
+                    _stackTraceFormater = host.GetRequiredService<IStackTraceFormater>();
                 }
                 _actsCount = _acts.Count;
                 _stackTrace = _stackTrace + _stackTraceFormater.Format(_acts);
@@ -613,7 +620,7 @@ namespace Anycmd.Host.EDI.Handlers
                 org = OrganizationState.Empty;
                 return new ProcessResult(false, Status.InvalidOrganization, "组织结构码为空");
             }
-            if (!NodeHost.Instance.AppHost.OrganizationSet.TryGetOrganization(this.OrganizationCode, out org))
+            if (!host.OrganizationSet.TryGetOrganization(this.OrganizationCode, out org))
             {
                 return new ProcessResult(false, Status.InvalidOrganization, string.Format("非法的组织结构码{0}", this.OrganizationCode));
             }
@@ -623,7 +630,7 @@ namespace Anycmd.Host.EDI.Handlers
                 return new ProcessResult(false, Status.InvalidOrganization, string.Format("对于{0}来说{1}是非法的组织结构码", this.Ontology.Ontology.Name, org.Code));
             }
             var orgCode = org.Code;
-            return NodeHost.Instance.AppHost.OrganizationSet.Any(o => orgCode.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)) ? new ProcessResult(false, Status.InvalidOrganization, string.Format("{0}不是叶节点，不能容纳" + this.Ontology.Ontology.Name, org.Name)) : ProcessResult.Ok;
+            return host.OrganizationSet.Any(o => orgCode.Equals(o.ParentCode, StringComparison.OrdinalIgnoreCase)) ? new ProcessResult(false, Status.InvalidOrganization, string.Format("{0}不是叶节点，不能容纳" + this.Ontology.Ontology.Name, org.Name)) : ProcessResult.Ok;
 
         }
         #endregion

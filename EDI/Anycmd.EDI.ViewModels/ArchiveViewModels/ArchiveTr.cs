@@ -1,20 +1,27 @@
 
-namespace Anycmd.EDI.ViewModels.ArchiveViewModels {
-    using System;
+namespace Anycmd.EDI.ViewModels.ArchiveViewModels
+{
     using Exceptions;
-    using Anycmd.Host.EDI;
+    using Host.EDI;
+    using System;
 
     /// <summary>
     /// 
     /// </summary>
-    public partial class ArchiveTr {
+    public partial class ArchiveTr
+    {
         private OntologyDescriptor _ontology;
+        private readonly IAppHost host;
 
-        public ArchiveTr() { }
+        public ArchiveTr(IAppHost host)
+        {
+            this.host = host;
+        }
 
         public static ArchiveTr Create(ArchiveState archive)
         {
-            return new ArchiveTr {
+            return new ArchiveTr(archive.Host)
+            {
                 ArchiveOn = archive.ArchiveOn,
                 CreateOn = archive.CreateOn,
                 CreateBy = archive.CreateBy,
@@ -72,20 +79,24 @@ namespace Anycmd.EDI.ViewModels.ArchiveViewModels {
         /// <summary>
         /// 
         /// </summary>
-        public string OntologyCode {
+        public string OntologyCode
+        {
             get { return Ontology.Ontology.Code; }
         }
         /// <summary>
         /// 
         /// </summary>
-        public string OntologyName {
+        public string OntologyName
+        {
             get { return Ontology.Ontology.Name; }
         }
         /// <summary>
         /// 
         /// </summary>
-        public string CatalogName {
-            get {
+        public string CatalogName
+        {
+            get
+            {
                 var _catalogName = string.Format(
                             "Archive{0}{1}_{2}",
                             Ontology.Ontology.Code,
@@ -94,10 +105,14 @@ namespace Anycmd.EDI.ViewModels.ArchiveViewModels {
                 return _catalogName;
             }
         }
-        private OntologyDescriptor Ontology {
-            get {
-                if (_ontology == null) {
-                    if (!NodeHost.Instance.Ontologies.TryGetOntology(this.OntologyID, out _ontology)) {
+        private OntologyDescriptor Ontology
+        {
+            get
+            {
+                if (_ontology == null)
+                {
+                    if (!host.Ontologies.TryGetOntology(this.OntologyID, out _ontology))
+                    {
                         throw new CoreException("意外的本体标识" + this.OntologyID);
                     }
                 }

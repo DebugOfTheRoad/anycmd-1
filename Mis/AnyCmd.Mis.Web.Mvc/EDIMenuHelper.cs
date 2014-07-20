@@ -2,12 +2,12 @@
 namespace Anycmd.Mis.Web.Mvc
 {
     using AC.Infra;
-    using EDI;
-    using System;
     using Host;
+    using Host.AC.Infra;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Anycmd.Host.AC.Infra;
+    using System.Web;
 
     public static class EDIMenuHelper
     {
@@ -22,14 +22,15 @@ namespace Anycmd.Mis.Web.Mvc
 
         public static IList<IMenu> GetEntityMenus()
         {
+            var host = HttpContext.Current.Application["AppHostInstance"] as IAppHost;
             IList<IMenu> menus = new List<IMenu>();
             menus.Add(entityMenu);
-            foreach (var ontology in NodeHost.Instance.Ontologies.OrderBy(o => o.Ontology.SortCode))
+            foreach (var ontology in host.Ontologies.OrderBy(o => o.Ontology.SortCode))
             {
                 if (ontology.Ontology.IsEnabled == 1)
                 {
                     if (!ontology.Ontology.IsSystem
-                        || (ontology.Ontology.IsSystem && NodeHost.Instance.AppHost.User.IsDeveloper()))
+                        || (ontology.Ontology.IsSystem && host.UserSession.IsDeveloper()))
                     {
                         menus.Add(new Menu
                         {

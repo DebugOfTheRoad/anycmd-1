@@ -1,9 +1,8 @@
 
 namespace Anycmd.EDI.ViewModels.InfoConstraintViewModels
 {
-    using Anycmd.Host.EDI;
+    using Host.EDI;
     using System;
-    using System.Collections.Generic;
 
     // TODO:使用InfoRuleState来组合IInfoRule和CreateOn和IsEnabled
     /// <summary>
@@ -13,7 +12,7 @@ namespace Anycmd.EDI.ViewModels.InfoConstraintViewModels
     {
         private InfoRuleTr() { }
 
-        public static InfoRuleTr Create(AppHost host, InfoRuleState infoRule)
+        public static InfoRuleTr Create(IAppHost host, InfoRuleState infoRule)
         {
             return new InfoRuleTr
             {

@@ -18,7 +18,7 @@ namespace Anycmd.Host.EDI
         /// 
         /// </summary>
         /// <param name="batch"></param>
-        public BatchDescriptor(IBatch batch)
+        public BatchDescriptor(IAppHost host, IBatch batch)
         {
             if (batch == null)
             {
@@ -26,13 +26,13 @@ namespace Anycmd.Host.EDI
             }
             this.batch = batch;
             OntologyDescriptor _ontology;
-            if (!NodeHost.Instance.Ontologies.TryGetOntology(batch.OntologyID, out _ontology))
+            if (!host.Ontologies.TryGetOntology(batch.OntologyID, out _ontology))
             {
                 throw new CoreException("意外的本体标识" + batch.OntologyID);
             }
             this.Ontology = _ontology;
             NodeDescriptor _node;
-            if (!NodeHost.Instance.Nodes.TryGetNodeByID(batch.NodeID.ToString(), out _node))
+            if (!host.Nodes.TryGetNodeByID(batch.NodeID.ToString(), out _node))
             {
                 throw new CoreException("意外的节点标识" + batch.NodeID);
             }

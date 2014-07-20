@@ -19,7 +19,7 @@ namespace Anycmd.Host
         private PropertyState() { }
 
         #region 工厂方法
-        public static PropertyState Create(AppHost host, PropertyBase property)
+        public static PropertyState Create(IAppHost host, PropertyBase property)
         {
             if (property == null)
             {
@@ -94,7 +94,7 @@ namespace Anycmd.Host
         }
         #endregion
 
-        public AppHost AppHost { get; private set; }
+        public IAppHost AppHost { get; private set; }
 
         public Guid Id { get; private set; }
 

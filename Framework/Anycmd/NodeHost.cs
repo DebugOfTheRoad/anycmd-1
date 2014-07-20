@@ -1,13 +1,12 @@
 ﻿
-namespace Anycmd {
-    using Container;
+namespace Anycmd
+{
     using EDI;
     using Exceptions;
     using Host.EDI;
     using Host.EDI.Handlers;
     using Host.EDI.Hecp;
     using Host.EDI.MemorySets;
-    using Logging;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -16,7 +15,8 @@ namespace Anycmd {
     /// 数据交换宿主抽象基类
     /// <remarks>实现自定义宿主必须从该基类继承</remarks>
     /// </summary>
-    public abstract partial class NodeHost : INodeHost {
+    public abstract class NodeHost : INodeHost
+    {
         private static object locker = new object();
         private static NodeHost _instance = null;
 
@@ -24,15 +24,18 @@ namespace Anycmd {
         private bool _pluginsLoaded;
 
         /// <summary>
-        /// 单件。根据appSetting的NodeHost节点配置构建。
+        /// 
         /// </summary>
-        public static NodeHost Instance {
-            get {
+        public static NodeHost Instance
+        {
+            get
+            {
                 return _instance;
             }
         }
 
-        public Guid Id {
+        public Guid Id
+        {
             get { return _id; }
         }
 
@@ -52,17 +55,18 @@ namespace Anycmd {
         /// <summary>
         /// 
         /// </summary>
-        protected NodeHost(AppHost appHost)
+        protected NodeHost(IAppHost appHost)
         {
             lock (locker)
             {
                 _instance = this;
                 this.AppHost = appHost;
                 this.StartedAt = DateTime.UtcNow;
-                this.PreRequestFilters = new List<Func<HecpContext, ProcessResult>>();
-                this.GlobalProcessingFilters = new List<Func<MessageContext, ProcessResult>>();
-                this.GlobalProcessedFilters = new List<Func<MessageContext, ProcessResult>>();
-                this.GlobalResponseFilters = new List<Func<HecpContext, ProcessResult>>();
+                this.PreHecpRequestFilters = new List<Func<HecpContext, ProcessResult>>();
+                this.GlobalEDIMessageHandingFilters = new List<Func<MessageContext, ProcessResult>>();
+                this.GlobalEDIMessageHandledFilters = new List<Func<MessageContext, ProcessResult>>();
+                this.GlobalHecpResponseFilters = new List<Func<HecpContext, ProcessResult>>();
+                this.HecpHandler = new HecpHandler(this);
                 this.Plugins = new List<IPlugin>
                 {
                 };
@@ -73,32 +77,18 @@ namespace Anycmd {
         /// 
         /// </summary>
         /// <returns></returns>
-        public virtual NodeHost Init() {
-            Config = HostConfig.ResetInstance();
+        public virtual NodeHost Init()
+        {
             OnConfigLoad();
 
-            Configure(this.AppHost.Container);
+            Configure();
 
             OnAfterInit();
 
             return this;
         }
 
-        private HostConfig _config;
-        /// <summary>
-        /// 
-        /// </summary>
-        public HostConfig Config {
-            get {
-                return _config;
-            }
-            set {
-                _config = value;
-                OnAfterConfigChanged();
-            }
-        }
-
-        public AppHost AppHost { get; protected set; }
+        public IAppHost AppHost { get; protected set; }
 
         /// <summary>
         /// 管道插件
@@ -124,6 +114,8 @@ namespace Anycmd {
         /// 本体上下文
         /// </summary>
         public IOntologySet Ontologies { get; protected set; }
+
+        public HecpHandler HecpHandler { get; private set; }
 
         /// <summary>
         /// 信息字符串转化器上下文
@@ -158,27 +150,28 @@ namespace Anycmd {
         /// <summary>
         /// 添加请求过滤器, 这些过滤器在Http请求被转化为Hecp请求后应用
         /// </summary>
-        public List<Func<HecpContext, ProcessResult>> PreRequestFilters { get; protected set; }
+        public List<Func<HecpContext, ProcessResult>> PreHecpRequestFilters { get; protected set; }
 
         /// <summary>
         /// 添加命令过滤器。这些过滤器在Command验证通过但被处理前应用
         /// </summary>
-        public List<Func<MessageContext, ProcessResult>> GlobalProcessingFilters { get; protected set; }
+        public List<Func<MessageContext, ProcessResult>> GlobalEDIMessageHandingFilters { get; protected set; }
 
         /// <summary>
         /// 添加命令过滤器。这些过滤器在Command验证通过并被处理后应用
         /// </summary>
-        public List<Func<MessageContext, ProcessResult>> GlobalProcessedFilters { get; protected set; }
+        public List<Func<MessageContext, ProcessResult>> GlobalEDIMessageHandledFilters { get; protected set; }
 
         /// <summary>
         /// 添加响应过滤器。这些过滤器在Hecp响应末段应用
         /// </summary>
-        public List<Func<HecpContext, ProcessResult>> GlobalResponseFilters { get; protected set; }
+        public List<Func<HecpContext, ProcessResult>> GlobalHecpResponseFilters { get; protected set; }
 
         /// <summary>
         /// Config has changed
         /// </summary>
-        public virtual void OnAfterConfigChanged() {
+        public virtual void OnAfterConfigChanged()
+        {
         }
 
         #region GetBuildinPluginBaseDirectory
@@ -187,8 +180,10 @@ namespace Anycmd {
         /// </summary>
         /// <param name="pluginType"></param>
         /// <returns></returns>
-        public virtual string GetPluginBaseDirectory(PluginType pluginType) {
-            switch (pluginType) {
+        public virtual string GetPluginBaseDirectory(PluginType pluginType)
+        {
+            switch (pluginType)
+            {
                 case PluginType.Plugin:
                     return this.AppHost.BuildInPluginsBaseDirectory;
                 case PluginType.MessageProvider:
@@ -210,33 +205,30 @@ namespace Anycmd {
         /// <summary>
         /// 
         /// </summary>
-        public abstract void Configure(AnycmdServiceContainer container);
+        public abstract void Configure();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="config"></param>
-        public virtual void SetConfig(HostConfig config) {
-            Config = config;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual void OnConfigLoad() {
+        public virtual void OnConfigLoad()
+        {
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="plugins"></param>
-        public virtual void LoadPlugin(params IPlugin[] plugins) {
-            foreach (var plugin in plugins) {
-                try {
+        public virtual void LoadPlugin(params IPlugin[] plugins)
+        {
+            foreach (var plugin in plugins)
+            {
+                try
+                {
                     plugin.Register(this);
                 }
-                catch (Exception ex) {
-                    LoggingService.Error("Error loading plugin " + plugin.GetType().Name, ex);
+                catch (Exception ex)
+                {
+                    AppHost.LoggingService.Error("Error loading plugin " + plugin.GetType().Name, ex);
                 }
             }
         }
@@ -245,12 +237,16 @@ namespace Anycmd {
         /// 
         /// </summary>
         /// <param name="plugins"></param>
-        public void AddPlugin(params IPlugin[] plugins) {
-            if (_pluginsLoaded) {
+        public void AddPlugin(params IPlugin[] plugins)
+        {
+            if (_pluginsLoaded)
+            {
                 LoadPlugin(plugins);
             }
-            else {
-                foreach (var plugin in plugins) {
+            else
+            {
+                foreach (var plugin in plugins)
+                {
                     Plugins.Add(plugin);
                 }
             }
@@ -259,7 +255,8 @@ namespace Anycmd {
         /// <summary>
         /// 当Configure方法调用后。
         /// </summary>
-        public void OnAfterInit() {
+        public void OnAfterInit()
+        {
             AfterInitAt = DateTime.UtcNow;
 
             LoadPlugin(Plugins.ToArray());
@@ -272,13 +269,16 @@ namespace Anycmd {
         /// 应用Hecp管道过滤器，通过返回结果表达当前Hecp请求是否被处理过了，如果处理过了则就转到响应流程了。
         /// </summary>
         /// <returns></returns>
-        public ProcessResult ApplyPreRequestFilters(HecpContext context) {
-            if (context == null) {
+        public ProcessResult ApplyPreRequestFilters(HecpContext context)
+        {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
             var result = new ProcessResult(context.Response.IsSuccess, context.Response.Body.Event.Status, context.Response.Body.Event.Description);
 
-            foreach (var requestFilter in PreRequestFilters) {
+            foreach (var requestFilter in PreHecpRequestFilters)
+            {
                 result = requestFilter(context);
                 if (context.Response.IsClosed) break;
             }
@@ -290,14 +290,17 @@ namespace Anycmd {
         /// 应用Command管道过滤器，通过返回结果表达当前Command请求是否被处理过了，如果处理过了则就转到响应流程了。
         /// </summary>
         /// <returns></returns>
-        public ProcessResult ApplyProcessingFilters(MessageContext context) {
-            if (context == null) {
+        public ProcessResult ApplyProcessingFilters(MessageContext context)
+        {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
             var result = new ProcessResult(context.Result.IsSuccess, context.Result.Status, context.Result.Description);
 
             // 执行全局命令过滤器
-            foreach (var processedFilter in GlobalProcessingFilters) {
+            foreach (var processedFilter in GlobalEDIMessageHandingFilters)
+            {
                 result = processedFilter(context);
                 if (context.Result.IsClosed) break; ;
             }
@@ -309,14 +312,17 @@ namespace Anycmd {
         /// 应用Command管道过滤器，通过返回结果表达当前Command请求是否被处理过了，如果处理过了则就转到响应流程了。
         /// </summary>
         /// <returns></returns>
-        public ProcessResult ApplyProcessedFilters(MessageContext context) {
-            if (context == null) {
+        public ProcessResult ApplyProcessedFilters(MessageContext context)
+        {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
             var result = new ProcessResult(context.Result.IsSuccess, context.Result.Status, context.Result.Description);
 
             // 执行全局命令过滤器
-            foreach (var processedFilter in GlobalProcessedFilters) {
+            foreach (var processedFilter in GlobalEDIMessageHandledFilters)
+            {
                 result = processedFilter(context);
                 if (context.Result.IsClosed) break; ;
             }
@@ -328,46 +334,22 @@ namespace Anycmd {
         /// 应用Hecp管道过滤器，通过返回结果表达当前Hecp请求是否被处理过了，如果处理过了则就转到响应流程了。
         /// </summary>
         /// <returns></returns>
-        public ProcessResult ApplyResponseFilters(HecpContext context) {
-            if (context == null) {
+        public ProcessResult ApplyResponseFilters(HecpContext context)
+        {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
             var result = new ProcessResult(context.Response.IsSuccess, context.Response.Body.Event.Status, context.Response.Body.Event.Description);
 
             //Exec global filters
-            foreach (var responseFilter in GlobalResponseFilters) {
+            foreach (var responseFilter in GlobalHecpResponseFilters)
+            {
                 result = responseFilter(context);
                 if (context.Response.IsClosed) break;
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Retrieves the service of type <c>T</c> from the provider.
-        /// If the service cannot be found, this method returns <c>null</c>.
-        /// </summary>
-        public T GetService<T>()
-        {
-            return this.AppHost.GetService<T>();
-        }
-
-        /// <summary>
-        /// Retrieves the service of type <c>T</c> from the provider.
-        /// If the service cannot be found, a <see cref="ServiceNotFoundException"/> will be thrown.
-        /// </summary>
-        public T GetRequiredService<T>()
-        {
-            return (T)GetRequiredService(typeof(T));
-        }
-
-        /// <summary>
-        /// Retrieves the service of type <paramref name="serviceType"/> from the provider.
-        /// If the service cannot be found, a <see cref="ServiceNotFoundException"/> will be thrown.
-        /// </summary>
-        public object GetRequiredService(Type serviceType)
-        {
-            return this.AppHost.GetRequiredService(serviceType);
         }
     }
 }

@@ -37,7 +37,7 @@
                     <a id="btnTemplate" class="mini-button" @Html.IsEnabled("Entity", "DownloadTemplate")>模板</a>
                     @{
                         ResourceTypeState r;
-                        if (!Html.GetHost().ResourceSet.TryGetResource(Html.GetHost().AppSystemSet.SelfAppSystem, "InfoDic", out r)) {
+                        if (!Html.GetHost().ResourceTypeSet.TryGetResource(Html.GetHost().AppSystemSet.SelfAppSystem, "InfoDic", out r)) {
                             throw new Anycmd.Exceptions.CoreException("意外的资源码");
                         }
                     }
